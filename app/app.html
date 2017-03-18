@@ -4,24 +4,65 @@
     <meta charset="utf-8">
     <title>Electron Boilerplate</title>
 
+    <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="stylesheets/main.css" rel="stylesheet" type="text/css">
+
 
     <script src="helpers/context_menu.js"></script>
     <script src="helpers/external_links.js"></script>
-
-    <script src="app.js"></script>
 </head>
-<body>
-
-    <div class="container">
-        <h1 id="greet"></h1>
-        <p class="subtitle">
-            Welcome to <a href="http://electron.atom.io" class="js-external-link">Electron</a> app running on this magnificent <strong id="platform-info"></strong> machine.
-        </p>
-        <p class="subtitle">
-            You are in <strong id="env-name"></strong> environment.
-        </p>
+<nav class="nav">
+    <div class="nav-left">
+        <h1 class="nav-item">Headlinr</h1>
     </div>
-
+</nav>
+<body>
+    <div id="app" class="container">
+        <div class="columns">
+            <div class="column">
+                <div class="card">
+                    <div class="card-content">
+                        <p class="subtitle">
+                            Welcome to <a href="http://electron.atom.io" class="js-external-link">Electron</a> app running on this magnificent <strong id="platform-info"></strong> machine.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div v-if="game.headlines" class="column is-half">
+                <div class="card" v-for="item in game.headlines">
+                    <div class="card-content">
+                        <div class="media">
+                            <div class="media-left">
+                                <figure class="image" style="height: 40px; width: 40px;">
+                                    <img src="http://bulma.io/images/placeholders/96x96.png" alt="Image">
+                                </figure>
+                            </div>
+                            <div class="media-content">
+                                <h2 class="title">{{item.postName.first}} {{item.postName.last}}</h2>
+                                <p class="subtitle is-6">{{cat}}</p>
+                            </div>
+                        </div>
+                        <div class="content">
+                          <h1>{{item.headline}}</h1>
+                          <a class="like"><i class="fa fa-thumbs-up" aria-hidden="true"></i> Like</a>
+                          <a class="dislike"><i class="fa fa-thumbs-down" aria-hidden="true"></i> Dislike</a>
+                        </div>
+                    </div>
+                    <footer class="card-footer">
+                        <a class="card-footer-item">Comment</a>
+                    </footer>
+                </div>
+            </div>
+            <div class="column">
+                <div class="card">
+                    <div class="card-content">
+                        <h1>Right sidebar</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="app.js"></script>
+    <script>require("electron-connect").client.create()</script>
 </body>
 </html>

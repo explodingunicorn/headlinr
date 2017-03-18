@@ -46,6 +46,9 @@ app.on('ready', function () {
         slashes: true
     }));
 
+    var client = require("electron-connect").client;
+    client.create(mainWindow);
+
     if (env.name === 'development') {
         mainWindow.openDevTools();
     }

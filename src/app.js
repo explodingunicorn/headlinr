@@ -5,20 +5,36 @@
 import os from 'os'; // native node.js module
 import { remote } from 'electron'; // native electron module
 import jetpack from 'fs-jetpack'; // module loaded from npm
-import { greet } from './hello_world/hello_world'; // code authored by you in this project
 import env from './env';
+import sentiment from 'sentiment';
+import Game from './game.js';
+var Vue = require('vue/dist/vue.common.js');
 
-console.log('Loaded environment variables:', env);
+var r1 = sentiment("Butts butts butts.");
 
 var app = remote.app;
 var appDir = jetpack.cwd(app.getAppPath());
+var newGame = new Game();
 
-// Holy crap! This is browser window with HTML and stuff, but I can read
-// here files like it is node.js! Welcome to Electron world :)
-console.log('The author of this app is:', appDir.read('package.json', 'json').author);
+var app = new Vue({
+    el: "#app",
+    data: function() {
+        return {
+            cat: 'Cats',
+            game: new Game(),
+        }
+    },
+    methods: {
 
-document.addEventListener('DOMContentLoaded', function () {
-    document.getElementById('greet').innerHTML = greet();
-    document.getElementById('platform-info').innerHTML = os.platform();
-    document.getElementById('env-name').innerHTML = env.name;
+    },
+    mounted: function() {
+        var sec = 0;
+        function gameLoop() {
+            sec++
+            app.game.update(sec);
+            window.requestAnimationFrame(gameLoop);
+        }
+
+        window.requestAnimationFrame(gameLoop);
+    }
 });
