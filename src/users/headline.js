@@ -26,12 +26,13 @@ export default function Headline(headline, name, topic) {
     }
 
     //function to add to the posts score
-    function like() {
+    this.like = function() {
+        console.log('upvote');
         this.score++;
     }
 
     //function to subtract from the posts score
-    function dislike() {
+    this.dislike = function() {
         this.score--;
     }
 }

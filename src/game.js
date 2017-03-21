@@ -20,7 +20,6 @@ export default function Game() {
     }
 
     this.pushHeadline = function(headline, name) {
-        var headline = new Headline(headline, name);
         this.headlines.unshift(headline);
 
         if(this.headlines.length > 30) {

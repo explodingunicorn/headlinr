@@ -4,6 +4,7 @@ var path = require('path');
 var fFirstNames = fs.readFileSync(path.join(__dirname, 'female.txt')).toString().split("\n");
 var mFirstNames = fs.readFileSync(path.join(__dirname, 'male.txt')).toString().split("\n");
 var lastNames = fs.readFileSync(path.join(__dirname, 'family.txt')).toString().split("\n");
+import Headline from './headline.js';
 
 //Basic class for user
 export default function User(game) {
@@ -44,18 +45,42 @@ export default function User(game) {
     this.checkUpdate = function(time) {
         if(time % (activityLevel*100)=== 0) {
             console.log(this.info.first + " is checking");
-            react();
+            checkHeadlinr(this.game, this.info);
             generateNextActivity();
         }
     };
 
-    //Function for user to check new posts
-    function checkHeadlines() {
+    //Function that runs everything involved in a users turn
+    function checkHeadlinr(game, info) {
+        checkHeadlines(game.headlines);
+        createHeadline(game, info);
+    }
 
+    //Function for user to check new posts
+    function checkHeadlines(headlines) {
+        var postsToCheck = 0;
+        //Checks the last 10 headlines
+        if(headlines.length > 1) {
+
+            if(headlines.length < 10) {
+                postsToCheck = headlines.length;
+            }
+            else {
+                postsToCheck = 10;
+            }
+
+            for (var i = 0; i < postsToCheck; i++) {
+                console.log(headlines[i])
+                //Read the headline, and determine the reaction to the headline
+                if(headlines[i]) {
+                    headlines[i].like();
+                }
+            }
+        }
     };
 
     //Function for user to push a new headline
-    function createHeadline(info, game) {
+    function createHeadline(game, info) {
         var headline = new Headline("My name is " + info.first, name);
         game.pushHeadline(headline, info);
     };

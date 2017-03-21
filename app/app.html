@@ -31,6 +31,9 @@
             <div v-if="game.headlines" class="column is-half">
                 <div class="card" v-for="item in game.headlines">
                     <div class="card-content">
+                        <div class="score">
+                            <h2>{{item.score}}</h2>
+                        </div>
                         <div class="media">
                             <div class="media-left">
                                 <figure class="image" style="height: 40px; width: 40px;">
