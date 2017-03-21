@@ -1,5 +1,14 @@
-@import '../../node_modules/bulma/css/bulma.css';
-@import url('https://fonts.googleapis.com/css?family=Lato:300,400,700|Montserrat:700,800');
+@import url('https://fonts.googleapis.com/css?family=Lato:300,400,700|Montserrat:500,700,800');
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin: 0;
+  padding: 0;
+}
 h1 {
   color: #393D3F;
   font-family: 'Montserrat' !important;
@@ -12,49 +21,34 @@ h2 {
   font-weight: 700;
   font-size: 24px;
 }
-.card {
-  box-shadow: none;
-  border: 1px #AAACA9 solid;
-  border-radius: 2px;
-  margin-bottom: 20px;
-}
-.card h1 {
-  text-align: left;
-  margin-bottom: 0px;
-}
-.card a i {
+h3 {
+  color: #393D3F;
+  font-family: 'Montserrat';
+  font-weight: 700;
   font-size: 16px;
 }
-.card .like {
-  border-radius: 2px;
-  color: #4F2D87;
-  display: inline-block;
-  padding: 5px;
-}
-.card .like:hover {
-  background-color: #4F2D87;
-  color: #F0F1ED;
-}
-.card .dislike {
-  border-radius: 2px;
-  color: #6A66A3;
-  display: inline-block;
-  padding: 5px;
-}
-.card .dislike:hover {
-  background-color: #6A66A3;
-  color: #F0F1ED;
-}
-.card footer {
-  border-top: 1px #AAACA9 solid;
-  box-shadow: none;
-}
-.card footer a {
+h4 {
   color: #393D3F;
+  font-family: 'Montserrat';
+  font-weight: 500;
+  font-size: 16px;
 }
-.card footer a:hover {
-  color: #F0F1ED;
-  background-color: #4F2D87;
+h5 {
+  color: #4F2D87;
+  font-family: 'Montserrat';
+  font-weight: 500;
+  font-size: 24px;
+}
+p {
+  color: #5E6572;
+  font-family: 'Lato';
+  weight: 400;
+  font-size: 18px;
+}
+a {
+  font-family: 'Lato';
+  weight: 400;
+  font-size: 18px;
 }
 html,
 body {
@@ -66,18 +60,132 @@ body {
 a {
   text-decoration: none;
 }
-.nav {
+.headlinr {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
+.headlinr .column {
+  display: flex;
+  padding: 20px;
+}
+.headlinr .left {
+  flex: 1;
+}
+.headlinr .middle {
+  display: flex;
+  flex: 2;
+  flex-direction: column;
+}
+.headlinr .middle .post {
+  border: 1px solid #AAACA9;
+  border-radius: 3px;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+.headlinr .middle .post .head {
+  padding: 15px;
+  border-bottom: 1px solid #AAACA9;
+}
+.headlinr .middle .post .head .info {
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+  align-content: center;
+  justify-content: center;
+}
+.headlinr .middle .post .head .info img {
+  height: 40px;
+}
+.headlinr .middle .post .head .info .name {
+  flex: 1;
+  margin-left: 15px;
+}
+.headlinr .middle .post .head .info .score h1 {
+  color: #4F2D87;
+}
+.headlinr .middle .post .head .content {
+  padding: 10px 0;
+}
+.headlinr .middle .post .head .buttons {
+  padding: 10px 0;
+}
+.headlinr .middle .post .head .buttons a {
+  border-radius: 3px;
+  margin-right: 10px;
+  padding: 5px;
+}
+.headlinr .middle .post .head .buttons .like {
+  color: #4F2D87;
+}
+.headlinr .middle .post .head .buttons .like:hover {
+  color: white;
+  cursor: pointer;
   background-color: #4F2D87;
-  margin-bottom: 50px;
 }
-.nav h1 {
-  color: #F0F1ED;
+.headlinr .middle .post .head .buttons .dislike {
+  color: #6A66A3;
 }
-.container {
-  width: 80%;
-  margin-left: auto;
-  margin-right: auto;
+.headlinr .middle .post .head .buttons .dislike:hover {
+  color: white;
+  cursor: pointer;
+  background-color: #6A66A3;
 }
-.subtitle {
-  color: gray;
+.headlinr .middle .post .commentSection {
+  display: flex;
+  flex-direction: column;
+  height: auto;
+}
+.headlinr .middle .post .commentSection .comment {
+  background-color: #F0F1ED;
+  border-bottom: 1px solid #AAACA9;
+  display: flex;
+  flex-direction: row;
+  padding: 15px;
+}
+.headlinr .middle .post .commentSection .comment .image {
+  padding: 10px 0;
+}
+.headlinr .middle .post .commentSection .comment .image img {
+  height: 40px;
+}
+.headlinr .middle .post .commentSection .comment .content {
+  margin-left: 15px;
+  padding: 10px 0;
+  flex: 1;
+}
+.headlinr .middle .post .commentSection .comment .content h4 {
+  margin-bottom: 5px;
+}
+.headlinr .middle .post .userComment {
+  border-bottom: 1px solid #AAACA9;
+  display: flex;
+  flex-direction: row;
+  padding: 15px;
+}
+.headlinr .middle .post .userComment img {
+  height: 40px;
+}
+.headlinr .middle .post .userComment input {
+  border: 1px solid #AAACA9;
+  border-radius: 3px;
+  font-family: 'Lato';
+  flex: 1;
+  margin-left: 15px;
+  padding: 5px;
+}
+.headlinr .middle .post .submitComment {
+  padding: 15px;
+  text-align: center;
+}
+.headlinr .middle .post .submitComment:hover {
+  background-color: #4F2D87;
+  cursor: pointer;
+}
+.headlinr .middle .post .submitComment:hover h5 {
+  color: white;
+}
+.headlinr .right {
+  flex: 1;
 }

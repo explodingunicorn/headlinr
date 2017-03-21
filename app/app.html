@@ -11,58 +11,56 @@
     <script src="helpers/context_menu.js"></script>
     <script src="helpers/external_links.js"></script>
 </head>
-<nav class="nav">
-    <div class="nav-left">
-        <h1 class="nav-item">Headlinr</h1>
-    </div>
-</nav>
 <body>
-    <div id="app" class="container">
-        <div class="columns">
-            <div class="column">
-                <div class="card">
-                    <div class="card-content">
-                        <p class="subtitle">
-                            Welcome to <a href="http://electron.atom.io" class="js-external-link">Electron</a> app running on this magnificent <strong id="platform-info"></strong> machine.
-                        </p>
+    <div id="app" class="headlinr">
+        <div class="column left">
+            <p class="subtitle">
+                Welcome to <a href="http://electron.atom.io" class="js-external-link">Electron</a> app running on this magnificent <strong id="platform-info"></strong> machine.
+            </p>
+        </div>
+        <div class="column middle">
+            <div class="post" v-if="game.headlines" v-for="item in game.headlines">
+                <div class="head">
+                    <div class="info">
+                        <img src="http://bulma.io/images/placeholders/96x96.png" alt="Image">
+                        <div class="name">
+                            <h3 class="title">{{item.postName.first}} {{item.postName.last}}</h3>
+                            <p>{{cat}}</p>
+                        </div>
+                        <div class="score">
+                            <h1>{{item.score}}</h1>
+                        </div>
+                    </div>
+                    <div class="content">
+                      <h1>{{item.headline}}</h1>
+                    </div>
+                    <div class="buttons">
+                        <a class="like"><i class="fa fa-thumbs-up" aria-hidden="true"></i> Like</a>
+                        <a class="dislike"><i class="fa fa-thumbs-down" aria-hidden="true"></i> Dislike</a>
                     </div>
                 </div>
-            </div>
-            <div v-if="game.headlines" class="column is-half">
-                <div class="card" v-for="item in game.headlines">
-                    <div class="card-content">
-                        <div class="score">
-                            <h2>{{item.score}}</h2>
-                        </div>
-                        <div class="media">
-                            <div class="media-left">
-                                <figure class="image" style="height: 40px; width: 40px;">
-                                    <img src="http://bulma.io/images/placeholders/96x96.png" alt="Image">
-                                </figure>
-                            </div>
-                            <div class="media-content">
-                                <h2 class="title">{{item.postName.first}} {{item.postName.last}}</h2>
-                                <p class="subtitle is-6">{{cat}}</p>
-                            </div>
+                <div class="commentSection">
+                    <div v-for="comment in item.comments" class="comment">
+                        <div class="image">
+                            <img src="http://bulma.io/images/placeholders/96x96.png" alt="Image">
                         </div>
                         <div class="content">
-                          <h1>{{item.headline}}</h1>
-                          <a class="like"><i class="fa fa-thumbs-up" aria-hidden="true"></i> Like</a>
-                          <a class="dislike"><i class="fa fa-thumbs-down" aria-hidden="true"></i> Dislike</a>
+                            <h4>{{comment.commentName.first}} {{comment.commentName.last}}</h4>
+                            <h2>{{comment.comment}}</h2>
                         </div>
                     </div>
-                    <footer class="card-footer">
-                        <a class="card-footer-item">Comment</a>
-                    </footer>
+                </div>
+                <div class="userComment">
+                    <img src="http://bulma.io/images/placeholders/96x96.png" alt="Image">
+                    <input type="text" placeholder="Comment..."></input>
+                </div>
+                <div class="submitComment">
+                    <h5>Submit Comment</h5>
                 </div>
             </div>
-            <div class="column">
-                <div class="card">
-                    <div class="card-content">
-                        <h1>Right sidebar</h1>
-                    </div>
-                </div>
-            </div>
+        </div>
+        <div class="column right">
+            <h1>Some stuff on the right</h1>
         </div>
     </div>
     <script src="app.js"></script>

@@ -20,7 +20,7 @@ export default function Headline(headline, name, topic) {
     this.comments = [];
 
     //function to add a user comment
-    function addComment(comment) {
+    this.addComment = function(comment, name) {
         var comment = new HeadlineComment(comment, name);
         this.comments.push(comment);
     }

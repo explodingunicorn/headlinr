@@ -52,12 +52,12 @@ export default function User(game) {
 
     //Function that runs everything involved in a users turn
     function checkHeadlinr(game, info) {
-        checkHeadlines(game.headlines);
+        checkHeadlines(game.headlines, info);
         createHeadline(game, info);
     }
 
     //Function for user to check new posts
-    function checkHeadlines(headlines) {
+    function checkHeadlines(headlines, info) {
         var postsToCheck = 0;
         //Checks the last 10 headlines
         if(headlines.length > 1) {
@@ -74,6 +74,7 @@ export default function User(game) {
                 //Read the headline, and determine the reaction to the headline
                 if(headlines[i]) {
                     headlines[i].like();
+                    headlines[i].addComment(info.first + ' commenting', info);
                 }
             }
         }
@@ -81,7 +82,7 @@ export default function User(game) {
 
     //Function for user to push a new headline
     function createHeadline(game, info) {
-        var headline = new Headline("My name is " + info.first, name);
+        var headline = new Headline("My name is " + info.first, info);
         game.pushHeadline(headline, info);
     };
 

@@ -1,6 +1,4 @@
-@import '../../node_modules/bulma/css/bulma.css';
 @import './mainStyles.less';
-@import './bulmaOverride.less';
 
 html, body {
     width: 100%;
@@ -17,21 +15,163 @@ a {
     text-decoration: none;
 }
 
-.nav {
-    background-color: @darkPurple;
-    margin-bottom: 50px;
+.headlinr {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
 
-    h1 {
-        color: @white;
+    .column {
+        display: flex;
+        padding: 20px;
     }
-}
 
-.container {
-    width: 80%;
-    margin-left: auto;
-    margin-right: auto;
-}
+    .left {
+        flex: 1;
+    }
 
-.subtitle {
-    color: gray;
+    .middle {
+        display: flex;
+        flex: 2;
+        flex-direction: column;
+
+        .post {
+            border: 1px solid @lightGray;
+            border-radius: 3px;
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+
+            .head {
+                padding: 15px;
+                border-bottom: 1px solid @lightGray;
+
+                .info {
+                    display: flex;
+                    flex: 1;
+                    flex-direction: row;
+                    align-content: center;
+                    justify-content: center;
+
+                    img {
+                        height: 40px;
+                    }
+
+                    .name {
+                        flex: 1;
+                        margin-left: 15px;
+                    }
+
+                    .score {
+                        h1 {
+                            color: @darkPurple;
+                        }
+                    }
+                }
+
+                .content {
+                    padding: 10px 0;
+                }
+
+                .buttons {
+                    padding: 10px 0;
+
+                    a {
+                        border-radius: 3px;
+                        margin-right: 10px;
+                        padding: 5px;
+                    }
+
+                    .like {
+                        color: @darkPurple;
+                    }
+
+                    .like:hover {
+                        color: white;
+                        cursor: pointer;
+                        background-color: @darkPurple;
+                    }
+
+                    .dislike {
+                        color: @mediumPurple;
+                    }
+
+                    .dislike:hover {
+                        color: white;
+                        cursor: pointer;
+                        background-color: @mediumPurple;
+                    }
+                }
+            }
+
+            .commentSection {
+                display: flex;
+                flex-direction: column;
+                height: auto;
+
+                .comment {
+                    background-color: @white;
+                    border-bottom: 1px solid @lightGray;
+                    display: flex;
+                    flex-direction: row;
+                    padding: 15px;
+
+                    .image {
+                        padding: 10px 0;
+
+                        img {
+                            height: 40px;
+                        }
+                    }
+
+                    .content {
+                        margin-left: 15px;
+                        padding: 10px 0;
+                        flex: 1;
+
+                        h4 {
+                            margin-bottom: 5px;
+                        }
+                    }
+                }
+            }
+
+            .userComment {
+                border-bottom: 1px solid @lightGray;
+                display: flex;
+                flex-direction: row;
+                padding: 15px;
+
+                img {
+                    height: 40px;
+                }
+
+                input {
+                    border: 1px solid @lightGray;
+                    border-radius: 3px;
+                    font-family: 'Lato';
+                    flex: 1;
+                    margin-left: 15px;
+                    padding: 5px;
+                }
+            }
+
+            .submitComment {
+                padding: 15px;
+                text-align: center;
+            }
+
+            .submitComment:hover {
+                background-color: @darkPurple;
+                cursor: pointer;
+
+                h5 {
+                    color: white;
+                }
+            }
+        }
+    }
+
+    .right {
+        flex: 1;
+    }
 }
