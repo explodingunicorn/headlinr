@@ -8,7 +8,7 @@ var electronProcess = require('electron-connect').server.create();
 gulp.task('start', ['build', 'watch'], function () {
     electronProcess.start();
     // Restart browser process
-    gulp.watch('./app/app.js', electronProcess.restart);
+    gulp.watch('./app/app.js', electronProcess.reload);
     // Reload renderer process
     gulp.watch(['./app/app.html'], electronProcess.reload);
     gulp.watch('./app/stylesheets/main.css', electronProcess.reload);

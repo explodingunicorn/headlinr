@@ -1,6 +1,7 @@
-function HeadlineComment(comment, name) {
+function HeadlineComment(comment, user) {
     this.comment = comment;
-    this.commentName = name;
+    this.user = user;
+    this.commentName = user.info;
     this.score = 0;
 
     function like() {
@@ -12,22 +13,24 @@ function HeadlineComment(comment, name) {
     }
 }
 
-export default function Headline(headline, name, topic) {
+export default function Headline(headline, user, topic) {
     this.headline = headline;
-    this.postName = name;
+    this.user = user;
+    this.postName = user.info;
     this.topic = topic;
     this.score = 0;
     this.comments = [];
 
     //function to add a user comment
     this.addComment = function(comment, name) {
+        //Creates a new comment to push to comments
         var comment = new HeadlineComment(comment, name);
+        //Pushing the comment to our comments array
         this.comments.push(comment);
     }
 
     //function to add to the posts score
     this.like = function() {
-        console.log('upvote');
         this.score++;
     }
 

@@ -9,12 +9,12 @@ var sentiment = _interopDefault(require('sentiment'));
 
 // Simple wrapper exposing environment variables to rest of the code.
 
-// The variables have been written to `env.json` by the build process.
 var env = jetpack.cwd(__dirname).read('env.json', 'json');
 
-function HeadlineComment(comment, name) {
+function HeadlineComment(comment, user) {
     this.comment = comment;
-    this.commentName = name;
+    this.user = user;
+    this.commentName = user.info;
     this.score = 0;
 
     function like() {
@@ -26,22 +26,24 @@ function HeadlineComment(comment, name) {
     }
 }
 
-function Headline(headline, name, topic) {
+function Headline(headline, user, topic) {
     this.headline = headline;
-    this.postName = name;
+    this.user = user;
+    this.postName = user.info;
     this.topic = topic;
     this.score = 0;
     this.comments = [];
 
     //function to add a user comment
     this.addComment = function(comment, name) {
+        //Creates a new comment to push to comments
         var comment = new HeadlineComment(comment, name);
+        //Pushing the comment to our comments array
         this.comments.push(comment);
     };
 
     //function to add to the posts score
     this.like = function() {
-        console.log('upvote');
         this.score++;
     };
 
@@ -96,19 +98,19 @@ function User(game) {
     this.checkUpdate = function(time) {
         if(time % (activityLevel*100)=== 0) {
             console.log(this.info.first + " is checking");
-            checkHeadlinr(this.game, this.info);
+            checkHeadlinr(this.game, this);
             generateNextActivity();
         }
     };
 
     //Function that runs everything involved in a users turn
-    function checkHeadlinr(game, info) {
-        checkHeadlines(game.headlines, info);
-        createHeadline(game, info);
+    function checkHeadlinr(game, user) {
+        checkHeadlines(game.headlines, user);
+        createHeadline(game, user);
     }
 
     //Function for user to check new posts
-    function checkHeadlines(headlines, info) {
+    function checkHeadlines(headlines, user) {
         var postsToCheck = 0;
         //Checks the last 10 headlines
         if(headlines.length > 1) {
@@ -121,20 +123,19 @@ function User(game) {
             }
 
             for (var i = 0; i < postsToCheck; i++) {
-                console.log(headlines[i]);
                 //Read the headline, and determine the reaction to the headline
                 if(headlines[i]) {
                     headlines[i].like();
-                    headlines[i].addComment(info.first + ' commenting', info);
+                    headlines[i].addComment(user.info.first + ' commenting', user);
                 }
             }
         }
     }
 
     //Function for user to push a new headline
-    function createHeadline(game, info) {
-        var headline = new Headline("My name is " + info.first, info);
-        game.pushHeadline(headline, info);
+    function createHeadline(game, user) {
+        var headline = new Headline("My name is " + user.info.first, user);
+        game.pushHeadline(headline);
     }
 
     //Determines User's Reaction to post given
@@ -164,7 +165,7 @@ function Game() {
         }
     };
 
-    this.pushHeadline = function(headline, name) {
+    this.pushHeadline = function(headline) {
         this.headlines.unshift(headline);
 
         if(this.headlines.length > 30) {
@@ -190,18 +191,54 @@ var app = new Vue({
     el: "#app",
     data: function() {
         return {
+            user: {
+                first: 'User',
+                last: 'Fuckface'
+            },
             cat: 'Cats',
             game: new Game(),
+            pause: false
         }
     },
     methods: {
+        likePost: function(index) {
+            if(this.game.headlines[index].isDisliked) {
+                this.game.headlines[index].isDisliked = false;
+                this.game.headlines[index].isLiked = true;
+            }
+            else {
+                this.game.headlines[index].isLiked = true;
+            }
 
+            this.game.headlines[index].like();
+        },
+        dislikePost: function(index) {
+            if(this.game.headlines[index].isLiked) {
+                this.game.headlines[index].isLiked = false;
+                this.game.headlines[index].isDisliked = true;
+            }
+            else {
+                this.game.headlines[index].isDisliked = true;
+            }
+
+            this.game.headlines[index].dislike();
+        },
+        addComment: function(index) {
+            var headline = this.game.headlines[index];
+            var comment = this.game.headlines[index].commentValue;
+
+            this.game.headlines[index].addComment(comment, this.user);
+            this.game.headlines[index].commentValue = '';
+            this.pause = false;
+        }
     },
     mounted: function() {
         var sec = 0;
         function gameLoop() {
-            sec++;
-            app.game.update(sec);
+            if(!app.pause) {
+                sec++;
+                app.game.update(sec);
+            }
             window.requestAnimationFrame(gameLoop);
         }
 

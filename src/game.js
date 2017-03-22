@@ -19,7 +19,7 @@ export default function Game() {
         }
     }
 
-    this.pushHeadline = function(headline, name) {
+    this.pushHeadline = function(headline) {
         this.headlines.unshift(headline);
 
         if(this.headlines.length > 30) {

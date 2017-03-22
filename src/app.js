@@ -20,18 +20,54 @@ var app = new Vue({
     el: "#app",
     data: function() {
         return {
+            user: {
+                first: 'User',
+                last: 'Fuckface'
+            },
             cat: 'Cats',
             game: new Game(),
+            pause: false
         }
     },
     methods: {
+        likePost: function(index) {
+            if(this.game.headlines[index].isDisliked) {
+                this.game.headlines[index].isDisliked = false;
+                this.game.headlines[index].isLiked = true;
+            }
+            else {
+                this.game.headlines[index].isLiked = true;
+            }
 
+            this.game.headlines[index].like();
+        },
+        dislikePost: function(index) {
+            if(this.game.headlines[index].isLiked) {
+                this.game.headlines[index].isLiked = false;
+                this.game.headlines[index].isDisliked = true;
+            }
+            else {
+                this.game.headlines[index].isDisliked = true;
+            }
+
+            this.game.headlines[index].dislike();
+        },
+        addComment: function(index) {
+            var headline = this.game.headlines[index];
+            var comment = this.game.headlines[index].commentValue;
+
+            this.game.headlines[index].addComment(comment, this.user);
+            this.game.headlines[index].commentValue = '';
+            this.pause = false;
+        }
     },
     mounted: function() {
         var sec = 0;
         function gameLoop() {
-            sec++
-            app.game.update(sec);
+            if(!app.pause) {
+                sec++
+                app.game.update(sec);
+            }
             window.requestAnimationFrame(gameLoop);
         }
 

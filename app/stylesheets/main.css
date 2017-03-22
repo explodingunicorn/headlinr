@@ -119,6 +119,10 @@ a {
 .headlinr .middle .post .head .buttons .like {
   color: #4F2D87;
 }
+.headlinr .middle .post .head .buttons .liked {
+  background-color: #4F2D87;
+  color: white;
+}
 .headlinr .middle .post .head .buttons .like:hover {
   color: white;
   cursor: pointer;
@@ -126,6 +130,10 @@ a {
 }
 .headlinr .middle .post .head .buttons .dislike {
   color: #6A66A3;
+}
+.headlinr .middle .post .head .buttons .disliked {
+  background-color: #6A66A3;
+  color: white;
 }
 .headlinr .middle .post .head .buttons .dislike:hover {
   color: white;

@@ -45,19 +45,19 @@ export default function User(game) {
     this.checkUpdate = function(time) {
         if(time % (activityLevel*100)=== 0) {
             console.log(this.info.first + " is checking");
-            checkHeadlinr(this.game, this.info);
+            checkHeadlinr(this.game, this);
             generateNextActivity();
         }
     };
 
     //Function that runs everything involved in a users turn
-    function checkHeadlinr(game, info) {
-        checkHeadlines(game.headlines, info);
-        createHeadline(game, info);
+    function checkHeadlinr(game, user) {
+        checkHeadlines(game.headlines, user);
+        createHeadline(game, user);
     }
 
     //Function for user to check new posts
-    function checkHeadlines(headlines, info) {
+    function checkHeadlines(headlines, user) {
         var postsToCheck = 0;
         //Checks the last 10 headlines
         if(headlines.length > 1) {
@@ -70,20 +70,19 @@ export default function User(game) {
             }
 
             for (var i = 0; i < postsToCheck; i++) {
-                console.log(headlines[i])
                 //Read the headline, and determine the reaction to the headline
                 if(headlines[i]) {
                     headlines[i].like();
-                    headlines[i].addComment(info.first + ' commenting', info);
+                    headlines[i].addComment(user.info.first + ' commenting', user);
                 }
             }
         }
     };
 
     //Function for user to push a new headline
-    function createHeadline(game, info) {
-        var headline = new Headline("My name is " + info.first, info);
-        game.pushHeadline(headline, info);
+    function createHeadline(game, user) {
+        var headline = new Headline("My name is " + user.info.first, user);
+        game.pushHeadline(headline);
     };
 
     //Determines User's Reaction to post given
