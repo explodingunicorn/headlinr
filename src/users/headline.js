@@ -20,6 +20,7 @@ export default function Headline(headline, user, topic) {
     this.topic = topic;
     this.score = 0;
     this.comments = [];
+    this.interacted = {};
 
     //function to add a user comment
     this.addComment = function(comment, name) {

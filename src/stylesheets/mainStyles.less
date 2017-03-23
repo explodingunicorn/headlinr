@@ -60,3 +60,56 @@ a {
     weight: 400;
     font-size: 18px;
 }
+
+input {
+    border: 1px solid @lightGray;
+    border-radius: 3px;
+    font-family: 'Lato';
+    flex: 1;
+    margin-left: 15px;
+    padding: 5px;
+}
+
+.thumbnail {
+    background-color: @darkGray;
+    position: relative;
+    width: 40px;
+    height: 40px;
+    overflow: hidden;
+}
+.thumbnail img {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    height: 100%;
+    width: auto;
+    transform: translate(-50%,-50%);
+}
+
+.headline-add-item {
+    transition: all 1s;
+}
+
+.headline-add-enter, .headline-add-leave-to
+/* .list-complete-leave-active for <2.1.8 */ {
+  opacity: 0;
+  transform: translateY(-100px);
+}
+
+.headline-add-leave-active {
+  position: absolute;
+}
+
+.comment-add-item {
+    transition: all 1s;
+}
+
+.comment-add-enter, .comment-add-leave-to
+/* .list-complete-leave-active for <2.1.8 */ {
+  opacity: 0;
+  transform: translateY(40px);
+}
+
+.comment-add-leave-active {
+  position: absolute;
+}

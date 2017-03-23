@@ -8,6 +8,7 @@ import jetpack from 'fs-jetpack'; // module loaded from npm
 import env from './env';
 import sentiment from 'sentiment';
 import Game from './game.js';
+import Headline from './users/headline.js';
 var Vue = require('vue/dist/vue.common.js');
 
 var r1 = sentiment("Butts butts butts.");
@@ -21,8 +22,11 @@ var app = new Vue({
     data: function() {
         return {
             user: {
-                first: 'User',
-                last: 'Fuckface'
+                info: {
+                    first: 'User',
+                    last: 'Fuckface'
+                },
+                headline: ''
             },
             cat: 'Cats',
             game: new Game(),
@@ -30,6 +34,24 @@ var app = new Vue({
         }
     },
     methods: {
+        submitHeadline: function() {
+            var key = false;
+            var userTopic;
+            var headline = this.user.headline.toLowerCase()
+            for (var i = 0; i < this.game.topics.length; i++) {
+                var topic = this.game.topics[i];
+                if(headline.includes(topic)) {
+                    key = true;
+                    userTopic = topic;
+                    break;
+                }
+            }
+            if (key) {
+                var headline = new Headline(this.user.headline, this.user, userTopic)
+                this.game.pushHeadline(headline);
+            }
+            this.pause = false;
+        },
         likePost: function(index) {
             if(this.game.headlines[index].isDisliked) {
                 this.game.headlines[index].isDisliked = false;
@@ -59,6 +81,10 @@ var app = new Vue({
             this.game.headlines[index].addComment(comment, this.user);
             this.game.headlines[index].commentValue = '';
             this.pause = false;
+        },
+        resolvePic: function(pic) {
+            var link = './img' + encodeURI(pic) + '.jpg';
+            return link;
         }
     },
     mounted: function() {

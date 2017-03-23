@@ -1,10 +1,22 @@
 import User from './users/user.js';
 import Headline from './users/headline.js'
 
+var topics = ['cats', 'dogs', 'birth-control', 'the police', 'teachers', 'babies', 'white people', 'black people', 'asian people', 'latino people', 'purple people', 'fire fighters', 'hamsters', 'macaroni and cheese','kangaroos', 'politicians', 'hospitals', 'girlfriends', 'boyfriends', 'exercises', 'eating dinner', 'pool parties', 'scooters', 'skateboards', 'apples', 'oranges', 'hotdogs', 'hamburgers', 'fat people', 'skinny people', 'doors', 'houses', 'cigars', 'marijuana', 'bands', 'popcorn', 'sodas', 'movies', 'blind people', 'elephants', 'shoes', 'hippies', 'beards', 'eyeballs', 'hands', 'noses', 'farts', 'computers', 'hackers', 'men', 'women', 'actors', 'actresses', 'pencils', 'fries', 'fires', 'lights', 'cities', 'websites', 'imagination', 'hopes', 'dreams', 'subs', 'hamsters', 'keyboards', 'phones', 'moms', 'dads', 'grandparents', 'old people', 'millenials', 'wars', 'christians', 'muslims', 'liberals', 'rednecks', 'neo-nazis', 'snow-flakes', 'ducks'];
+
 export default function Game() {
     var connections = 20;
     var that = this;
     this.headlines = [];
+    this.topics = (function () {
+        var gameTopics = [];
+        topics.sort(function() { return 0.5 - Math.random() });
+        for (var i = 0; i < 15; i++) {
+            gameTopics[i] = topics[i];
+        }
+
+        return gameTopics;
+    })();
+
     this.users = (function () {
         var usersArr = [];
         for (var i = 0; i < connections; i++) {
@@ -24,9 +36,6 @@ export default function Game() {
 
         if(this.headlines.length > 30) {
             this.headlines.pop();
-            console.log('popped');
         }
     }
 }
-
-var topics = ['cats', 'dogs', 'birth-control', 'the police', 'teachers', 'babies', 'the color purple', 'the color green', 'the color red', 'the color blue', 'the color orange', 'white people', 'black people', 'asian people', 'latino people', 'purple people', 'fire fighters', 'hamsters', 'macaroni and cheese', 'kangaroos', 'politicians', 'hospitals', 'girlfriends', 'boyfriends', 'exercising', 'eating dinner', 'pool parties', 'scooters', 'skateboards'];

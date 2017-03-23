@@ -50,6 +50,51 @@ a {
   weight: 400;
   font-size: 18px;
 }
+input {
+  border: 1px solid #AAACA9;
+  border-radius: 3px;
+  font-family: 'Lato';
+  flex: 1;
+  margin-left: 15px;
+  padding: 5px;
+}
+.thumbnail {
+  background-color: #393D3F;
+  position: relative;
+  width: 40px;
+  height: 40px;
+  overflow: hidden;
+}
+.thumbnail img {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  height: 100%;
+  width: auto;
+  transform: translate(-50%, -50%);
+}
+.headline-add-item {
+  transition: all 1s;
+}
+.headline-add-enter,
+.headline-add-leave-to {
+  opacity: 0;
+  transform: translateY(-100px);
+}
+.headline-add-leave-active {
+  position: absolute;
+}
+.comment-add-item {
+  transition: all 1s;
+}
+.comment-add-enter,
+.comment-add-leave-to {
+  opacity: 0;
+  transform: translateY(40px);
+}
+.comment-add-leave-active {
+  position: absolute;
+}
 html,
 body {
   width: 100%;
@@ -70,14 +115,40 @@ a {
   padding: 20px;
 }
 .headlinr .left {
+  display: flex;
   flex: 1;
+  flex-direction: column;
+}
+.headlinr .left .connection {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.headlinr .left .connection h3 {
+  flex: 1;
+  margin-left: 10px;
 }
 .headlinr .middle {
   display: flex;
   flex: 2;
   flex-direction: column;
 }
+.headlinr .middle .userInput {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+.headlinr .middle .userInput input {
+  box-sizing: border-box;
+  font-size: 24px;
+  width: 100%;
+  margin-left: 0;
+  margin-bottom: 10px;
+  padding: 20px;
+}
 .headlinr .middle .post {
+  background-color: white;
   border: 1px solid #AAACA9;
   border-radius: 3px;
   display: flex;
@@ -94,9 +165,6 @@ a {
   flex-direction: row;
   align-content: center;
   justify-content: center;
-}
-.headlinr .middle .post .head .info img {
-  height: 40px;
 }
 .headlinr .middle .post .head .info .name {
   flex: 1;
@@ -152,15 +220,8 @@ a {
   flex-direction: row;
   padding: 15px;
 }
-.headlinr .middle .post .commentSection .comment .image {
-  padding: 10px 0;
-}
-.headlinr .middle .post .commentSection .comment .image img {
-  height: 40px;
-}
 .headlinr .middle .post .commentSection .comment .content {
   margin-left: 15px;
-  padding: 10px 0;
   flex: 1;
 }
 .headlinr .middle .post .commentSection .comment .content h4 {
@@ -171,17 +232,6 @@ a {
   display: flex;
   flex-direction: row;
   padding: 15px;
-}
-.headlinr .middle .post .userComment img {
-  height: 40px;
-}
-.headlinr .middle .post .userComment input {
-  border: 1px solid #AAACA9;
-  border-radius: 3px;
-  font-family: 'Lato';
-  flex: 1;
-  margin-left: 15px;
-  padding: 5px;
 }
 .headlinr .middle .post .submitComment {
   padding: 15px;
@@ -196,4 +246,8 @@ a {
 }
 .headlinr .right {
   flex: 1;
+  flex-direction: column;
+}
+.headlinr .right h3 {
+  margin-bottom: 10px;
 }
