@@ -9,6 +9,7 @@ var sentiment = _interopDefault(require('sentiment'));
 
 // Simple wrapper exposing environment variables to rest of the code.
 
+// The variables have been written to `env.json` by the build process.
 var env = jetpack.cwd(__dirname).read('env.json', 'json');
 
 function HeadlineComment(comment, user) {
