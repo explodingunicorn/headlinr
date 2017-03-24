@@ -8,7 +8,7 @@ import jetpack from 'fs-jetpack'; // module loaded from npm
 import env from './env';
 import sentiment from 'sentiment';
 import Game from './game.js';
-import Headline from './users/headline.js';
+var Headline =  require('../src/users/headline.js').Headline;
 var Vue = require('vue/dist/vue.common.js');
 
 var r1 = sentiment("Butts butts butts.");
@@ -49,6 +49,7 @@ var app = new Vue({
             if (key) {
                 var headline = new Headline(this.user.headline, this.user, userTopic)
                 this.game.pushHeadline(headline);
+                this.user.headline = '';
             }
             this.pause = false;
         },
@@ -56,23 +57,33 @@ var app = new Vue({
             if(this.game.headlines[index].isDisliked) {
                 this.game.headlines[index].isDisliked = false;
                 this.game.headlines[index].isLiked = true;
+                this.game.headlines[index].user.influence(10);
+                this.game.headlines[index].like();
+            }
+            else if(this.game.headlines[index].isLiked) {
+                this.game.headlines[index].isLiked = true;
             }
             else {
                 this.game.headlines[index].isLiked = true;
-            }
-
-            this.game.headlines[index].like();
+                this.game.headlines[index].user.influence(10);
+                this.game.headlines[index].like();
+            }  
         },
         dislikePost: function(index) {
             if(this.game.headlines[index].isLiked) {
                 this.game.headlines[index].isLiked = false;
                 this.game.headlines[index].isDisliked = true;
+                this.game.headlines[index].user.influence(-10);
+                this.game.headlines[index].dislike();
+            }
+            else if (this.game.headlines[index].isDisliked) {
+                this.game.headlines[index].isDisliked = true;
             }
             else {
                 this.game.headlines[index].isDisliked = true;
+                this.game.headlines[index].user.influence(-10);
+                this.game.headlines[index].dislike();
             }
-
-            this.game.headlines[index].dislike();
         },
         addComment: function(index) {
             var headline = this.game.headlines[index];

@@ -6,7 +6,7 @@ var mFirstNames = fs.readFileSync(path.join(__dirname, 'male.txt')).toString().s
 var lastNames = fs.readFileSync(path.join(__dirname, 'family.txt')).toString().split("\n");
 
 //Other classes needed
-import Headline from './headline.js';
+var Headline = require('../src/users/headline.js').Headline;
 var sentence = require('../src/users/sentenceGeneration.js');
 
 //Utilities
@@ -23,17 +23,10 @@ export default function User(game) {
         //Age, sex, name
     this.info = generateInfo();
     this.game = game;
-    var playerFeeling = rand10();
+    this.playerOpinion = rand10() * 5;
     var activityLevel = rand10();
     var aggression = rand10();
     var topicFeelings = generateTopicFeelings(this.game);
-
-        //Their aggression level
-        // this.aggression = generateAggression(agg);
-        // //Their likes and dislikes in regards to current topics
-        // this.preferences = generatePreferences(pref);
-        // //How often they get on Headlinr
-        // this.activityLevel = act;
 
     function generateInfo() {
         var sex = Math.floor((Math.random() * 2) + 1);
@@ -73,6 +66,13 @@ export default function User(game) {
         }
     };
 
+    this.influence = function(val) {
+        if (this.playerOpinion < 100 && this.playerOpinion > 0) {
+            console.log(this.info.first, this.playerOpinion);
+            this.playerOpinion += val;
+        }
+    }
+
     //Function that runs everything involved in a users turn
     function checkHeadlinr(game, user) {
         //Function to read headlines
@@ -86,90 +86,77 @@ export default function User(game) {
         var userName = user.info.first+user.info.last;
         var postsToCheck = 0;
         //Checks the last 10 headlines
-        if(headlines.length > 1) {
+        if(headlines.length < 10) {
+            postsToCheck = headlines.length;
+        }
+        else {
+            postsToCheck = 10;
+        }
 
-            if(headlines.length < 10) {
-                postsToCheck = headlines.length;
-            }
-            else {
-                postsToCheck = 10;
-            }
+        for (var i = 0; i < postsToCheck; i++) {
+            //Read the headline, and determine the reaction to the headline
+            var headline = headlines[i].headline;
+            var topic = headlines[i].topic;
+            var userFeeling = topicFeelings[topic];
+            var sentiment = sentimentAnalysis(headline).score;
 
-            for (var i = 0; i < postsToCheck; i++) {
-                //Read the headline, and determine the reaction to the headline
-                var headline = headlines[i].headline;
-                var topic = headlines[i].topic;
-                var userFeeling = topicFeelings[topic];
-                var sentiment = sentimentAnalysis(headline).score;
+            //Check if they've interacted with the post already
+            if(!headlines[i].interacted[userName]) {
+                //Check if sentiment is positive
+                if (sentiment > 0 && userFeeling > 5) {
+                    //If the user feels positively towards the topic, there's a chance to like
+                    var total = userFeeling + sentiment;
 
-                if(sentiment === 0) {
-                    console.log(headline);
+                        if (total >= interactChance()) {
+                            headlines[i].like();
+                        }
+
+                        if((total+aggression) >= commentChance()) {
+                            headlines[i].addComment(sentence.affirm(), user);
+                        }
                 }
+                //If the user feels negatively towards the topic, there's a chance to dislike
+                else if (sentiment > 0 && userFeeling <= 5) {
+                        //Add 5 to users feeling to simulate negative feeling
+                        var total = (userFeeling + 5) + sentiment;
 
-                if(!headlines[i].interacted[userName]) {
-                    //Check if sentiment is positive
-                    if(sentiment > 0) {
-                        //If the user feels positively towards the topic, there's a chance to like
-                        if(userFeeling > 5) {
-                            var total = userFeeling + sentiment;
-
-                            if (total >= interactChance()) {
-                                headlines[i].like();
-                            }
-
-                            if((total+aggression) >= commentChance()) {
-                                headlines[i].addComment(sentence.affirm(), user);
-                            }
+                        if (total >= interactChance()) {
+                            headlines[i].dislike();
                         }
-                        //If the user feels negatively towards the topic, there's a chance to dislike
-                        else {
-                            //Add 5 to users feeling to simulate negative feeling
-                            var total = (userFeeling + 5) + sentiment;
 
-                            if (total >= interactChance()) {
-                                headlines[i].dislike();
-                            }
-
-                            if((total+aggression) >= commentChance()) {
-                                headlines[i].addComment(sentence.deny(), user);
-                            }
+                        if((total+aggression) >= commentChance()) {
+                            headlines[i].addComment(sentence.deny(), user);
                         }
-                    }
-                    //If it's negative
-                    else {
-                        //If the user feels positively, there's a chance to dislike
-                        if (userFeeling > 5) {
-                            //Create a total, reverse the sentiment
-                            var total = userFeeling + (-1 * sentiment);
+                }
+                //If it's negative
+                else if (sentiment <= 0 && userFeeling > 5) {
+                    //If the user feels positively, there's a chance to dislike
+                    //Create a total, reverse the sentiment
+                    var total = userFeeling + (-1 * sentiment);
 
-                            //React if it's greater than the interaction chance, and they haven't interacted before
-                            if (total >= interactChance()) {
-                                headlines[i].dislike();
-                            }
-
-                            if((total+aggression) >= commentChance()) {
-                                headlines[i].addComment(sentence.deny(), user);
-                            }
-                        }
-                        //If the user feels negatively also, there's a chance to like
-                        else {
-                            //Add 5 to users feeling to simulate negative feeling, reverse sentiment
-                            var total = (userFeeling + 5) + (-1 * sentiment);
-
-                            if (total >= interactChance()) {
-                                headlines[i].like();
-                            }
-
-                            if((total+aggression) >= commentChance()) {
-                                headlines[i].addComment(sentence.affirm(), user);
-                            }
-                        }
+                    //React if it's greater than the interaction chance, and they haven't interacted before
+                    if (total >= interactChance()) {
+                        headlines[i].dislike();
                     }
 
-                    headlines[i].interacted[userName] = 1;
+                    if((total+aggression) >= commentChance()) {
+                        headlines[i].addComment(sentence.deny(), user);
+                    }
                 }
-                // headlines[i].like();
-                // headlines[i].addComment(user.info.first + ' commenting', user);
+                //If the user feels negatively also, there's a chance to like
+                else {
+                    //Add 5 to users feeling to simulate negative feeling, reverse sentiment
+                    var total = (userFeeling + 5) + (-1 * sentiment);
+
+                    if (total >= interactChance()) {
+                        headlines[i].like();
+                    }
+
+                    if((total+aggression) >= commentChance()) {
+                        headlines[i].addComment(sentence.affirm(), user);
+                    }
+                }
+                headlines[i].interacted[userName] = 1;
             }
         }
     };
@@ -186,13 +173,5 @@ export default function User(game) {
             //
             game.pushHeadline(headline);
         }
-    };
-
-    //Determines User's Reaction to post given
-    function react(statement, type) {
-        for (var i = 0; i < game.headlines.length; i++) {
-
-        }
-        //var rating = sentiment(statement);
     };
 }

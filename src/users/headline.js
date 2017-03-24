@@ -13,7 +13,7 @@ function HeadlineComment(comment, user) {
     }
 }
 
-export default function Headline(headline, user, topic) {
+exports.Headline = function (headline, user, topic) {
     this.headline = headline;
     this.user = user;
     this.postName = user.info;

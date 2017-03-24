@@ -13,17 +13,31 @@
 </head>
 <body>
     <div id="app" class="headlinr">
+        <div class="headlinr-nav">
+
+        </div>
         <div class="column left">
-            <div class="connection" v-for="user in game.users">
-                <div class="thumbnail">
-                    <img class="portrait" v-bind:src="resolvePic(user.info.pic)" alt="Image">
+            <h2>Connections</h2>
+            <div class="connections-panel">
+                <div class="connection" v-for="user in game.users">
+                    <div class="info">
+                        <div class="thumbnail">
+                            <img class="portrait" v-bind:src="resolvePic(user.info.pic)" alt="Image">
+                        </div>
+                        <p class="mediumGray">{{user.info.first}} {{user.info.last}}</p>
+                    </div>
+                    <div class="feelings-container">
+                        <div class="feelings" v-bind:style="{ width: user.playerOpinion + '%' }"></div>
+                    </div>
                 </div>
-                <h3>{{user.info.first}} {{user.info.last}}</h3>
             </div>
         </div>
         <div class="column middle">
             <div class="userInput">
                 <input type="text" placeholder="Post a headline" v-on:click="pause = true" v-model="user.headline" v-on:keyup.enter="submitHeadline"></input>
+                <div class="submitHeadline" v-on:click="submitHeadline">
+                    <h5>Add Headline</h5>
+                </div>
             </div>
             <transition-group name="headline-add" tag="div">
                 <div class="post headline-add-item" v-if="game.headlines" v-for="(item, i) in game.headlines" v-bind:key="item">
@@ -56,7 +70,7 @@
                                 </div>
                                 <div class="content">
                                     <h4>{{comment.commentName.first}} {{comment.commentName.last}}</h4>
-                                    <h2>{{comment.comment}}</h2>
+                                    <h3>{{comment.comment}}</h3>
                                 </div>
                             </div>
                         </transition-group>
@@ -74,8 +88,10 @@
             </transition-group>
         </div>
         <div class="column right">
-            <h3>Trending right now:</h3>
-            <h5 v-for="item in game.topics">!{{item}}</h5>
+            <div class="trends-panel">
+                <h2>Trending Now:</h2>
+                <h6 v-for="item in game.topics">{{item}}</h6>
+            </div>
         </div>
     </div>
     <script src="app.js"></script>
