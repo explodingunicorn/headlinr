@@ -2,5 +2,6 @@
 {
     "editor.minimap.enabled": true,
     "editor.wordWrap": "on",
-    "editor.renderIndentGuides": true
+    "editor.renderIndentGuides": true,
+    "vsicons.presets.angular": false
 }

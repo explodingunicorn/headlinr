@@ -102,37 +102,53 @@ export default function User(game) {
 
             //Check if they've interacted with the post already
             if(!headlines[i].interacted[userName]) {
+                var playerFactor = 0;
+                var player = false;
+                if(headlines[i].playerCreated) {
+                    console.log('player created');
+                    playerFactor = user.playerOpinion/10;
+                    player = true;
+                }
                 //Check if sentiment is positive
                 if (sentiment > 0 && userFeeling > 5) {
+                    if (player) {
+                        user.playerOpinion += rand10();
+                        console.log('increase');
+                    }
                     //If the user feels positively towards the topic, there's a chance to like
-                    var total = userFeeling + sentiment;
+                    var total = userFeeling + sentiment + playerFactor;
+                    if (total >= interactChance()) {
+                        headlines[i].like();
+                    }
 
-                        if (total >= interactChance()) {
-                            headlines[i].like();
-                        }
-
-                        if((total+aggression) >= commentChance()) {
-                            headlines[i].addComment(sentence.affirm(), user);
-                        }
+                    if((total+aggression) >= commentChance()) {
+                        headlines[i].addComment(sentence.affirm(), user);
+                    }
                 }
                 //If the user feels negatively towards the topic, there's a chance to dislike
                 else if (sentiment > 0 && userFeeling <= 5) {
-                        //Add 5 to users feeling to simulate negative feeling
-                        var total = (userFeeling + 5) + sentiment;
+                    if (player) {
+                        user.playerOpinion -= rand10();
+                    }
+                    //Add 5 to users feeling to simulate negative feeling
+                    var total = (userFeeling + 5) + sentiment - playerFactor;
 
-                        if (total >= interactChance()) {
-                            headlines[i].dislike();
-                        }
+                    if (total >= interactChance()) {
+                        headlines[i].dislike();
+                    }
 
-                        if((total+aggression) >= commentChance()) {
-                            headlines[i].addComment(sentence.deny(), user);
-                        }
+                    if((total+aggression) >= commentChance()) {
+                        headlines[i].addComment(sentence.deny(), user);
+                    }
                 }
                 //If it's negative
                 else if (sentiment <= 0 && userFeeling > 5) {
+                    if (player) {
+                        user.playerOpinion -= rand10();
+                    }
                     //If the user feels positively, there's a chance to dislike
                     //Create a total, reverse the sentiment
-                    var total = userFeeling + (-1 * sentiment);
+                    var total = (userFeeling + 5) + (-1 * sentiment) - playerFactor;
 
                     //React if it's greater than the interaction chance, and they haven't interacted before
                     if (total >= interactChance()) {
@@ -145,8 +161,12 @@ export default function User(game) {
                 }
                 //If the user feels negatively also, there's a chance to like
                 else {
+                    if (player) {
+                        user.playerOpinion += rand10();
+                        console.log('increase');
+                    }
                     //Add 5 to users feeling to simulate negative feeling, reverse sentiment
-                    var total = (userFeeling + 5) + (-1 * sentiment);
+                    var total = (userFeeling + 5) + (-1 * sentiment) + playerFactor;
 
                     if (total >= interactChance()) {
                         headlines[i].like();

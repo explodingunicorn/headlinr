@@ -9,6 +9,7 @@ var sentiment = _interopDefault(require('sentiment'));
 
 // Simple wrapper exposing environment variables to rest of the code.
 
+// The variables have been written to `env.json` by the build process.
 var env = jetpack.cwd(__dirname).read('env.json', 'json');
 
 //import sentiment from sentiment;
@@ -115,37 +116,53 @@ function User(game) {
 
             //Check if they've interacted with the post already
             if(!headlines[i].interacted[userName]) {
+                var playerFactor = 0;
+                var player = false;
+                if(headlines[i].playerCreated) {
+                    console.log('player created');
+                    playerFactor = user.playerOpinion/10;
+                    player = true;
+                }
                 //Check if sentiment is positive
                 if (sentiment$$1 > 0 && userFeeling > 5) {
+                    if (player) {
+                        user.playerOpinion += rand10();
+                        console.log('increase');
+                    }
                     //If the user feels positively towards the topic, there's a chance to like
-                    var total = userFeeling + sentiment$$1;
+                    var total = userFeeling + sentiment$$1 + playerFactor;
+                    if (total >= interactChance()) {
+                        headlines[i].like();
+                    }
 
-                        if (total >= interactChance()) {
-                            headlines[i].like();
-                        }
-
-                        if((total+aggression) >= commentChance()) {
-                            headlines[i].addComment(sentence.affirm(), user);
-                        }
+                    if((total+aggression) >= commentChance()) {
+                        headlines[i].addComment(sentence.affirm(), user);
+                    }
                 }
                 //If the user feels negatively towards the topic, there's a chance to dislike
                 else if (sentiment$$1 > 0 && userFeeling <= 5) {
-                        //Add 5 to users feeling to simulate negative feeling
-                        var total = (userFeeling + 5) + sentiment$$1;
+                    if (player) {
+                        user.playerOpinion -= rand10();
+                    }
+                    //Add 5 to users feeling to simulate negative feeling
+                    var total = (userFeeling + 5) + sentiment$$1 - playerFactor;
 
-                        if (total >= interactChance()) {
-                            headlines[i].dislike();
-                        }
+                    if (total >= interactChance()) {
+                        headlines[i].dislike();
+                    }
 
-                        if((total+aggression) >= commentChance()) {
-                            headlines[i].addComment(sentence.deny(), user);
-                        }
+                    if((total+aggression) >= commentChance()) {
+                        headlines[i].addComment(sentence.deny(), user);
+                    }
                 }
                 //If it's negative
                 else if (sentiment$$1 <= 0 && userFeeling > 5) {
+                    if (player) {
+                        user.playerOpinion -= rand10();
+                    }
                     //If the user feels positively, there's a chance to dislike
                     //Create a total, reverse the sentiment
-                    var total = userFeeling + (-1 * sentiment$$1);
+                    var total = (userFeeling + 5) + (-1 * sentiment$$1) - playerFactor;
 
                     //React if it's greater than the interaction chance, and they haven't interacted before
                     if (total >= interactChance()) {
@@ -158,8 +175,12 @@ function User(game) {
                 }
                 //If the user feels negatively also, there's a chance to like
                 else {
+                    if (player) {
+                        user.playerOpinion += rand10();
+                        console.log('increase');
+                    }
                     //Add 5 to users feeling to simulate negative feeling, reverse sentiment
-                    var total = (userFeeling + 5) + (-1 * sentiment$$1);
+                    var total = (userFeeling + 5) + (-1 * sentiment$$1) + playerFactor;
 
                     if (total >= interactChance()) {
                         headlines[i].like();
@@ -194,13 +215,15 @@ var Headline$1 = require('../src/users/headline.js').Headline;
 var topics = ['cats', 'dogs', 'birth-control', 'the police', 'teachers', 'babies', 'white people', 'black people', 'asian people', 'latino people', 'purple people', 'fire fighters', 'hamsters', 'macaroni and cheese','kangaroos', 'politicians', 'hospitals', 'girlfriends', 'boyfriends', 'exercises', 'eating dinner', 'pool parties', 'scooters', 'skateboards', 'apples', 'oranges', 'hotdogs', 'hamburgers', 'fat people', 'skinny people', 'doors', 'houses', 'cigars', 'marijuana', 'bands', 'popcorn', 'sodas', 'movies', 'blind people', 'elephants', 'shoes', 'hippies', 'beards', 'eyeballs', 'hands', 'noses', 'farts', 'computers', 'hackers', 'men', 'women', 'actors', 'actresses', 'pencils', 'fries', 'fires', 'lights', 'cities', 'websites', 'imagination', 'hopes', 'dreams', 'subs', 'hamsters', 'keyboards', 'phones', 'moms', 'dads', 'grandparents', 'old people', 'millenials', 'wars', 'christians', 'muslims', 'liberals', 'rednecks', 'neo-nazis', 'snow-flakes', 'ducks'];
 
 function Game() {
-    var connections = 20;
+    var connections = 30;
     var that = this;
     this.headlines = [];
+    this.userHeadlines = [];
+    var topicsAmt = 20;
     this.topics = (function () {
         var gameTopics = [];
         topics.sort(function() { return 0.5 - Math.random() });
-        for (var i = 0; i < 15; i++) {
+        for (var i = 0; i < topicsAmt; i++) {
             gameTopics[i] = topics[i];
         }
 
@@ -221,8 +244,12 @@ function Game() {
         }
     };
 
-    this.pushHeadline = function(headline) {
+    this.pushHeadline = function(headline, user) {
         this.headlines.unshift(headline);
+
+        if(user) {
+            this.userHeadlines.unshift(headline);
+        }
 
         if(this.headlines.length > 30) {
             this.headlines.pop();
@@ -252,7 +279,15 @@ var app = new Vue({
                     first: 'User',
                     last: 'Fuckface'
                 },
-                headline: ''
+                headline: '',
+                score: {
+                    likes: 0,
+                    likesReq: 16,
+                    comments: 0,
+                    commentsReq: 16,
+                    users: 0,
+                    usersReq: 16
+                }
             },
             cat: 'Cats',
             game: new Game(),
@@ -273,8 +308,8 @@ var app = new Vue({
                 }
             }
             if (key) {
-                var headline = new Headline(this.user.headline, this.user, userTopic);
-                this.game.pushHeadline(headline);
+                var headline = new Headline(this.user.headline, this.user, userTopic, true);
+                this.game.pushHeadline(headline, true);
                 this.user.headline = '';
             }
             this.pause = false;
@@ -330,6 +365,20 @@ var app = new Vue({
             if(!app.pause) {
                 sec++;
                 app.game.update(sec);
+            }
+
+            app.user.score.likes = 0;
+            app.user.score.comments = 0;
+            app.user.score.users = 0;
+            for (var i = 0; i < app.game.userHeadlines.length; i++) {
+                app.user.score.likes += app.game.userHeadlines[i].score;
+                app.user.score.comments += app.game.userHeadlines[i].comments.length;
+            }
+
+            for (var j = 0; j < app.game.users.length; j++) {
+                if(app.game.users[j].playerOpinion > 50) {
+                    app.user.score.users += 1;
+                }
             }
             window.requestAnimationFrame(gameLoop);
         }

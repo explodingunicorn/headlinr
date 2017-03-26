@@ -26,7 +26,15 @@ var app = new Vue({
                     first: 'User',
                     last: 'Fuckface'
                 },
-                headline: ''
+                headline: '',
+                score: {
+                    likes: 0,
+                    likesReq: 16,
+                    comments: 0,
+                    commentsReq: 16,
+                    users: 0,
+                    usersReq: 16
+                }
             },
             cat: 'Cats',
             game: new Game(),
@@ -47,8 +55,8 @@ var app = new Vue({
                 }
             }
             if (key) {
-                var headline = new Headline(this.user.headline, this.user, userTopic)
-                this.game.pushHeadline(headline);
+                var headline = new Headline(this.user.headline, this.user, userTopic, true)
+                this.game.pushHeadline(headline, true);
                 this.user.headline = '';
             }
             this.pause = false;
@@ -104,6 +112,20 @@ var app = new Vue({
             if(!app.pause) {
                 sec++
                 app.game.update(sec);
+            }
+
+            app.user.score.likes = 0;
+            app.user.score.comments = 0;
+            app.user.score.users = 0;
+            for (var i = 0; i < app.game.userHeadlines.length; i++) {
+                app.user.score.likes += app.game.userHeadlines[i].score;
+                app.user.score.comments += app.game.userHeadlines[i].comments.length;
+            }
+
+            for (var j = 0; j < app.game.users.length; j++) {
+                if(app.game.users[j].playerOpinion > 50) {
+                    app.user.score.users += 1;
+                }
             }
             window.requestAnimationFrame(gameLoop);
         }

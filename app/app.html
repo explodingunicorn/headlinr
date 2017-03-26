@@ -14,7 +14,30 @@
 <body>
     <div id="app" class="headlinr">
         <div class="headlinr-nav">
-
+            <h1>headlinr</h1>
+        </div>
+        <div class="headlinr-score-tracker">
+            <div class="likes-score">
+                <div class="tracker">
+                    <div class="progress" v-bind:style="{width: (user.score.likes/user.score.likesReq) * 100 + '%'}"></div>
+                </div>
+                <h6 class="darkGray">{{user.score.likes}} of {{user.score.likesReq}}</h6> 
+                <h6>likes</h6>
+            </div>
+            <div class="comments-score">
+                <div class="tracker">
+                    <div class="progress" v-bind:style="{width: (user.score.comments/user.score.commentsReq) * 100 + '%'}"></div>
+                </div>
+                <h6 class="darkGray">{{user.score.comments}} of {{user.score.commentsReq}}</h6>
+                <h6>comments</h6>
+            </div>
+            <div class="users-core">
+                <div class="tracker">
+                    <div class="progress" v-bind:style="{width: (user.score.users/user.score.usersReq) * 100 + '%'}"></div>
+                </div>
+                <h6 class="darkGray">{{user.score.users}} of {{user.score.usersReq}}</h6> 
+                <h6>positive users</h6>
+            </div>
         </div>
         <div class="column left">
             <h2>Connections</h2>

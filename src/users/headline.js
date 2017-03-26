@@ -13,7 +13,7 @@ function HeadlineComment(comment, user) {
     }
 }
 
-exports.Headline = function (headline, user, topic) {
+exports.Headline = function (headline, user, topic, creation) {
     this.headline = headline;
     this.user = user;
     this.postName = user.info;
@@ -21,6 +21,7 @@ exports.Headline = function (headline, user, topic) {
     this.score = 0;
     this.comments = [];
     this.interacted = {};
+    this.playerCreated = creation || false;
 
     //function to add a user comment
     this.addComment = function(comment, name) {
