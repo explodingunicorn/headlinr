@@ -18,14 +18,14 @@ var app = new Vue({
     el: "#app",
     data: {
         state: {
-            start: false,
-            game: true,
+            start: true,
+            game: false,
             stats: false
         },
         user: {
             info: {
-                first: 'Player',
-                last: 'One'
+                first: '',
+                last: ''
             },
             headline: '',
             score: {
@@ -42,6 +42,21 @@ var app = new Vue({
         pause: false
     },
     methods: {
+        startGame: function() {
+            if (this.user.info.first && this.user.info.last) {
+                this.moveState('game');
+            }
+        },
+        moveState: function(state) {
+            for(var name in this.state) {
+                if (name === state) {
+                    this.state[name] = true;
+                }
+                else {
+                    this.state[name] = false;
+                }
+            }
+        },
         submitHeadline: function() {
             var key = false;
             var userTopic;
