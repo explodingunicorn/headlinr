@@ -5,13 +5,10 @@
 import os from 'os'; // native node.js module
 import { remote } from 'electron'; // native electron module
 import jetpack from 'fs-jetpack'; // module loaded from npm
-import env from './env';
 import sentiment from 'sentiment';
 import Game from './game.js';
 var Headline =  require('../src/users/headline.js').Headline;
 var Vue = require('vue/dist/vue.common.js');
-
-var r1 = sentiment("Butts butts butts.");
 
 var app = remote.app;
 var appDir = jetpack.cwd(app.getAppPath());
@@ -19,27 +16,30 @@ var newGame = new Game();
 
 var app = new Vue({
     el: "#app",
-    data: function() {
-        return {
-            user: {
-                info: {
-                    first: 'User',
-                    last: 'Fuckface'
-                },
-                headline: '',
-                score: {
-                    likes: 0,
-                    likesReq: 16,
-                    comments: 0,
-                    commentsReq: 16,
-                    users: 0,
-                    usersReq: 16
-                }
+    data: {
+        state: {
+            start: false,
+            game: true,
+            stats: false
+        },
+        user: {
+            info: {
+                first: 'Player',
+                last: 'One'
             },
-            cat: 'Cats',
-            game: new Game(),
-            pause: false
-        }
+            headline: '',
+            score: {
+                likes: 0,
+                likesReq: 16,
+                comments: 0,
+                commentsReq: 16,
+                users: 0,
+                usersReq: 16
+            }
+        },
+        cat: 'Cats',
+        game: new Game(),
+        pause: false
     },
     methods: {
         submitHeadline: function() {
@@ -98,6 +98,7 @@ var app = new Vue({
             var comment = this.game.headlines[index].commentValue;
 
             this.game.headlines[index].addComment(comment, this.user);
+            this.game.headlines[index].alertUser(comment);
             this.game.headlines[index].commentValue = '';
             this.pause = false;
         },

@@ -76,13 +76,13 @@ export default function User(game) {
     //Function that runs everything involved in a users turn
     function checkHeadlinr(game, user) {
         //Function to read headlines
-        checkHeadlines(game.headlines, user);
+        checkHeadlines(game.headlines, user, game);
         //Function to create a headline
         createHeadline(game, user);
     }
 
     //Function for user to check new posts
-    function checkHeadlines(headlines, user) {
+    function checkHeadlines(headlines, user, game) {
         var userName = user.info.first+user.info.last;
         var postsToCheck = 0;
         //Checks the last 10 headlines
@@ -103,11 +103,17 @@ export default function User(game) {
             //Check if they've interacted with the post already
             if(!headlines[i].interacted[userName]) {
                 var playerFactor = 0;
+                var repeatFactor = 0;
                 var player = false;
                 if(headlines[i].playerCreated) {
-                    console.log('player created');
                     playerFactor = user.playerOpinion/10;
                     player = true;
+                    for(var j = 0; j < game.userHeadlines.length-1; j++) {
+                        if (game.userHeadlines[i-1]) {
+                            console.log('repeat');
+                            repeatFactor += 7;
+                        }
+                    }
                 }
                 //Check if sentiment is positive
                 if (sentiment > 0 && userFeeling > 5) {
@@ -116,7 +122,7 @@ export default function User(game) {
                         console.log('increase');
                     }
                     //If the user feels positively towards the topic, there's a chance to like
-                    var total = userFeeling + sentiment + playerFactor;
+                    var total = userFeeling + sentiment + playerFactor - repeatFactor;
                     if (total >= interactChance()) {
                         headlines[i].like();
                     }
@@ -131,7 +137,7 @@ export default function User(game) {
                         user.playerOpinion -= rand10();
                     }
                     //Add 5 to users feeling to simulate negative feeling
-                    var total = (userFeeling + 5) + sentiment - playerFactor;
+                    var total = (userFeeling + 5) + sentiment - playerFactor - repeatFactor;
 
                     if (total >= interactChance()) {
                         headlines[i].dislike();
@@ -148,7 +154,7 @@ export default function User(game) {
                     }
                     //If the user feels positively, there's a chance to dislike
                     //Create a total, reverse the sentiment
-                    var total = (userFeeling + 5) + (-1 * sentiment) - playerFactor;
+                    var total = (userFeeling + 5) + (-1 * sentiment) - playerFactor - repeatFactor;
 
                     //React if it's greater than the interaction chance, and they haven't interacted before
                     if (total >= interactChance()) {
@@ -166,7 +172,7 @@ export default function User(game) {
                         console.log('increase');
                     }
                     //Add 5 to users feeling to simulate negative feeling, reverse sentiment
-                    var total = (userFeeling + 5) + (-1 * sentiment) + playerFactor;
+                    var total = (userFeeling + 5) + (-1 * sentiment) + playerFactor - repeatFactor;
 
                     if (total >= interactChance()) {
                         headlines[i].like();

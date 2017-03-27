@@ -1,3 +1,5 @@
+var sentiment = require('sentiment');
+
 function HeadlineComment(comment, user) {
     this.comment = comment;
     this.user = user;
@@ -29,6 +31,24 @@ exports.Headline = function (headline, user, topic, creation) {
         var comment = new HeadlineComment(comment, name);
         //Pushing the comment to our comments array
         this.comments.push(comment);
+    }
+
+    this.alertUser = function(comment) {
+        var rating = sentiment(comment).score;
+        console.log(rating);
+        
+        if (rating > 0) {
+            this.user.playerOpinion += 7+rating;
+            console.log('Positive');
+        }
+        else if (rating < 0) {
+            this.user.playerOpinion -= 7-rating;
+            console.log('Decrease', 7-rating);
+        }
+        else {
+            this.user.playerOpinion += 5;
+            console.log('Neutral');
+        }
     }
 
     //function to add to the posts score

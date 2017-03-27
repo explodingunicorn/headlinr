@@ -5,12 +5,7 @@ function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'defau
 var os = require('os');
 var electron = require('electron');
 var jetpack = _interopDefault(require('fs-jetpack'));
-var sentiment = _interopDefault(require('sentiment'));
-
-// Simple wrapper exposing environment variables to rest of the code.
-
-// The variables have been written to `env.json` by the build process.
-var env = jetpack.cwd(__dirname).read('env.json', 'json');
+var sentiment = require('sentiment');
 
 //import sentiment from sentiment;
 var fs = require('fs');
@@ -90,13 +85,13 @@ function User(game) {
     //Function that runs everything involved in a users turn
     function checkHeadlinr(game, user) {
         //Function to read headlines
-        checkHeadlines(game.headlines, user);
+        checkHeadlines(game.headlines, user, game);
         //Function to create a headline
         createHeadline(game, user);
     }
 
     //Function for user to check new posts
-    function checkHeadlines(headlines, user) {
+    function checkHeadlines(headlines, user, game) {
         var userName = user.info.first+user.info.last;
         var postsToCheck = 0;
         //Checks the last 10 headlines
@@ -117,11 +112,17 @@ function User(game) {
             //Check if they've interacted with the post already
             if(!headlines[i].interacted[userName]) {
                 var playerFactor = 0;
+                var repeatFactor = 0;
                 var player = false;
                 if(headlines[i].playerCreated) {
-                    console.log('player created');
                     playerFactor = user.playerOpinion/10;
                     player = true;
+                    for(var j = 0; j < game.userHeadlines.length-1; j++) {
+                        if (game.userHeadlines[i-1]) {
+                            console.log('repeat');
+                            repeatFactor += 7;
+                        }
+                    }
                 }
                 //Check if sentiment is positive
                 if (sentiment$$1 > 0 && userFeeling > 5) {
@@ -130,7 +131,7 @@ function User(game) {
                         console.log('increase');
                     }
                     //If the user feels positively towards the topic, there's a chance to like
-                    var total = userFeeling + sentiment$$1 + playerFactor;
+                    var total = userFeeling + sentiment$$1 + playerFactor - repeatFactor;
                     if (total >= interactChance()) {
                         headlines[i].like();
                     }
@@ -145,7 +146,7 @@ function User(game) {
                         user.playerOpinion -= rand10();
                     }
                     //Add 5 to users feeling to simulate negative feeling
-                    var total = (userFeeling + 5) + sentiment$$1 - playerFactor;
+                    var total = (userFeeling + 5) + sentiment$$1 - playerFactor - repeatFactor;
 
                     if (total >= interactChance()) {
                         headlines[i].dislike();
@@ -162,7 +163,7 @@ function User(game) {
                     }
                     //If the user feels positively, there's a chance to dislike
                     //Create a total, reverse the sentiment
-                    var total = (userFeeling + 5) + (-1 * sentiment$$1) - playerFactor;
+                    var total = (userFeeling + 5) + (-1 * sentiment$$1) - playerFactor - repeatFactor;
 
                     //React if it's greater than the interaction chance, and they haven't interacted before
                     if (total >= interactChance()) {
@@ -180,7 +181,7 @@ function User(game) {
                         console.log('increase');
                     }
                     //Add 5 to users feeling to simulate negative feeling, reverse sentiment
-                    var total = (userFeeling + 5) + (-1 * sentiment$$1) + playerFactor;
+                    var total = (userFeeling + 5) + (-1 * sentiment$$1) + playerFactor - repeatFactor;
 
                     if (total >= interactChance()) {
                         headlines[i].like();
@@ -264,35 +265,36 @@ function Game() {
 var Headline =  require('../src/users/headline.js').Headline;
 var Vue = require('vue/dist/vue.common.js');
 
-var r1 = sentiment("Butts butts butts.");
-
 var app = electron.remote.app;
 var appDir = jetpack.cwd(app.getAppPath());
 var newGame = new Game();
 
 var app = new Vue({
     el: "#app",
-    data: function() {
-        return {
-            user: {
-                info: {
-                    first: 'User',
-                    last: 'Fuckface'
-                },
-                headline: '',
-                score: {
-                    likes: 0,
-                    likesReq: 16,
-                    comments: 0,
-                    commentsReq: 16,
-                    users: 0,
-                    usersReq: 16
-                }
+    data: {
+        state: {
+            start: false,
+            game: true,
+            stats: false
+        },
+        user: {
+            info: {
+                first: 'Player',
+                last: 'One'
             },
-            cat: 'Cats',
-            game: new Game(),
-            pause: false
-        }
+            headline: '',
+            score: {
+                likes: 0,
+                likesReq: 16,
+                comments: 0,
+                commentsReq: 16,
+                users: 0,
+                usersReq: 16
+            }
+        },
+        cat: 'Cats',
+        game: new Game(),
+        pause: false
     },
     methods: {
         submitHeadline: function() {
@@ -351,6 +353,7 @@ var app = new Vue({
             var comment = this.game.headlines[index].commentValue;
 
             this.game.headlines[index].addComment(comment, this.user);
+            this.game.headlines[index].alertUser(comment);
             this.game.headlines[index].commentValue = '';
             this.pause = false;
         },

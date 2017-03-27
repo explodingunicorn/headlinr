@@ -4,7 +4,7 @@ exports.rand10 = function () {
 
 var headline = 35;
 var interaction = 15;
-var comment = 60;
+var comment = 80;
 
 exports.headlineChance = function () {
     return Math.floor((Math.random() * headline) + 1);
