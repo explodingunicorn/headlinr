@@ -8,20 +8,21 @@ import jetpack from 'fs-jetpack'; // module loaded from npm
 import sentiment from 'sentiment';
 import Game from './game.js';
 var Headline =  require('../src/users/headline.js').Headline;
+var Round = require('../src/users/round.js').Round;
 var Vue = require('vue/dist/vue.common.js');
 
 var app = remote.app;
 var appDir = jetpack.cwd(app.getAppPath());
-var newGame = new Game();
 
 var app = new Vue({
     el: "#app",
     data: {
         state: {
-            start: true,
-            game: false,
+            start: false,
+            game: true,
             stats: false
         },
+        rounds: new Round(),
         user: {
             info: {
                 first: '',
@@ -30,11 +31,11 @@ var app = new Vue({
             headline: '',
             score: {
                 likes: 0,
-                likesReq: 16,
+                likesReq: 0,
                 comments: 0,
-                commentsReq: 16,
+                commentsReq: 0,
                 users: 0,
-                usersReq: 16
+                usersReq: 0
             }
         },
         cat: 'Cats',
@@ -46,6 +47,12 @@ var app = new Vue({
             if (this.user.info.first && this.user.info.last) {
                 this.moveState('game');
             }
+        },
+        generateNewRound: function() {
+            var reqs = this.rounds.generateRound();
+            this.user.score.likesReq = reqs.likes;
+            this.user.score.commentsReq = reqs.comments;
+            this.user.score.usersReq = reqs.users;
         },
         moveState: function(state) {
             for(var name in this.state) {
@@ -123,6 +130,12 @@ var app = new Vue({
         }
     },
     mounted: function() {
+        this.generateNewRound();
+        this.generateNewRound();
+        this.generateNewRound();
+        this.generateNewRound();
+        this.generateNewRound();
+        this.generateNewRound();
         var sec = 0;
         function gameLoop() {
             if(!app.pause) {

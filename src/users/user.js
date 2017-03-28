@@ -105,11 +105,11 @@ export default function User(game) {
                 var playerFactor = 0;
                 var repeatFactor = 0;
                 var player = false;
-                if(headlines[i].playerCreated) {
+                if(headlines[i].playerCreated && game.userHeadlines.length > 2) {
                     playerFactor = user.playerOpinion/10;
                     player = true;
-                    for(var j = 0; j < game.userHeadlines.length-1; j++) {
-                        if (game.userHeadlines[i-1]) {
+                    for(var j = game.userHeadlines.length-2; j > 0; j--) {
+                        if (game.userHeadlines[j].topic === topic) {
                             console.log('repeat');
                             repeatFactor += 7;
                         }

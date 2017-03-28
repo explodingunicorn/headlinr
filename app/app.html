@@ -16,15 +16,15 @@
         <div class="start" v-if="state.start">
             <div class="start-screen">
                 <div class="welcome">
-                    <h1 class="darkPurple">Welcome to Headlinr</h1>
-                    <h3>Please fill out this quick form</h3>
+                    <h1 class="darkPurple">Welcome to headlinr</h1>
+                    <h3>Everyone has an opinion.<br>Wouldn't you like to shares yours?<br>Sign up now:</h3>
                 </div>
                 <p>Email</p>
-                <input type="text"></input>
+                <input type="text" placeholder="joeshmo@email.com"><div></div></input>
                 <p>First name</p>
-                <input type="text" v-model="user.info.first"></input>
+                <input type="text" placeholder="Joe" v-model="user.info.first"><div></div></input>
                 <p>Last name</p>
-                <input type="text" v-model="user.info.last" v-on:keyup.enter="startGame"></input>
+                <input type="text" placeholder="Shmo" v-model="user.info.last" v-on:keyup.enter="startGame"><div></div></input>
                 <h5 class="start-button" v-on:click="startGame">Sign-up!</h5>
             </div>
         </div>
