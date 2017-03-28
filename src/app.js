@@ -18,8 +18,8 @@ var app = new Vue({
     el: "#app",
     data: {
         state: {
-            start: false,
-            game: true,
+            start: true,
+            game: false,
             stats: false
         },
         rounds: new Round(),
