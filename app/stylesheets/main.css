@@ -1,3 +1,7 @@
+/*Fonts --------------------------------------------------------------
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+--------------------------------------------------------------------*/
 @import url('https://fonts.googleapis.com/css?family=Lato:300,400,700|Montserrat:500,700,800');
 h1,
 h2,
@@ -58,14 +62,36 @@ a {
   font-weight: 400;
   font-size: 18px;
 }
-.mediumGray {
-  color: #5E6572;
+/*Forms --------------------------------------------------------------
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+--------------------------------------------------------------------*/
+.purpleBtn {
+  background-color: #4F2D87;
+  box-sizing: border-box;
+  color: white;
+  display: inline-block;
+  padding: 10px;
+  text-align: center;
 }
-.darkGray {
-  color: #393D3F;
+.purpleBtn:hover {
+  cursor: pointer;
+  background-color: #7040bf;
 }
-.darkPurple {
-  color: #4F2D87;
+.greenBtn {
+  background-color: #7CC7A9;
+  box-sizing: border-box;
+  color: white;
+  display: inline-block;
+  padding: 10px;
+  text-align: center;
+}
+.greenBtn:hover {
+  cursor: pointer;
+  background-color: #40bf8c;
+}
+.fullWidth {
+  width: 100%;
 }
 input {
   border: 1px solid #AAACA9;
@@ -84,6 +110,37 @@ input:focus {
   border-bottom: 5px solid #6A66A3;
   outline: none;
 }
+/*Helpers ------------------------------------------------------------
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+--------------------------------------------------------------------*/
+.mgn-btm-10 {
+  margin-bottom: 10px;
+}
+.mgn-right-10 {
+  margin-right: 10px;
+}
+.mgn-top-10 {
+  margin-top: 10px;
+}
+.mgn-left-10 {
+  margin-left: 10px;
+}
+.mediumGray {
+  color: #5E6572;
+}
+.darkGray {
+  color: #393D3F;
+}
+.darkPurple {
+  color: #4F2D87 !important;
+}
+.mediumPurple {
+  color: #6A66A3 !important;
+}
+.raised {
+  box-shadow: 0px 0px 20px 0px #393D3F;
+}
 .thumbnail {
   background-color: #393D3F;
   position: relative;
@@ -99,6 +156,23 @@ input:focus {
   width: auto;
   transform: translate(-50%, -50%);
 }
+::-webkit-scrollbar {
+  background-color: white;
+  border-left: 1px solid #AAACA9;
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  border-right: 1px solid #AAACA9;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #5E6572;
+  border: 1px solid #AAACA9;
+  border-radius: 3px;
+}
+/*Animations ---------------------------------------------------------
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+--------------------------------------------------------------------*/
 .headline-add-item {
   transition: all 1s;
 }
@@ -121,18 +195,25 @@ input:focus {
 .comment-add-leave-active {
   position: absolute;
 }
-::-webkit-scrollbar {
-  background-color: white;
-  border-left: 1px solid #AAACA9;
-  width: 10px;
+@keyframes wiggle {
+  0% {
+    transform: rotate(5deg);
+  }
+  1% {
+    transform: rotate(-5deg);
+  }
+  2% {
+    transform: rotate(5deg);
+  }
+  3% {
+    transform: rotate(-5deg);
+  }
+  4% {
+    transform: rotate(0deg);
+  }
 }
-::-webkit-scrollbar-track {
-  border-right: 1px solid #AAACA9;
-}
-::-webkit-scrollbar-thumb {
-  background-color: #5E6572;
-  border: 1px solid #AAACA9;
-  border-radius: 3px;
+.wiggle {
+  -webkit-animation: wiggle 10s infinite;
 }
 html,
 body {
@@ -196,6 +277,15 @@ a {
 .start .start-screen .start-button:hover {
   cursor: pointer;
 }
+.stats {
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.stats .stats-welcome {
+  text-align: center;
+  width: 500px;
+}
 .game {
   padding: 20px;
 }
@@ -235,7 +325,7 @@ a {
 .headlinr-score-tracker > div h6 {
   position: relative;
 }
-.headlinr-score-tracker > div:nth-child(2) {
+.headlinr-score-tracker > div:nth-child(3) {
   border-right: 1px solid #393D3F;
   border-left: 1px solid #393D3F;
 }
@@ -250,6 +340,17 @@ a {
   background-color: #7CC7A9;
   height: 100%;
   max-width: 100%;
+}
+.headlinr-score-tracker .next-level-button {
+  position: absolute;
+  right: 0;
+  opacity: 1;
+  top: -90px;
+  transition: all .5s;
+}
+.headlinr-score-tracker .next-level-button.inactive {
+  top: 50px;
+  opacity: 0;
 }
 .headlinr {
   box-sizing: border-box;
@@ -326,21 +427,6 @@ a {
   flex: 1;
   margin-left: 10px;
   padding: 20px;
-}
-.headlinr .middle .userInput .submitHeadline {
-  box-sizing: border-box;
-  border: 1px solid #AAACA9;
-  border-radius: 3px;
-  padding: 10px;
-  text-align: center;
-  width: 100%;
-}
-.headlinr .middle .userInput .submitHeadline:hover {
-  cursor: pointer;
-  background-color: #4F2D87;
-}
-.headlinr .middle .userInput .submitHeadline:hover h5 {
-  color: white;
 }
 .headlinr .middle .post {
   background-color: white;

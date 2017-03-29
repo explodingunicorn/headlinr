@@ -35,19 +35,15 @@ exports.Headline = function (headline, user, topic, creation) {
 
     this.alertUser = function(comment) {
         var rating = sentiment(comment).score;
-        console.log(rating);
         
         if (rating > 0) {
             this.user.playerOpinion += 7+rating;
-            console.log('Positive');
         }
         else if (rating < 0) {
             this.user.playerOpinion -= 7-rating;
-            console.log('Decrease', 7-rating);
         }
         else {
             this.user.playerOpinion += 5;
-            console.log('Neutral');
         }
     }
 

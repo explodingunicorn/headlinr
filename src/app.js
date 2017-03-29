@@ -18,11 +18,13 @@ var app = new Vue({
     el: "#app",
     data: {
         state: {
-            start: true,
-            game: false,
-            stats: false
+            start: 1,
+            game: 0,
+            stats: 0
         },
         rounds: new Round(),
+        roundComplete: false,
+        currentRound: 0,
         user: {
             info: {
                 first: '',
@@ -31,14 +33,14 @@ var app = new Vue({
             headline: '',
             score: {
                 likes: 0,
-                likesReq: 0,
+                likesReq: 1,
                 comments: 0,
-                commentsReq: 0,
+                commentsReq: 1,
                 users: 0,
-                usersReq: 0
+                usersReq: 1
             }
         },
-        cat: 'Cats',
+        time: 'Time',
         game: new Game(),
         pause: false
     },
@@ -48,11 +50,19 @@ var app = new Vue({
                 this.moveState('game');
             }
         },
+        checkRoundComplete: function() {
+          if(this.user.score.likes >= this.user.score.likesReq && this.user.score.comments >= this.user.score.commentsReq && this.user.score.users >= this.user.score.usersReq) {
+              this.roundComplete = true;
+          }  
+        },
         generateNewRound: function() {
             var reqs = this.rounds.generateRound();
             this.user.score.likesReq = reqs.likes;
             this.user.score.commentsReq = reqs.comments;
             this.user.score.usersReq = reqs.users;
+
+            this.currentRound++;
+            this.roundComplete = false;
         },
         moveState: function(state) {
             for(var name in this.state) {
@@ -125,16 +135,16 @@ var app = new Vue({
             this.pause = false;
         },
         resolvePic: function(pic) {
-            var link = './img' + encodeURI(pic) + '.jpg';
+            if (pic) {
+                var link = './img' + encodeURI(pic) + '.jpg';
+            }
+            else {
+                var link = 'http://bulma.io/images/placeholders/96x96.png';
+            }
             return link;
         }
     },
     mounted: function() {
-        this.generateNewRound();
-        this.generateNewRound();
-        this.generateNewRound();
-        this.generateNewRound();
-        this.generateNewRound();
         this.generateNewRound();
         var sec = 0;
         function gameLoop() {
@@ -155,6 +165,10 @@ var app = new Vue({
                 if(app.game.users[j].playerOpinion > 50) {
                     app.user.score.users += 1;
                 }
+            }
+
+            if(!app.roundComplete) {
+                app.checkRoundComplete();
             }
             window.requestAnimationFrame(gameLoop);
         }

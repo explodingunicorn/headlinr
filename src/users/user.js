@@ -24,7 +24,7 @@ export default function User(game) {
     this.info = generateInfo();
     this.game = game;
     this.playerOpinion = rand10() * 5;
-    var activityLevel = rand10();
+    var activityLevel = 700 + Math.floor((Math.random() * 500) + 1);
     var aggression = rand10();
     var topicFeelings = generateTopicFeelings(this.game);
 
@@ -60,7 +60,7 @@ export default function User(game) {
     //Function exposed to game, determines when the user is checking the timeline
     this.checkUpdate = function(time) {
         //Checking users activity level, and seeing if it's time for them to comment
-        if(time % (activityLevel*200)=== 0) {
+        if(time % activityLevel=== 0) {
             //Running function to check headlinr, passing game, and itself
             checkHeadlinr(this.game, this);
         }

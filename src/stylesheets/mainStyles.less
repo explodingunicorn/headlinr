@@ -7,6 +7,15 @@
 @darkGray: #393D3F;
 @white: #F0F1ED;
 
+
+
+/*Fonts --------------------------------------------------------------
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+--------------------------------------------------------------------*/
+
+
+
 @import url('https://fonts.googleapis.com/css?family=Lato:300,400,700|Montserrat:500,700,800');
 
 h1, h2, h3, h4, h5, h6, p {
@@ -71,16 +80,48 @@ a {
     font-size: 18px;
 }
 
-.mediumGray {
-    color: @mediumGray;
+
+
+
+
+/*Forms --------------------------------------------------------------
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+--------------------------------------------------------------------*/
+
+
+
+
+.purpleBtn {
+    background-color: @darkPurple;
+    box-sizing: border-box;
+    color: white;
+    display: inline-block;
+    padding: 10px;
+    text-align: center;
+
+    &:hover {
+        cursor: pointer;
+        background-color: hsl(hue(@darkPurple), 50%, 50%);
+    }
 }
 
-.darkGray {
-    color: @darkGray;
+.greenBtn {
+    background-color: @green;
+    box-sizing: border-box;
+    color: white;
+    display: inline-block;
+    padding: 10px;
+    text-align: center;
+
+    &:hover {
+        cursor: pointer;
+        background-color: hsl(hue(@green), 50%, 50%);
+    }
 }
 
-.darkPurple {
-    color: @darkPurple
+.fullWidth {
+    width: 100%;
 }
 
 input {
@@ -102,6 +143,51 @@ input:focus {
     outline: none;
 }
 
+
+
+
+/*Helpers ------------------------------------------------------------
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+--------------------------------------------------------------------*/
+
+.mgn-btm-10 {
+    margin-bottom: 10px;
+}
+
+.mgn-right-10 {
+    margin-right: 10px;
+}
+
+.mgn-top-10 {
+    margin-top: 10px;
+}
+
+.mgn-left-10 {
+    margin-left: 10px;
+}
+
+
+.mediumGray {
+    color: @mediumGray;
+}
+
+.darkGray {
+    color: @darkGray;
+}
+
+.darkPurple {
+    color: @darkPurple !important;
+}
+
+.mediumPurple {
+    color: @mediumPurple !important;
+}
+
+.raised {
+    box-shadow: 0px 0px 20px 0px @darkGray;
+}
+
 .thumbnail {
     background-color: @darkGray;
     position: relative;
@@ -117,6 +203,32 @@ input:focus {
     width: auto;
     transform: translate(-50%,-50%);
 }
+
+
+::-webkit-scrollbar {
+    background-color: white;
+    border-left: 1px solid @lightGray;
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    border-right: 1px solid @lightGray;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: @mediumGray;
+    border: 1px solid @lightGray;
+    border-radius: 3px;
+}
+
+
+
+/*Animations ---------------------------------------------------------
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+--------------------------------------------------------------------*/
+
+
 
 .headline-add-item {
     transition: all 1s;
@@ -146,18 +258,14 @@ input:focus {
   position: absolute;
 }
 
-::-webkit-scrollbar {
-    background-color: white;
-    border-left: 1px solid @lightGray;
-    width: 10px;
+@keyframes wiggle {
+    0% {transform: rotate(5deg);}
+    1% {transform: rotate(-5deg);}
+    2% {transform: rotate(5deg);}
+    3% {transform: rotate(-5deg);}
+    4% {transform: rotate(0deg);}
 }
 
-::-webkit-scrollbar-track {
-    border-right: 1px solid @lightGray;
-}
-
-::-webkit-scrollbar-thumb {
-    background-color: @mediumGray;
-    border: 1px solid @lightGray;
-    border-radius: 3px;
+.wiggle {
+    -webkit-animation: wiggle 10s infinite;
 }

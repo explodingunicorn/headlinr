@@ -70,6 +70,17 @@ a {
     }
 }
 
+.stats {
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    .stats-welcome {
+        text-align: center;
+        width: 500px;
+    }
+}
+
 .game {
     padding: 20px;
 }
@@ -113,7 +124,7 @@ a {
             position: relative;
         }
 
-        &:nth-child(2) {
+        &:nth-child(3) {
             border-right: 1px solid @darkGray;
             border-left: 1px solid @darkGray;
         }
@@ -130,6 +141,19 @@ a {
                 height: 100%;
                 max-width: 100%;
             }
+        }
+    }
+
+    .next-level-button {
+        position: absolute;
+        right: 0;
+        opacity: 1;
+        top: -90px;
+        transition: all .5s;
+
+        &.inactive {
+            top: 50px;
+            opacity: 0;
         }
     }
 }
@@ -219,24 +243,6 @@ a {
                     flex: 1;
                     margin-left: 10px;
                     padding: 20px;
-                }
-            }
-
-            .submitHeadline {
-                box-sizing: border-box;
-                border: 1px solid @lightGray;
-                border-radius: 3px;
-                padding: 10px;
-                text-align: center;
-                width: 100%;
-            }
-
-            .submitHeadline:hover {
-                cursor: pointer;
-                background-color: @darkPurple;
-
-                h5 {
-                    color: white;
                 }
             }
         }
