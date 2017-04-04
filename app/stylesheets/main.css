@@ -126,6 +126,9 @@ input:focus {
 .mgn-left-10 {
   margin-left: 10px;
 }
+.white {
+  color: white;
+}
 .mediumGray {
   color: #5E6572;
 }
@@ -292,6 +295,9 @@ a {
 .headlinr-nav {
   background-color: #4F2D87;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
   padding: 10px;
   position: fixed;
   top: 0;
@@ -302,6 +308,18 @@ a {
 .headlinr-nav h1 {
   color: #F0F1ED;
   font-size: 28px !important;
+}
+.headlinr-nav .spacer {
+  flex: 1;
+}
+.headlinr-nav .user-info {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+}
+.headlinr-nav .user-info img {
+  height: 24px;
+  margin-right: 10px;
 }
 .headlinr-score-tracker {
   background-color: white;

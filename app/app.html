@@ -39,6 +39,11 @@
         <div class="game" v-if="state.game">
             <div class="headlinr-nav">
                 <h1>headlinr</h1>
+                <div class="spacer"></div>
+                <div class="user-info">
+                    <img src="http://bulma.io/images/placeholders/96x96.png"/>
+                    <p class="white">{{user.info.first}} {{user.info.last}}</p>
+                </div>
             </div>
             <div class="headlinr-score-tracker" >
                 <div class="next-level-button" v-bind:class="{ inactive: !roundComplete }" v-on:click="moveState('stats')">

@@ -27,8 +27,8 @@ var app = new Vue({
         currentRound: 0,
         user: {
             info: {
-                first: '',
-                last: ''
+                first: 'Player',
+                last: 'One'
             },
             headline: '',
             score: {

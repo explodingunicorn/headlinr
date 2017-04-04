@@ -190,7 +190,7 @@ export default function User(game) {
     //Function for user to push a new headline
     function createHeadline(game, user) {
         if (aggression >= headlineChance()) {
-            var topic = game.topics[rand10()-1];
+            var topic = game.topics[Math.floor(Math.random() * game.topics.length)];
             var feeling = topicFeelings[topic];
             var statement = sentence.generate(feeling, topic);
 
