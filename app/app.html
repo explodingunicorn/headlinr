@@ -13,6 +13,14 @@
 </head>
 <body>
     <div id="app" class="headlinr">
+        <div class="headlinr-nav" v-if="state.game || state.stats">
+            <h1 v-on:click="moveState('game')">headlinr</h1>
+            <div class="spacer"></div>
+            <div class="user-info" v-on:click="moveState('stats')">
+                <img src="http://bulma.io/images/placeholders/96x96.png"/>
+                <p class="white">{{user.info.first}} {{user.info.last}}</p>
+            </div>
+        </div>
         <div class="start" v-if="state.start">
             <div class="start-screen">
                 <div class="welcome">
@@ -29,62 +37,80 @@
             </div>
         </div>
         <div class="stats" v-if="state.stats">
-            <div class="stats-welcome">
-                <h1 class="darkPurple mgn-btm-10">Congrats, you have beaten level {{currentRound}}</h1>
-                <h3 class="mgn-btm-10">You can move on to the next level, or view some stats about the last one!</h3>
-                <h5 class="greenBtn fullwidth mgn-right-10"><i class="fa fa-line-chart" aria-hidden="true"></i> View Stats</h5>
-                <h5 class="purpleBtn fullwidth mgn-left-10" v-on:click="moveState('game'); generateNewRound()"><i class="fa fa-play-circle" aria-hidden="true"></i> Next Level</h5>
+            <div class="column left">
+
+            </div>
+            <div class="column middle">
+                <div class="userInput">
+                    <div class="headline-submission">
+                        <img src="http://bulma.io/images/placeholders/96x96.png"/>
+                        <input type="text" placeholder="Post a headline" v-on:click="pause = true" v-model="user.headline" v-on:keyup.enter="submitHeadline"></input>
+                    </div>
+                    <h5 class="purpleBtn fullWidth" v-on:click="submitHeadline">Add Headline</h5>
+                </div>
+                <transition-group name="headline-add">
+                    <div class="post headline-add-item" v-if="game.headlines" v-for="(item, i) in game.userHeadlines" v-bind:key="item">
+                        <div class="head">
+                            <div class="info">
+                                <div class="thumbnail">
+                                    <img class="portrait" v-bind:src="resolvePic(item.user.info.pic)" alt="Image">
+                                </div>
+                                <div class="name">
+                                    <h3 class="title">{{item.postName.first}} {{item.postName.last}}</h3>
+                                    <p>{{time}}</p>
+                                </div>
+                                <div class="score">
+                                    <h1 v-bind:class="{darkPurple: item.score >= 0, mediumPurple: item.score < 0}">{{item.score}}</h1>
+                                </div>
+                            </div>
+                            <div class="content">
+                                <h1>{{item.headline}}</h1>
+                            </div>
+                            <div class="buttons">
+                                <a class="like" v-bind:class="{liked: item.isLiked}" v-on:click="likePost(i)"><i class="fa fa-thumbs-up" aria-hidden="true"></i> Like</a>
+                                <a class="dislike" v-bind:class="{disliked: item.isDisliked}" v-on:click="dislikePost(i)"><i class="fa fa-thumbs-down" aria-hidden="true"></i> Dislike</a>
+                            </div>
+                        </div>
+                        <div class="commentSection">
+                            <transition-group name="comment-add" tag="div">
+                                <div class="comment commend-add-item" v-for="comment in item.comments"  v-bind:key="comment">
+                                    <div class="thumbnail">
+                                        <img class="portrait" v-bind:src="resolvePic(comment.user.info.pic)" alt="Image">
+                                    </div>
+                                    <div class="content">
+                                        <h4>{{comment.commentName.first}} {{comment.commentName.last}}</h4>
+                                        <h3>{{comment.comment}}</h3>
+                                    </div>
+                                </div>
+                            </transition-group>
+                        </div>
+                        <div class="userComment">
+                            <div class="thumbnail">
+                                <img class="portrait" src="http://bulma.io/images/placeholders/96x96.png" alt="Image">
+                            </div>
+                            <input type="text" placeholder="Comment..." v-on:click="pause = true" v-model="item.commentValue" v-on:keyup.enter="addComment(i)"></input>
+                        </div>
+                        <div class="submitComment" v-on:click="addComment(i)">
+                            <h5>Submit Comment</h5>
+                        </div>
+                    </div>
+                </transition-group>
+            </div>
+            <div class="colum right">
+            
             </div>
         </div>
         <div class="game" v-if="state.game">
-            <div class="headlinr-nav">
-                <h1>headlinr</h1>
-                <div class="spacer"></div>
-                <div class="user-info">
-                    <img src="http://bulma.io/images/placeholders/96x96.png"/>
-                    <p class="white">{{user.info.first}} {{user.info.last}}</p>
-                </div>
-            </div>
-            <div class="headlinr-score-tracker" >
-                <div class="next-level-button" v-bind:class="{ inactive: !roundComplete }" v-on:click="moveState('stats')">
-                    <h5 class="greenBtn wiggle raised">Move on to the next level!&ensp;<i class="fa fa-arrow-right" aria-hidden="true"></i></h5>
-                </div>
-                <div class="likes-score">
-                    <div class="tracker">
-                        <div class="progress" v-bind:style="{width: (user.score.likes/user.score.likesReq) * 100 + '%'}"></div>
-                    </div>
-                    <h6 class="darkGray">{{user.score.likes}} of {{user.score.likesReq}}</h6> 
-                    <h6>likes</h6>
-                </div>
-                <div class="comments-score">
-                    <div class="tracker">
-                        <div class="progress" v-bind:style="{width: (user.score.comments/user.score.commentsReq) * 100 + '%'}"></div>
-                    </div>
-                    <h6 class="darkGray">{{user.score.comments}} of {{user.score.commentsReq}}</h6>
-                    <h6>comments</h6>
-                </div>
-                <div class="users-score">
-                    <div class="tracker">
-                        <div class="progress" v-bind:style="{width: (user.score.users/user.score.usersReq) * 100 + '%'}"></div>
-                    </div>
-                    <h6 class="darkGray">{{user.score.users}} of {{user.score.usersReq}}</h6> 
-                    <h6>positive users</h6>
-                </div>
-            </div>
             <div class="column left">
-                <h2>Connections</h2>
-                <div class="connections-panel">
-                    <div class="connection" v-for="user in game.users">
-                        <div class="info">
-                            <div class="thumbnail">
-                                <img class="portrait" v-bind:src="resolvePic(user.info.pic)" alt="Image">
-                            </div>
-                            <p class="mediumGray">{{user.info.first}} {{user.info.last}}</p>
-                        </div>
-                        <div class="feelings-container">
-                            <div class="feelings" v-bind:style="{ width: user.playerOpinion + '%' }"></div>
-                        </div>
-                    </div>
+                <div class="panel">
+                    <h2>Your score:</h2>
+                    <h1 class="darkPurple">{{user.score.likes}} <p>Likes</p></h1>
+                    <h1 class="mediumPurple">{{user.score.comments}} <p>Comments</p></h1>
+                    <h1>{{game.users.length}} <p>Connections</p></h1>
+                    <hr></hr>
+                    <h2>Fame Points:</h2>
+                    <h1>{{user.score.famePoints}}</h1>
+                    <h5 class="greenBtn fullWidth" v-on:click="submitHeadline">Spend Points!</h5>
                 </div>
             </div>
             <div class="column middle">

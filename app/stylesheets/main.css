@@ -280,15 +280,6 @@ a {
 .start .start-screen .start-button:hover {
   cursor: pointer;
 }
-.stats {
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-}
-.stats .stats-welcome {
-  text-align: center;
-  width: 500px;
-}
 .game {
   padding: 20px;
 }
@@ -320,6 +311,11 @@ a {
 .headlinr-nav .user-info img {
   height: 24px;
   margin-right: 10px;
+}
+.headlinr-nav .user-info:hover {
+  color: white;
+  cursor: pointer;
+  text-decoration: underline;
 }
 .headlinr-score-tracker {
   background-color: white;
@@ -387,40 +383,27 @@ a {
   flex: 1;
   flex-direction: column;
 }
+.headlinr .left h1 {
+  margin-bottom: 15px;
+}
+.headlinr .left h1 p {
+  display: inline;
+}
 .headlinr .left h2 {
   margin-bottom: 15px;
 }
-.headlinr .left .connections-panel {
-  background-color: #F0F1ED;
-  border-radius: 5px;
+.headlinr .left hr {
+  display: block;
+  height: 1px;
+  border: 0;
+  border-top: 1px solid #5E6572;
+  margin: 1em 0;
+  padding: 0;
+}
+.headlinr .left .panel {
+  background-color: #efefef;
+  border-radius: 3px;
   padding: 15px;
-}
-.headlinr .left .connections-panel .connection {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 10px;
-}
-.headlinr .left .connections-panel .connection .info {
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  align-items: center;
-  margin-bottom: 10px;
-}
-.headlinr .left .connections-panel .connection .info p {
-  flex: 1;
-  margin-left: 10px;
-}
-.headlinr .left .connections-panel .connection .feelings-container {
-  box-sizing: border-box;
-  border: 1px solid #AAACA9;
-  width: 100%;
-  height: 5px;
-}
-.headlinr .left .connections-panel .connection .feelings-container .feelings {
-  background-color: #7CC7A9;
-  height: 100%;
-  transition: width .5s;
 }
 .headlinr .middle {
   display: flex;

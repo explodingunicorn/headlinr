@@ -273,8 +273,8 @@ var app = new Vue({
     el: "#app",
     data: {
         state: {
-            start: 1,
-            game: 0,
+            start: 0,
+            game: 1,
             stats: 0
         },
         rounds: new Round(),
@@ -288,11 +288,9 @@ var app = new Vue({
             headline: '',
             score: {
                 likes: 0,
-                likesReq: 1,
                 comments: 0,
-                commentsReq: 1,
                 users: 0,
-                usersReq: 1
+                famePoints: 0
             }
         },
         time: 'Time',
@@ -402,6 +400,8 @@ var app = new Vue({
     mounted: function() {
         this.generateNewRound();
         var sec = 0;
+        var pastLikes = 0;
+        var pastComments = 0;
         function gameLoop() {
             if(!app.pause) {
                 sec++;
@@ -416,15 +416,20 @@ var app = new Vue({
                 app.user.score.comments += app.game.userHeadlines[i].comments.length;
             }
 
-            for (var j = 0; j < app.game.users.length; j++) {
-                if(app.game.users[j].playerOpinion > 50) {
-                    app.user.score.users += 1;
-                }
+            if (pastLikes !== app.user.score.likes) {
+                var dif = app.user.score.likes - pastLikes;
+                var pointsToAdd = 1000*dif;
+                app.user.score.famePoints += pointsToAdd;
+                pastLikes = app.user.score.likes;
             }
 
-            if(!app.roundComplete) {
-                app.checkRoundComplete();
+            if (pastComments !== app.user.score.likes) {
+                var dif = app.user.score.comments - pastComments;
+                var pointsToAdd = 500*dif;
+                app.user.score.famePoints += pointsToAdd;
+                pastComments = app.user.score.comments;
             }
+
             window.requestAnimationFrame(gameLoop);
         }
 
