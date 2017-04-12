@@ -28,7 +28,7 @@ export default function Game() {
     })();
 
     this.update = function(time) {
-        for (var i = 0; i < connections; i++) {
+        for (var i = 0; i < this.users.length; i++) {
             that.users[i].checkUpdate(time);
         }
     }
@@ -43,5 +43,9 @@ export default function Game() {
         if(this.headlines.length > 30) {
             this.headlines.pop();
         }
+    }
+
+    this.addUser = function() {
+        this.users.push(new User(this));
     }
 }

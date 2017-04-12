@@ -92,7 +92,7 @@ a {
 
 
 
-.purpleBtn {
+.btn {
     background-color: @darkPurple;
     box-sizing: border-box;
     color: white;
@@ -104,19 +104,37 @@ a {
         cursor: pointer;
         background-color: hsl(hue(@darkPurple), 50%, 50%);
     }
-}
 
-.greenBtn {
-    background-color: @green;
-    box-sizing: border-box;
-    color: white;
-    display: inline-block;
-    padding: 10px;
-    text-align: center;
+    &.backGreen {
+        background-color: @green;
 
-    &:hover {
-        cursor: pointer;
-        background-color: hsl(hue(@green), 50%, 50%);
+        &:hover {
+            background-color: hsl(hue(@green), 50%, 50%);
+        }
+    }
+
+    &.backPurple {
+        background-color: @darkPurple;
+
+        &:hover {
+            background-color: hsl(hue(@darkPurple), 50%, 50%);
+        }
+    }
+
+    &.backMedPurple {
+        background-color: @mediumPurple;
+
+        &:hover {
+            background-color: hsl(hue(@mediumPurple), 40%, 40%);
+        }
+    }
+
+    &.backBlack {
+        background-color: @darkGray;
+
+        &:hover {
+            background-color: hsl(hue(@darkGray), 10%, 10%);
+        }
     }
 }
 

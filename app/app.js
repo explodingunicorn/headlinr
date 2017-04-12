@@ -240,7 +240,7 @@ function Game() {
     })();
 
     this.update = function(time) {
-        for (var i = 0; i < connections; i++) {
+        for (var i = 0; i < this.users.length; i++) {
             that.users[i].checkUpdate(time);
         }
     };
@@ -256,6 +256,10 @@ function Game() {
             this.headlines.pop();
         }
     };
+
+    this.addUser = function() {
+        this.users.push(new User(this));
+    };
 }
 
 // Here is the starting point for your application code.
@@ -263,7 +267,7 @@ function Game() {
 
 // Use new ES6 modules syntax for everything.
 var Headline =  require('../src/users/headline.js').Headline;
-var Round = require('../src/users/round.js').Round;
+var UpgradeSystem = require('../src/users/upgrade.js').Upgrade;
 var Vue = require('vue/dist/vue.common.js');
 
 var app = electron.remote.app;
@@ -277,9 +281,6 @@ var app = new Vue({
             game: 1,
             stats: 0
         },
-        rounds: new Round(),
-        roundComplete: false,
-        currentRound: 0,
         user: {
             info: {
                 first: 'Player',
@@ -290,32 +291,20 @@ var app = new Vue({
                 likes: 0,
                 comments: 0,
                 users: 0,
-                famePoints: 0
+                famePoints: 1000000
             }
         },
         time: 'Time',
         game: new Game(),
-        pause: false
+        pause: false,
+        upgradeSystem: new UpgradeSystem(),
+        upgrades: 0
     },
     methods: {
         startGame: function() {
             if (this.user.info.first && this.user.info.last) {
                 this.moveState('game');
             }
-        },
-        checkRoundComplete: function() {
-          if(this.user.score.likes >= this.user.score.likesReq && this.user.score.comments >= this.user.score.commentsReq && this.user.score.users >= this.user.score.usersReq) {
-              this.roundComplete = true;
-          }  
-        },
-        generateNewRound: function() {
-            var reqs = this.rounds.generateRound();
-            this.user.score.likesReq = reqs.likes;
-            this.user.score.commentsReq = reqs.comments;
-            this.user.score.usersReq = reqs.users;
-
-            this.currentRound++;
-            this.roundComplete = false;
         },
         moveState: function(state) {
             for(var name in this.state) {
@@ -398,7 +387,6 @@ var app = new Vue({
         }
     },
     mounted: function() {
-        this.generateNewRound();
         var sec = 0;
         var pastLikes = 0;
         var pastComments = 0;
