@@ -136,7 +136,7 @@
                     <h2>Your score:</h2>
                     <h1 class="darkPurple">{{user.score.likes}} <p>Likes</p></h1>
                     <h1 class="mediumPurple">{{user.score.comments}} <p>Comments</p></h1>
-                    <h1>{{game.users.length}} <p>Connections</p></h1>
+                    <h1>{{game.users.length * game.connectionsScale}} <p>Connections</p></h1>
                     <hr></hr>
                     <h2>Fame Points:</h2>
                     <h1>{{user.score.famePoints}}</h1>
@@ -156,7 +156,7 @@
                         <div class="head">
                             <div class="info">
                                 <div class="thumbnail">
-                                    <img class="portrait" v-bind:src="resolvePic(item.user.info.pic)" alt="Image">
+                                    <img class="portrait" v-bind:src="resolvePic(item.user.pic)" alt="Image">
                                 </div>
                                 <div class="name">
                                     <h3 class="title">{{item.postName.first}} {{item.postName.last}}</h3>
@@ -178,7 +178,7 @@
                             <transition-group name="comment-add" tag="div">
                                 <div class="comment commend-add-item" v-for="comment in item.comments"  v-bind:key="comment">
                                     <div class="thumbnail">
-                                        <img class="portrait" v-bind:src="resolvePic(comment.user.info.pic)" alt="Image">
+                                        <img class="portrait" v-bind:src="resolvePic(comment.user.pic)" alt="Image">
                                     </div>
                                     <div class="content">
                                         <h4>{{comment.commentName.first}} {{comment.commentName.last}}</h4>

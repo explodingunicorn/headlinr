@@ -1,24 +1,32 @@
 trees = {
     connections: [
         {
-            desc: 'Gain 10 more connections',
-            scale: 10
-        },
-        {
-            desc: 'Gain 20 more connections',
-            scale: 20
-        },
-        {
-            desc: 'Gain 50 more connections',
-            scale: 50
+            desc: 'Gain 100 more connections',
+            scale: 1
         },
         {
             desc: 'Gain 200 more connections',
-            scale: 200
+            scale: 2
+        },
+        {
+            desc: 'Gain 600 more connections',
+            scale: 6
         },
         {
             desc: 'Gain 1000 more connections',
-            scale: 1000
+            scale: 10
+        },
+        {
+            desc: 'Gain 8000 more connections',
+            scale: 80
+        },
+        {
+            desc: 'Gain 20000 more connections',
+            scale: 200
+        },
+        {
+            desc: 'Gain 50000 more connections',
+            scale: 500
         },
     ],
 
@@ -84,9 +92,7 @@ exports.Upgrade = function() {
 
     this.connectionsLeveled = function(scale, game) {
         console.log('Leveled Connections');
-        for (var i = 0; i < scale; i++) {
-            game.addUser();
-        }
+        game.addUsers(scale);
     }
 
     this.trendsLeveled = function(scale, game) {

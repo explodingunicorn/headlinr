@@ -1,9 +1,9 @@
 var sentiment = require('sentiment');
 
-function HeadlineComment(comment, user) {
+function HeadlineComment(comment, user, name) {
     this.comment = comment;
     this.user = user;
-    this.commentName = user.info;
+    this.commentName = name;
     this.score = 0;
 
     function like() {
@@ -15,10 +15,10 @@ function HeadlineComment(comment, user) {
     }
 }
 
-exports.Headline = function (headline, user, topic, creation) {
+exports.Headline = function (headline, user, topic, name, creation) {
     this.headline = headline;
     this.user = user;
-    this.postName = user.info;
+    this.postName = name;
     this.topic = topic;
     this.score = 0;
     this.comments = [];
@@ -26,9 +26,9 @@ exports.Headline = function (headline, user, topic, creation) {
     this.playerCreated = creation || false;
 
     //function to add a user comment
-    this.addComment = function(comment, name) {
+    this.addComment = function(comment, user, name) {
         //Creates a new comment to push to comments
-        var comment = new HeadlineComment(comment, name);
+        var comment = new HeadlineComment(comment, user, name);
         //Pushing the comment to our comments array
         this.comments.push(comment);
     }
