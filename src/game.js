@@ -1,16 +1,21 @@
 import User from './users/user.js';
 var Headline = require('../src/users/headline.js').Headline;
+var DataCollector = require('../src/users/dataCollector.js').DataCollector;
 
 var topics = ['cats', 'dogs', 'birth-control', 'the police', 'teachers', 'babies', 'white people', 'purple people', 'fire fighters', 'hamsters', 'macaroni','kangaroos', 'politicians', 'hospitals', 'girlfriends', 'boyfriends', 'exercises', 'eating dinner', 'pool parties', 'scooters', 'skateboards', 'apples', 'oranges', 'hotdogs', 'hamburgers', 'fat people', 'skinny people', 'doors', 'houses', 'cigars', 'marijuanas', 'bands', 'popcorn', 'sodas', 'movies', 'blind people', 'elephants', 'shoes', 'hippies', 'beards', 'eyeballs', 'hands', 'noses', 'farts', 'computers', 'hackers', 'men', 'women', 'actors', 'actresses', 'pencils', 'fries', 'fires', 'lights', 'cities', 'websites', 'hopes', 'dreams', 'subs', 'hamsters', 'keyboards', 'phones', 'moms', 'dads', 'grandparents', 'old people', 'millenials', 'wars', 'christians', 'muslims', 'liberals', 'rednecks', 'neo-nazis', 'snow-flakes', 'ducks', 'colds', 'fevers', 'pancakes', 'boogers', 'white people', 'black people', 'red people', 'green people', 'televisions', 'haters', 'bugs', 'basketballs', 'sweatshirts', 'clothes', 'donuts', 'dinosaurs', 'bosses', 'co-workers', 'snakes'];
 
 export default function Game() {
     var connections = 50;
     this.connectionsScale = 2;
+    this.collector = new DataCollector();
     var that = this;
     this.headlines = [];
     this.userHeadlines = [];
-    var topicsAmt = 20;
-    this.topics = (function () {
+    var topicsAmt = 10;
+    this.topics = generateTopics();
+    this.data = null;
+
+    function generateTopics() {
         var gameTopics = [];
         topics.sort(function() { return 0.5 - Math.random() });
         for (var i = 0; i < topicsAmt; i++) {
@@ -18,7 +23,7 @@ export default function Game() {
         }
 
         return gameTopics;
-    })();
+    }
 
     this.users = (function () {
         var usersArr = [];
@@ -28,6 +33,10 @@ export default function Game() {
         return usersArr;
     })();
 
+    this.createNewTopics = function() {
+        this.topics = generateTopics();
+    }
+
     this.update = function(time) {
         for (var i = 0; i < this.users.length; i++) {
             that.users[i].checkUpdate(time);
@@ -35,6 +44,7 @@ export default function Game() {
     }
 
     this.pushHeadline = function(headline, user) {
+        this.data = this.collector.pushNewHeadline(headline);
         this.headlines.unshift(headline);
 
         if(user) {
@@ -54,5 +64,14 @@ export default function Game() {
             this.users[i].generateNewActivityLevel();
         }
         this.connectionsScale = this.users[0].names.length;
+    }
+
+    this.addNewTopics = function(scale) {
+        topicsAmt = topicsAmt + scale;
+        this.topics = generateTopics();
+
+        for (var i = 0; i < this.users.length; i++) {
+            this.users[i].generateNewFeelings();
+        }
     }
 }

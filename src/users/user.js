@@ -31,7 +31,6 @@ export default function User(game) {
     this.playerOpinion = rand10() * 5;
     var activityLevel = 1000 + Math.floor((Math.random() * 500) + 1);
     var aggression = rand10();
-    var topicFeelings = generateTopicFeelings(this.game);
     var sex = Math.floor((Math.random() * 2) + 1);
     this.pic = '';
     if (sex === 1) {
@@ -57,14 +56,20 @@ export default function User(game) {
         return name;
     }
 
-    function generateTopicFeelings(game) {
+    this.generateTopicFeelings = function() {
         var topics = {};
 
-        for (var i = 0; i < game.topics.length; i++) {
-            topics[game.topics[i]] = rand10();
+        for (var i = 0; i < this.game.topics.length; i++) {
+            topics[this.game.topics[i]] = rand10();
         }
         return topics;
     }
+
+    this.generateNewFeelings = function() {
+        topicFeelings = this.generateTopicFeelings();
+    }
+
+    var topicFeelings = this.generateTopicFeelings();
 
     this.generateMoreNames = function(num) {
         for(var i = 0; i < num; i++) {
@@ -121,10 +126,9 @@ export default function User(game) {
 
         for (var i = 0; i < postsToCheck; i++) {
             //Read the headline, and determine the reaction to the headline
-            var headline = headlines[i].headline;
             var topic = headlines[i].topic;
             var userFeeling = topicFeelings[topic];
-            var sentiment = sentimentAnalysis(headline).score;
+            var sentiment = headlines[i].sentimentScore;
             var playerFactor = 0;
             var repeatFactor = 0;
             var player = false;

@@ -24,6 +24,8 @@ exports.Headline = function (headline, user, topic, name, creation) {
     this.comments = [];
     this.interacted = {};
     this.playerCreated = creation || false;
+    this.sentimentScore = sentiment(headline).score;
+    console.log(this.sentimentScore);
 
     //function to add a user comment
     this.addComment = function(comment, user, name) {

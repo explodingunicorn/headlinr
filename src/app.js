@@ -20,7 +20,8 @@ var app = new Vue({
         state: {
             start: 0,
             game: 1,
-            stats: 0
+            stats: 0,
+            dashboard: 0
         },
         user: {
             info: {

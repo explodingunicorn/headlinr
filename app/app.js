@@ -40,7 +40,6 @@ function User(game) {
     this.playerOpinion = rand10() * 5;
     var activityLevel = 1000 + Math.floor((Math.random() * 500) + 1);
     var aggression = rand10();
-    var topicFeelings = generateTopicFeelings(this.game);
     var sex = Math.floor((Math.random() * 2) + 1);
     this.pic = '';
     if (sex === 1) {
@@ -66,14 +65,20 @@ function User(game) {
         return name;
     }
 
-    function generateTopicFeelings(game) {
+    this.generateTopicFeelings = function() {
         var topics = {};
 
-        for (var i = 0; i < game.topics.length; i++) {
-            topics[game.topics[i]] = rand10();
+        for (var i = 0; i < this.game.topics.length; i++) {
+            topics[this.game.topics[i]] = rand10();
         }
         return topics;
-    }
+    };
+
+    this.generateNewFeelings = function() {
+        topicFeelings = this.generateTopicFeelings();
+    };
+
+    var topicFeelings = this.generateTopicFeelings();
 
     this.generateMoreNames = function(num) {
         for(var i = 0; i < num; i++) {
@@ -130,10 +135,9 @@ function User(game) {
 
         for (var i = 0; i < postsToCheck; i++) {
             //Read the headline, and determine the reaction to the headline
-            var headline = headlines[i].headline;
             var topic = headlines[i].topic;
             var userFeeling = topicFeelings[topic];
-            var sentiment$$1 = sentimentAnalysis(headline).score;
+            var sentiment$$1 = headlines[i].sentimentScore;
             var playerFactor = 0;
             var repeatFactor = 0;
             var player = false;
@@ -234,17 +238,22 @@ function User(game) {
 }
 
 var Headline$1 = require('../src/users/headline.js').Headline;
+var DataCollector = require('../src/users/dataCollector.js').DataCollector;
 
 var topics = ['cats', 'dogs', 'birth-control', 'the police', 'teachers', 'babies', 'white people', 'purple people', 'fire fighters', 'hamsters', 'macaroni','kangaroos', 'politicians', 'hospitals', 'girlfriends', 'boyfriends', 'exercises', 'eating dinner', 'pool parties', 'scooters', 'skateboards', 'apples', 'oranges', 'hotdogs', 'hamburgers', 'fat people', 'skinny people', 'doors', 'houses', 'cigars', 'marijuanas', 'bands', 'popcorn', 'sodas', 'movies', 'blind people', 'elephants', 'shoes', 'hippies', 'beards', 'eyeballs', 'hands', 'noses', 'farts', 'computers', 'hackers', 'men', 'women', 'actors', 'actresses', 'pencils', 'fries', 'fires', 'lights', 'cities', 'websites', 'hopes', 'dreams', 'subs', 'hamsters', 'keyboards', 'phones', 'moms', 'dads', 'grandparents', 'old people', 'millenials', 'wars', 'christians', 'muslims', 'liberals', 'rednecks', 'neo-nazis', 'snow-flakes', 'ducks', 'colds', 'fevers', 'pancakes', 'boogers', 'white people', 'black people', 'red people', 'green people', 'televisions', 'haters', 'bugs', 'basketballs', 'sweatshirts', 'clothes', 'donuts', 'dinosaurs', 'bosses', 'co-workers', 'snakes'];
 
 function Game() {
     var connections = 50;
     this.connectionsScale = 2;
+    this.collector = new DataCollector();
     var that = this;
     this.headlines = [];
     this.userHeadlines = [];
-    var topicsAmt = 20;
-    this.topics = (function () {
+    var topicsAmt = 10;
+    this.topics = generateTopics();
+    this.data = null;
+
+    function generateTopics() {
         var gameTopics = [];
         topics.sort(function() { return 0.5 - Math.random() });
         for (var i = 0; i < topicsAmt; i++) {
@@ -252,7 +261,7 @@ function Game() {
         }
 
         return gameTopics;
-    })();
+    }
 
     this.users = (function () {
         var usersArr = [];
@@ -262,6 +271,10 @@ function Game() {
         return usersArr;
     })();
 
+    this.createNewTopics = function() {
+        this.topics = generateTopics();
+    };
+
     this.update = function(time) {
         for (var i = 0; i < this.users.length; i++) {
             that.users[i].checkUpdate(time);
@@ -269,6 +282,7 @@ function Game() {
     };
 
     this.pushHeadline = function(headline, user) {
+        this.data = this.collector.pushNewHeadline(headline);
         this.headlines.unshift(headline);
 
         if(user) {
@@ -289,6 +303,15 @@ function Game() {
         }
         this.connectionsScale = this.users[0].names.length;
     };
+
+    this.addNewTopics = function(scale) {
+        topicsAmt = topicsAmt + scale;
+        this.topics = generateTopics();
+
+        for (var i = 0; i < this.users.length; i++) {
+            this.users[i].generateNewFeelings();
+        }
+    };
 }
 
 // Here is the starting point for your application code.
@@ -308,7 +331,8 @@ var app = new Vue({
         state: {
             start: 0,
             game: 1,
-            stats: 0
+            stats: 0,
+            dashboard: 0
         },
         user: {
             info: {

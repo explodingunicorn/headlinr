@@ -32,7 +32,7 @@ trees = {
 
     trends: [
         {
-            desc: 'Resetting Trends Costs 1000 points less',
+            desc: 'Resetting Trends Costs 5000 points less',
             type: 'reduction',
             scale: 1000
         },
@@ -42,7 +42,7 @@ trees = {
             scale: 2
         },
         {
-            desc: 'Resetting Trends Costs 2000 points less',
+            desc: 'Resetting Trends Costs 5000 points less',
             type: 'reduction',
             scale: 2000
         },
@@ -52,7 +52,7 @@ trees = {
             scale: 2
         },
         {
-            desc: 'Resetting Trends Costs 3000 points less',
+            desc: 'Resetting Trends Costs 5000 points less',
             type: 'reduction',
             scale: 3000
         },
@@ -62,7 +62,7 @@ trees = {
             scale: 1
         },
         {
-            desc: 'Resetting Trends Costs 4000 points less',
+            desc: 'Resetting Trends Costs 5000 points less',
             type: 'reduction',
             scale: 4000
         },
@@ -87,15 +87,21 @@ exports.Upgrade = function() {
         if(newBranch) {
             this[type+'Text'] = newBranch.desc;
         }
-        this[type+'Leveled'](currentBranch.scale, game);
+        this[type+'Leveled'](currentBranch, game);
     }
 
-    this.connectionsLeveled = function(scale, game) {
+    this.connectionsLeveled = function(branch, game) {
         console.log('Leveled Connections');
-        game.addUsers(scale);
+        game.addUsers(branch.scale);
     }
 
-    this.trendsLeveled = function(scale, game) {
+    this.trendsLeveled = function(branch, game) {
         console.log('Leveled Trends');
+        if(branch.type === 'addition') {
+            game.addNewTopics(branch.scale);
+        }
+        else {
+            console.log('Make price less');
+        }
     }
 }
