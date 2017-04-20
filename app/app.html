@@ -40,26 +40,28 @@
             <div class="upgrades-container">
                 <h1>{{user.score.famePoints}} Fame left!</h1>
                 <div class="power-ups">
-                    <div class="power-up-container">
+                    <div class="power-up-container border green raised">
                         <img src="./img/connections.png"/>
                         <h2>Connections</h2>
                         <p>{{upgradeSystem.connectionsText}}</p>
                         <h5 class="btn backGreen fullWidth" v-on:click="upgradeSystem.upgrade('connections', game)">Spend Points!</h5>
                     </div>
-                    <div class="power-up-container">
+                    <div class="power-up-container border darkPurple raised">
                         <img src="./img/trends.png"/>
                         <h2>Trends</h2>
                         <p>{{upgradeSystem.trendsText}}</p>
                         <h5 class="btn backPurple fullWidth" v-on:click="upgradeSystem.upgrade('trends', game)">Spend Points!</h5>
                     </div>
-                    <div class="power-up-container">
+                    <div class="power-up-container border medPurple raised">
                         <img src="./img/dashboard.png"/>
                         <h2>Dashboard</h2>
+                        <p>Placeholder</p>
                         <h5 class="btn backMedPurple fullWidth" v-on:click="">Spend Points!</h5>
                     </div>
-                    <div class="power-up-container">
+                    <div class="power-up-container border black raised">
                         <img src="./img/automation.png"/>
                         <h2>Automation</h2>
+                        <p>Placeholder</p>
                         <h5 class="btn backBlack fullWidth" v-on:click="">Spend Points!</h5>
                     </div>
                 </div>
@@ -71,9 +73,9 @@
             <div class="graphs-container">
                 <div class="graphs-column">
                     <h2>Post Frequency</h2>
-                    <div v-for="data in game.data" class="bar-container">
-                        <div class="bar" v-bind:style="{width: data.posts.length / 20 * 50 + '%'}"><p><b>{{data.posts.length}}</b></p></div>
-                        <p>{{data.trend}}</p>
+                    <div v-for="topic in game.collector.topics" class="bar-container">
+                        <div class="bar" v-bind:style="{width: topic.amount / game.collector.max * 50 + '%'}"><p><b>{{topic.amount}}</b></p></div>
+                        <p>{{topic.name}}</p>
                     </div>
                 </div>
                 <div class="graphs-column">
@@ -103,7 +105,7 @@
                         <div class="head">
                             <div class="info">
                                 <div class="thumbnail">
-                                    <img class="portrait" v-bind:src="resolvePic(item.user.info.pic)" alt="Image">
+                                    <img class="portrait" src="http://bulma.io/images/placeholders/96x96.png"/> alt="Image">
                                 </div>
                                 <div class="name">
                                     <h3 class="title">{{item.postName.first}} {{item.postName.last}}</h3>
@@ -125,7 +127,7 @@
                             <transition-group name="comment-add" tag="div">
                                 <div class="comment commend-add-item" v-for="comment in item.comments"  v-bind:key="comment">
                                     <div class="thumbnail">
-                                        <img class="portrait" v-bind:src="resolvePic(comment.user.info.pic)" alt="Image">
+                                        <img class="portrait" v-bind:src="resolvePic(comment.user.pic)" alt="Image">
                                     </div>
                                     <div class="content">
                                         <h4>{{comment.commentName.first}} {{comment.commentName.last}}</h4>

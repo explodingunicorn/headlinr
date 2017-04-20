@@ -8,12 +8,21 @@ export default function Game() {
     var connections = 50;
     this.connectionsScale = 2;
     this.collector = new DataCollector();
-    var that = this;
+    var game = this;
     this.headlines = [];
     this.userHeadlines = [];
     var topicsAmt = 10;
     this.topics = generateTopics();
     this.data = null;
+    this.postsToRead = 5;
+    this.userGroupQueues = (function() {
+        var arr = [];
+        for (var i = 0; i < 5; i++) {
+            arr[i] = [];
+        }
+
+        return arr;
+    })();
 
     function generateTopics() {
         var gameTopics = [];
@@ -27,8 +36,11 @@ export default function Game() {
 
     this.users = (function () {
         var usersArr = [];
-        for (var i = 0; i < connections; i++) {
-            usersArr.push(new User(that));
+        var groupCount = game.userGroupQueues.length;
+        for (var i = 0; i < connections/groupCount; i++) {
+            for (var j = 0; j < groupCount; j++) {
+                usersArr.push(new User(game, j));
+            }
         }
         return usersArr;
     })();
@@ -39,14 +51,34 @@ export default function Game() {
 
     this.update = function(time) {
         for (var i = 0; i < this.users.length; i++) {
-            that.users[i].checkUpdate(time);
+            game.users[i].checkUpdate(time);
         }
     }
 
-    this.pushHeadline = function(headline, user) {
-        this.data = this.collector.pushNewHeadline(headline);
+    this.pushHeadline = function(headline, group, user) {
+        this.collector.pushNewHeadline(headline);
+        //If a user is posting, post to all groups
+        if (group === 'all') {
+            for (var i = 0; i < this.userGroupQueues.length; i++) {
+                this.userGroupQueues[i].unshift(headline);
+
+                if(this.userGroupQueues[i].length > this.postsToRead) {
+                    this.userGroupQueues[i].pop();
+                }
+            }
+        }
+        //Otherwise post to the respective group
+        else {
+            this.userGroupQueues[group].unshift(headline);
+
+            if(this.userGroupQueues[group].length > this.postsToRead) {
+                this.userGroupQueues[group].pop();
+            }
+        }
+        //Also post it to the collective group for the user to view all posts
         this.headlines.unshift(headline);
 
+        //If the user is posting push it to the users headlines as well
         if(user) {
             this.userHeadlines.unshift(headline);
         }
@@ -54,10 +86,17 @@ export default function Game() {
         if(this.headlines.length > 30) {
             this.headlines.pop();
         }
+        console.log(this.userGroupQueues);
     }
 
     this.addUsers = function(scale) {
         var modeledScale = scale*100;
+        if(scale < 10) {
+            this.postsToRead++;
+        }
+        else {
+            this.postsToRead += 2;
+        }
         var amountToAdd = modeledScale/this.users.length;
         for (var i = 0; i < this.users.length; i++) {
             this.users[i].generateMoreNames(amountToAdd);

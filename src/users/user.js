@@ -19,7 +19,7 @@ var commentChance = require('../src/utilities.js').commentChance;
 var sentimentAnalysis = require('sentiment');
 
 //Basic class for user, a user represents multiple connections
-export default function User(game) {
+export default function User(game, group) {
         //Age, sex, name
     this.names = (function() {
         var arr = [];
@@ -28,6 +28,7 @@ export default function User(game) {
         return arr;
     })();
     this.game = game;
+    this.group = group;
     this.playerOpinion = rand10() * 5;
     var activityLevel = 1000 + Math.floor((Math.random() * 500) + 1);
     var aggression = rand10();
@@ -38,6 +39,7 @@ export default function User(game) {
     } else {
         this.pic = '/girls/girl (' + Math.floor((Math.random() * 42) + 1) + ')';
     }
+    var self = this;
 
     function generateName() {
         var randFirstF = Math.floor((Math.random() * fFirstNames.length) + 1);
@@ -108,7 +110,7 @@ export default function User(game) {
     //Function that runs everything involved in a users turn
     function checkHeadlinr(game, user, name) {
         //Function to read headlines
-        checkHeadlines(game.headlines, user, game, name);
+        checkHeadlines(game.userGroupQueues[user.group], user, game, name);
         //Function to create a headline
         createHeadline(game, user, name);
     }
@@ -117,12 +119,7 @@ export default function User(game) {
     function checkHeadlines(headlines, user, game, name) {
         var postsToCheck = 0;
         //Checks the last 10 headlines
-        if(headlines.length < 20) {
-            postsToCheck = headlines.length;
-        }
-        else {
-            postsToCheck = 20;
-        }
+        postsToCheck = headlines.length;
 
         for (var i = 0; i < postsToCheck; i++) {
             //Read the headline, and determine the reaction to the headline
@@ -223,7 +220,7 @@ export default function User(game) {
             //Creating a new headline
             var headline = new Headline(statement, user, topic, name);
             //
-            game.pushHeadline(headline);
+            game.pushHeadline(headline, self.group);
         }
     };
 }

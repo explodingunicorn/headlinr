@@ -72,7 +72,7 @@ var app = new Vue({
             }
             if (key) {
                 var headline = new Headline(this.user.headline, this.user, userTopic, true)
-                this.game.pushHeadline(headline, true);
+                this.game.pushHeadline(headline, 'all', true);
                 this.user.headline = '';
             }
             this.pause = false;

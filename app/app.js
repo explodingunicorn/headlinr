@@ -28,7 +28,7 @@ var commentChance = require('../src/utilities.js').commentChance;
 var sentimentAnalysis = require('sentiment');
 
 //Basic class for user, a user represents multiple connections
-function User(game) {
+function User(game, group) {
         //Age, sex, name
     this.names = (function() {
         var arr = [];
@@ -37,6 +37,7 @@ function User(game) {
         return arr;
     })();
     this.game = game;
+    this.group = group;
     this.playerOpinion = rand10() * 5;
     var activityLevel = 1000 + Math.floor((Math.random() * 500) + 1);
     var aggression = rand10();
@@ -47,6 +48,7 @@ function User(game) {
     } else {
         this.pic = '/girls/girl (' + Math.floor((Math.random() * 42) + 1) + ')';
     }
+    var self = this;
 
     function generateName() {
         var randFirstF = Math.floor((Math.random() * fFirstNames.length) + 1);
@@ -117,7 +119,7 @@ function User(game) {
     //Function that runs everything involved in a users turn
     function checkHeadlinr(game, user, name) {
         //Function to read headlines
-        checkHeadlines(game.headlines, user, game, name);
+        checkHeadlines(game.userGroupQueues[user.group], user, game, name);
         //Function to create a headline
         createHeadline(game, user, name);
     }
@@ -126,12 +128,7 @@ function User(game) {
     function checkHeadlines(headlines, user, game, name) {
         var postsToCheck = 0;
         //Checks the last 10 headlines
-        if(headlines.length < 20) {
-            postsToCheck = headlines.length;
-        }
-        else {
-            postsToCheck = 20;
-        }
+        postsToCheck = headlines.length;
 
         for (var i = 0; i < postsToCheck; i++) {
             //Read the headline, and determine the reaction to the headline
@@ -232,7 +229,7 @@ function User(game) {
             //Creating a new headline
             var headline = new Headline$2(statement, user, topic, name);
             //
-            game.pushHeadline(headline);
+            game.pushHeadline(headline, self.group);
         }
     }
 }
@@ -246,12 +243,21 @@ function Game() {
     var connections = 50;
     this.connectionsScale = 2;
     this.collector = new DataCollector();
-    var that = this;
+    var game = this;
     this.headlines = [];
     this.userHeadlines = [];
     var topicsAmt = 10;
     this.topics = generateTopics();
     this.data = null;
+    this.postsToRead = 5;
+    this.userGroupQueues = (function() {
+        var arr = [];
+        for (var i = 0; i < 5; i++) {
+            arr[i] = [];
+        }
+
+        return arr;
+    })();
 
     function generateTopics() {
         var gameTopics = [];
@@ -265,8 +271,11 @@ function Game() {
 
     this.users = (function () {
         var usersArr = [];
-        for (var i = 0; i < connections; i++) {
-            usersArr.push(new User(that));
+        var groupCount = game.userGroupQueues.length;
+        for (var i = 0; i < connections/groupCount; i++) {
+            for (var j = 0; j < groupCount; j++) {
+                usersArr.push(new User(game, j));
+            }
         }
         return usersArr;
     })();
@@ -277,14 +286,34 @@ function Game() {
 
     this.update = function(time) {
         for (var i = 0; i < this.users.length; i++) {
-            that.users[i].checkUpdate(time);
+            game.users[i].checkUpdate(time);
         }
     };
 
-    this.pushHeadline = function(headline, user) {
-        this.data = this.collector.pushNewHeadline(headline);
+    this.pushHeadline = function(headline, group, user) {
+        this.collector.pushNewHeadline(headline);
+        //If a user is posting, post to all groups
+        if (group === 'all') {
+            for (var i = 0; i < this.userGroupQueues.length; i++) {
+                this.userGroupQueues[i].unshift(headline);
+
+                if(this.userGroupQueues[i].length > this.postsToRead) {
+                    this.userGroupQueues[i].pop();
+                }
+            }
+        }
+        //Otherwise post to the respective group
+        else {
+            this.userGroupQueues[group].unshift(headline);
+
+            if(this.userGroupQueues[group].length > this.postsToRead) {
+                this.userGroupQueues[group].pop();
+            }
+        }
+        //Also post it to the collective group for the user to view all posts
         this.headlines.unshift(headline);
 
+        //If the user is posting push it to the users headlines as well
         if(user) {
             this.userHeadlines.unshift(headline);
         }
@@ -292,10 +321,17 @@ function Game() {
         if(this.headlines.length > 30) {
             this.headlines.pop();
         }
+        console.log(this.userGroupQueues);
     };
 
     this.addUsers = function(scale) {
         var modeledScale = scale*100;
+        if(scale < 10) {
+            this.postsToRead++;
+        }
+        else {
+            this.postsToRead += 2;
+        }
         var amountToAdd = modeledScale/this.users.length;
         for (var i = 0; i < this.users.length; i++) {
             this.users[i].generateMoreNames(amountToAdd);
@@ -383,7 +419,7 @@ var app = new Vue({
             }
             if (key) {
                 var headline = new Headline(this.user.headline, this.user, userTopic, true);
-                this.game.pushHeadline(headline, true);
+                this.game.pushHeadline(headline, 'all', true);
                 this.user.headline = '';
             }
             this.pause = false;

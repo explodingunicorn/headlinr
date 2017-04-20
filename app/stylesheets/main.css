@@ -73,10 +73,12 @@ a {
   display: inline-block;
   padding: 10px;
   text-align: center;
+  transition: all .5s;
 }
 .btn:hover {
   cursor: pointer;
   background-color: #7040bf;
+  box-shadow: 0px 0px 20px -5px #393D3F;
 }
 .btn.backGreen {
   background-color: #7CC7A9;
@@ -104,6 +106,23 @@ a {
 }
 .fullWidth {
   width: 100%;
+}
+.border {
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 3px;
+}
+.border.darkPurple {
+  border-color: #4F2D87;
+}
+.border.green {
+  border-color: #7CC7A9;
+}
+.border.medPurple {
+  border-color: #6A66A3;
+}
+.border.black {
+  border-color: #393D3F;
 }
 input {
   border: 1px solid #AAACA9;
@@ -154,7 +173,7 @@ input:focus {
   color: #6A66A3 !important;
 }
 .raised {
-  box-shadow: 0px 0px 20px 0px #393D3F;
+  box-shadow: 0px 0px 20px -5px #393D3F;
 }
 .thumbnail {
   background-color: #393D3F;
@@ -230,23 +249,179 @@ input:focus {
 .wiggle {
   -webkit-animation: wiggle 10s infinite;
 }
-html,
-body {
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  overflow-y: none;
+.dashboard {
+  box-sizing: border-box;
+  padding: 20px;
 }
-a {
-  text-decoration: none;
-}
-.game,
-.start,
-.stats {
+.dashboard .graphs-container {
   display: flex;
+  flex-direction: row;
+}
+.dashboard .graphs-container .graphs-column {
+  flex: 1;
+}
+.dashboard .graphs-container .graphs-column .bar-container {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  margin: 10px 0;
+}
+.dashboard .graphs-container .graphs-column .bar-container .bar {
+  background-color: #7CC7A9;
+  color: white;
+  margin-right: 10px;
+  padding: 5px;
+}
+.userInput {
+  margin-bottom: 20px;
+}
+.userInput .headline-submission {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 10px;
+}
+.userInput .headline-submission img {
+  height: 70px;
+  width: auto;
+}
+.userInput .headline-submission input {
+  box-sizing: border-box;
+  font-size: 24px;
+  flex: 1;
+  margin-left: 10px;
+  padding: 20px;
+}
+.post {
+  background-color: white;
+  border: 1px solid #AAACA9;
+  border-bottom: 3px solid #AAACA9;
+  border-radius: 3px;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+.post .head {
+  padding: 15px;
+  border-bottom: 1px solid #AAACA9;
+}
+.post .head .info {
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+  align-content: center;
+  justify-content: center;
+}
+.post .head .info .name {
+  flex: 1;
+  margin-left: 15px;
+}
+.post .head .info .score h1 {
+  color: #4F2D87;
+}
+.post .head .content {
+  padding: 10px 0;
+}
+.post .head .buttons {
+  padding: 10px 0;
+}
+.post .head .buttons a {
+  border-radius: 3px;
+  margin-right: 10px;
+  padding: 5px;
+}
+.post .head .buttons .like {
+  color: #4F2D87;
+}
+.post .head .buttons .liked {
+  background-color: #4F2D87;
+  color: white;
+}
+.post .head .buttons .like:hover {
+  color: white;
+  cursor: pointer;
+  background-color: #4F2D87;
+}
+.post .head .buttons .dislike {
+  color: #6A66A3;
+}
+.post .head .buttons .disliked {
+  background-color: #6A66A3;
+  color: white;
+}
+.post .head .buttons .dislike:hover {
+  color: white;
+  cursor: pointer;
+  background-color: #6A66A3;
+}
+.post .commentSection {
+  display: flex;
+  flex-direction: column;
+  height: auto;
+}
+.post .commentSection .comment {
+  background-color: #F0F1ED;
+  border-bottom: 1px solid #AAACA9;
+  display: flex;
+  flex-direction: row;
+  padding: 15px;
+}
+.post .commentSection .comment .content {
+  margin-left: 15px;
+  flex: 1;
+}
+.post .commentSection .comment .content h4 {
+  margin-bottom: 5px;
+}
+.post .userComment {
+  border-bottom: 1px solid #AAACA9;
+  display: flex;
+  flex-direction: row;
+  padding: 15px;
+}
+.post .submitComment {
+  padding: 15px;
+  text-align: center;
+}
+.post .submitComment:hover {
+  background-color: #4F2D87;
+  cursor: pointer;
+}
+.post .submitComment:hover h5 {
+  color: white;
+}
+.headlinr-nav {
+  background-color: #4F2D87;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 10px;
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
-  height: 100%;
+  z-index: 100;
+}
+.headlinr-nav h1 {
+  color: #F0F1ED;
+  font-size: 28px !important;
+}
+.headlinr-nav .spacer {
+  flex: 1;
+}
+.headlinr-nav .user-info {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+}
+.headlinr-nav .user-info img {
+  height: 24px;
+  margin-right: 10px;
+}
+.headlinr-nav .user-info:hover {
+  color: white;
+  cursor: pointer;
+  text-decoration: underline;
 }
 .start {
   background-color: rgba(0, 0, 0, 0.2);
@@ -292,44 +467,6 @@ a {
 .start .start-screen .start-button:hover {
   cursor: pointer;
 }
-.game {
-  box-sizing: border-box;
-  padding: 20px;
-}
-.headlinr-nav {
-  background-color: #4F2D87;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  padding: 10px;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 100;
-}
-.headlinr-nav h1 {
-  color: #F0F1ED;
-  font-size: 28px !important;
-}
-.headlinr-nav .spacer {
-  flex: 1;
-}
-.headlinr-nav .user-info {
-  display: flex;
-  align-items: center;
-  flex-direction: row;
-}
-.headlinr-nav .user-info img {
-  height: 24px;
-  margin-right: 10px;
-}
-.headlinr-nav .user-info:hover {
-  color: white;
-  cursor: pointer;
-  text-decoration: underline;
-}
 .upgrades {
   padding: 20px;
   position: fixed;
@@ -351,8 +488,8 @@ a {
 }
 .upgrades .upgrades-container .power-ups {
   display: flex;
-  flex-direction: row;
-  width: 80%;
+  padding: 20px 0px;
+  width: 90%;
 }
 .upgrades .upgrades-container .power-ups .power-up-container {
   display: flex;
@@ -360,42 +497,50 @@ a {
   flex: 1;
   flex-direction: column;
   padding: 20px;
+  margin: 0 10px;
   text-align: center;
+  width: 25%;
+}
+.upgrades .upgrades-container .power-ups .power-up-container p {
+  margin-bottom: auto;
+  padding-bottom: 20px;
+}
+.upgrades .upgrades-container .power-ups .power-up-container .btm {
+  margin-top: auto;
 }
 .upgrades .upgrades-container .power-ups .power-up-container img {
   width: 100px;
   height: auto;
   margin-bottom: 15px;
 }
-.dashboard {
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-y: none;
+}
+a {
+  text-decoration: none;
+}
+.game,
+.start,
+.stats {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+.game {
   box-sizing: border-box;
   padding: 20px;
-}
-.dashboard .graphs-container {
-  display: flex;
-  flex-direction: row;
-}
-.dashboard .graphs-container .graphs-column {
-  flex: 1;
-}
-.dashboard .graphs-container .graphs-column .bar-container {
-  align-items: center;
-  display: flex;
-  flex-direction: row;
-  margin: 10px 0;
-}
-.dashboard .graphs-container .graphs-column .bar-container .bar {
-  background-color: #7CC7A9;
-  color: white;
-  margin-right: 10px;
-  padding: 5px;
 }
 .headlinr {
   box-sizing: border-box;
   width: 100%;
   height: 100%;
   display: flex;
-  padding-top: 50px;
+  padding-top: 70px;
   flex-direction: column;
 }
 .headlinr .column {
@@ -433,123 +578,6 @@ a {
   display: flex;
   flex: 2;
   flex-direction: column;
-}
-.headlinr .middle .userInput {
-  margin-bottom: 20px;
-}
-.headlinr .middle .userInput .headline-submission {
-  display: flex;
-  flex-direction: row;
-  margin-bottom: 10px;
-}
-.headlinr .middle .userInput .headline-submission img {
-  height: 70px;
-  width: auto;
-}
-.headlinr .middle .userInput .headline-submission input {
-  box-sizing: border-box;
-  font-size: 24px;
-  flex: 1;
-  margin-left: 10px;
-  padding: 20px;
-}
-.headlinr .middle .post {
-  background-color: white;
-  border: 1px solid #AAACA9;
-  border-bottom: 3px solid #AAACA9;
-  border-radius: 3px;
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 20px;
-}
-.headlinr .middle .post .head {
-  padding: 15px;
-  border-bottom: 1px solid #AAACA9;
-}
-.headlinr .middle .post .head .info {
-  display: flex;
-  flex: 1;
-  flex-direction: row;
-  align-content: center;
-  justify-content: center;
-}
-.headlinr .middle .post .head .info .name {
-  flex: 1;
-  margin-left: 15px;
-}
-.headlinr .middle .post .head .info .score h1 {
-  color: #4F2D87;
-}
-.headlinr .middle .post .head .content {
-  padding: 10px 0;
-}
-.headlinr .middle .post .head .buttons {
-  padding: 10px 0;
-}
-.headlinr .middle .post .head .buttons a {
-  border-radius: 3px;
-  margin-right: 10px;
-  padding: 5px;
-}
-.headlinr .middle .post .head .buttons .like {
-  color: #4F2D87;
-}
-.headlinr .middle .post .head .buttons .liked {
-  background-color: #4F2D87;
-  color: white;
-}
-.headlinr .middle .post .head .buttons .like:hover {
-  color: white;
-  cursor: pointer;
-  background-color: #4F2D87;
-}
-.headlinr .middle .post .head .buttons .dislike {
-  color: #6A66A3;
-}
-.headlinr .middle .post .head .buttons .disliked {
-  background-color: #6A66A3;
-  color: white;
-}
-.headlinr .middle .post .head .buttons .dislike:hover {
-  color: white;
-  cursor: pointer;
-  background-color: #6A66A3;
-}
-.headlinr .middle .post .commentSection {
-  display: flex;
-  flex-direction: column;
-  height: auto;
-}
-.headlinr .middle .post .commentSection .comment {
-  background-color: #F0F1ED;
-  border-bottom: 1px solid #AAACA9;
-  display: flex;
-  flex-direction: row;
-  padding: 15px;
-}
-.headlinr .middle .post .commentSection .comment .content {
-  margin-left: 15px;
-  flex: 1;
-}
-.headlinr .middle .post .commentSection .comment .content h4 {
-  margin-bottom: 5px;
-}
-.headlinr .middle .post .userComment {
-  border-bottom: 1px solid #AAACA9;
-  display: flex;
-  flex-direction: row;
-  padding: 15px;
-}
-.headlinr .middle .post .submitComment {
-  padding: 15px;
-  text-align: center;
-}
-.headlinr .middle .post .submitComment:hover {
-  background-color: #4F2D87;
-  cursor: pointer;
-}
-.headlinr .middle .post .submitComment:hover h5 {
-  color: white;
 }
 .headlinr .right {
   flex: 1;

@@ -1,4 +1,9 @@
 @import './mainStyles.less';
+@import 'components/dashboard';
+@import 'components/headlines';
+@import 'components/navigation';
+@import 'components/start';
+@import 'components/upgrades';
 
 html, body {
     width: 100%;
@@ -18,179 +23,21 @@ a {
     height: 100%;
 }
 
-.start {
-    background-color: rgba(0,0,0,.2);
-    background-image: url('../img/millenials.jpg');
-    background-size: cover;
-    background-position: center center;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
 
-    .start-screen {
-        background-color: rgba(255,255,255,.85);
-        box-sizing: border-box;
-        padding: 25px;
-        width: 500px;
-
-        h1 {
-            margin-bottom: 10px;
-        }
-
-        .welcome {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        p {
-            margin-bottom: 7px;
-        }
-
-        input {
-            width: 100%;
-            margin-left: 0;
-            margin-bottom: 10px;
-            text-align: center;
-        }
-
-        .start-button {
-            background-color: @darkPurple;
-            box-sizing: border-box;
-            color: white;
-            display: inline-block;
-            text-align: center;
-            margin-top: 10px;
-            padding: 10px;
-            width: 100%;
-
-            &:hover {
-                cursor: pointer;
-            }
-        }
-    }
-}
 
 .game {
     box-sizing: border-box;
     padding: 20px;
 }
 
-.headlinr-nav {
-    background-color: @darkPurple;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    padding: 10px;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 100;
 
-    h1 {
-        color: @white;
-        font-size: 28px !important;
-    }
-
-    .spacer {
-        flex: 1;
-    }
-
-    .user-info {
-        display: flex;
-        align-items: center;
-        flex-direction: row;
-
-        img {
-            height: 24px;
-            margin-right: 10px;
-        }
-
-        &:hover {
-            color: white;
-            cursor: pointer;
-            text-decoration: underline;
-        }
-    }
-}
-
-.upgrades {
-    padding: 20px;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0,0,0,.2);
-    z-index: 101;
-
-    .upgrades-container {
-        align-items: center;
-        background-color: @white;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        width: 100%;
-        height: 100%;
-
-        .power-ups {
-            display: flex;
-            flex-direction: row;
-            width: 80%;
-
-            .power-up-container {
-                display: flex;
-                align-items: center;
-                flex: 1;
-                flex-direction: column;
-                padding: 20px;
-                text-align: center;
-
-                img {
-                    width: 100px;
-                    height: auto;
-                    margin-bottom: 15px;
-                }
-            }
-        }
-    }
-}
-
-.dashboard {
-    box-sizing: border-box;
-    padding: 20px;
-
-    .graphs-container {
-        display: flex;
-        flex-direction: row;
-
-        .graphs-column {
-            flex: 1;
-
-            .bar-container {
-                align-items: center;
-                display: flex;
-                flex-direction: row;
-                margin: 10px 0;
-
-                .bar {
-                    background-color: @green;
-                    color: white;
-                    margin-right: 10px;
-                    padding: 5px;
-                }
-            }
-        }
-    }
-}
 
 .headlinr {
     box-sizing: border-box;
     width: 100%;
     height: 100%;
     display: flex;
-    padding-top: 50px;
+    padding-top: 70px;
     flex-direction: column;
 
     .column {
@@ -235,151 +82,6 @@ a {
         display: flex;
         flex: 2;
         flex-direction: column;
-
-        .userInput {
-            margin-bottom: 20px;
-
-            .headline-submission {
-                display: flex;
-                flex-direction: row;
-                margin-bottom: 10px;
-
-                img {
-                    height: 70px;
-                    width: auto;
-                }
-
-                input {
-                    box-sizing: border-box;
-                    font-size: 24px;
-                    flex: 1;
-                    margin-left: 10px;
-                    padding: 20px;
-                }
-            }
-        }
-
-        .post {
-            background-color: white;
-            border: 1px solid @lightGray;
-            border-bottom: 3px solid @lightGray;
-            border-radius: 3px;
-            display: flex;
-            flex-direction: column;
-            margin-bottom: 20px;
-
-            .head {
-                padding: 15px;
-                border-bottom: 1px solid @lightGray;
-
-                .info {
-                    display: flex;
-                    flex: 1;
-                    flex-direction: row;
-                    align-content: center;
-                    justify-content: center;
-
-                    .name {
-                        flex: 1;
-                        margin-left: 15px;
-                    }
-
-                    .score {
-                        h1 {
-                            color: @darkPurple;
-                        }
-                    }
-                }
-
-                .content {
-                    padding: 10px 0;
-                }
-
-                .buttons {
-                    padding: 10px 0;
-
-                    a {
-                        border-radius: 3px;
-                        margin-right: 10px;
-                        padding: 5px;
-                    }
-
-                    .like {
-                        color: @darkPurple;
-                    }
-
-                    .liked {
-                        background-color: @darkPurple;
-                        color: white;
-                    }
-
-                    .like:hover {
-                        color: white;
-                        cursor: pointer;
-                        background-color: @darkPurple;
-                    }
-
-                    .dislike {
-                        color: @mediumPurple;
-                    }
-
-                    .disliked {
-                        background-color: @mediumPurple;
-                        color: white;
-                    }
-
-                    .dislike:hover {
-                        color: white;
-                        cursor: pointer;
-                        background-color: @mediumPurple;
-                    }
-                }
-            }
-
-            .commentSection {
-                display: flex;
-                flex-direction: column;
-                height: auto;
-
-                .comment {
-                    background-color: @white;
-                    border-bottom: 1px solid @lightGray;
-                    display: flex;
-                    flex-direction: row;
-                    padding: 15px;
-
-                    .content {
-                        margin-left: 15px;
-                        flex: 1;
-
-                        h4 {
-                            margin-bottom: 5px;
-                        }
-                    }
-                }
-            }
-
-            .userComment {
-                border-bottom: 1px solid @lightGray;
-                display: flex;
-                flex-direction: row;
-                padding: 15px;
-            }
-
-            .submitComment {
-                padding: 15px;
-                text-align: center;
-            }
-
-            .submitComment:hover {
-                background-color: @darkPurple;
-                cursor: pointer;
-
-                h5 {
-                    color: white;
-                }
-            }
-        }
     }
 
     .right {

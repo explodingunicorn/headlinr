@@ -1,24 +1,24 @@
 exports.DataCollector = function() {
-    var posts = [];
+    this.max = 0;
+    this.topics = {};
+    var data = this;
 
     this.pushNewHeadline = function(post) {
-        posts.unshift(post);
-        if(posts.length > 200) {
-            posts.pop();
-        }
-        return formatData();
+        formatData(post);
     }
 
-    function formatData() {
-        var obj = {};
-        for (var i = 0; i < posts.length; i++) {
-            var topic = posts[i].topic
-            if(!obj[topic]) {
-                obj[topic] = {posts: [], trend: topic};
-            }
-            obj[topic].posts.push(posts[i]);
+    function formatData(post) {
+        var topic = post.topic;
+        if (!data.topics[topic]) {
+            data.topics[topic] = {
+                name: topic,
+                amount: 0,
+            };
         }
+        data.topics[topic].amount++;
 
-        return obj
+        if (data.topics[topic].amount > data.max) {
+            data.max = data.topics[topic].amount;
+        }
     }
 }
