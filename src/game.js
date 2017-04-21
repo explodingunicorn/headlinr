@@ -86,7 +86,6 @@ export default function Game() {
         if(this.headlines.length > 30) {
             this.headlines.pop();
         }
-        console.log(this.userGroupQueues);
     }
 
     this.addUsers = function(scale) {
@@ -95,7 +94,7 @@ export default function Game() {
             this.postsToRead++;
         }
         else {
-            this.postsToRead += 2;
+            this.postsToRead += 3;
         }
         var amountToAdd = modeledScale/this.users.length;
         for (var i = 0; i < this.users.length; i++) {

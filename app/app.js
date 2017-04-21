@@ -321,7 +321,6 @@ function Game() {
         if(this.headlines.length > 30) {
             this.headlines.pop();
         }
-        console.log(this.userGroupQueues);
     };
 
     this.addUsers = function(scale) {
@@ -330,7 +329,7 @@ function Game() {
             this.postsToRead++;
         }
         else {
-            this.postsToRead += 2;
+            this.postsToRead += 3;
         }
         var amountToAdd = modeledScale/this.users.length;
         for (var i = 0; i < this.users.length; i++) {
@@ -385,6 +384,7 @@ var app = new Vue({
         },
         time: 'Time',
         game: new Game(),
+        data: null,
         pause: false,
         upgradeSystem: new UpgradeSystem(),
         upgrades: 0
@@ -476,6 +476,7 @@ var app = new Vue({
         }
     },
     mounted: function() {
+        this.data = this.game.collector;
         var sec = 0;
         var pastLikes = 0;
         var pastComments = 0;
@@ -493,7 +494,7 @@ var app = new Vue({
                 app.user.score.comments += app.game.userHeadlines[i].comments.length;
             }
 
-            if (pastLikes !== app.user.score.likes) {
+            if (pastLikes !== app.user.score.likes && app.user.score.likes >= 0) {
                 var dif = app.user.score.likes - pastLikes;
                 var pointsToAdd = 1000*dif;
                 app.user.score.famePoints += pointsToAdd;

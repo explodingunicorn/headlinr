@@ -73,13 +73,16 @@
             <div class="graphs-container">
                 <div class="graphs-column">
                     <h2>Post Frequency</h2>
-                    <div v-for="topic in game.collector.topics" class="bar-container">
-                        <div class="bar" v-bind:style="{width: topic.amount / game.collector.max * 50 + '%'}"><p><b>{{topic.amount}}</b></p></div>
+                    <div v-for="topic in data.topics" class="bar-container">
+                        <div class="bar" v-bind:style="{width: topic.amount / data.max * 50 + '%'}"><p><b>{{topic.amount}}</b></p></div>
                         <p>{{topic.name}}</p>
                     </div>
                 </div>
                 <div class="graphs-column">
-
+                    <h2>Average Score</h2>
+                    <div v-for="topic in data.topics" class="bar-container">
+                        <p>{{topic.name}} - {{topic.likesAverage}}</p>
+                    </div>
                 </div>
                 <div class="graphs-column">
 
