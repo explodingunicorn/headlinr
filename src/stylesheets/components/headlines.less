@@ -27,6 +27,7 @@
     border-bottom: 3px solid @lightGray;
     border-radius: 3px;
     display: flex;
+    height: auto;
     flex-direction: column;
     margin-bottom: 20px;
 
@@ -94,6 +95,19 @@
                 color: white;
                 cursor: pointer;
                 background-color: @mediumPurple;
+            }
+        }
+    }
+
+    .moreComments {
+        border-bottom: 1px solid @lightGray;
+        padding: 10px 15px;
+
+        a {
+            color: @darkPurple;
+
+            &:hover {
+                text-decoration: underline;
             }
         }
     }

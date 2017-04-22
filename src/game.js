@@ -6,11 +6,12 @@ var topics = ['cats', 'dogs', 'birth-control', 'the police', 'teachers', 'babies
 
 export default function Game() {
     var connections = 50;
-    this.connectionsScale = 2;
-    this.collector = new DataCollector();
+    this.totalConnections = 50;
+    this.collector = new DataCollector(this);
     var game = this;
     this.headlines = [];
     this.userHeadlines = [];
+    this.bestHeadlines = [];
     var topicsAmt = 10;
     this.topics = generateTopics();
     this.data = null;
@@ -88,25 +89,35 @@ export default function Game() {
         }
     }
 
+    this.pushBestHeadline = function(post) {
+        this.bestHeadlines.unshift(post);
+
+        if(this.bestHeadlines.length > 10) {
+            this.bestHeadlines.pop();
+        }
+    }
+
     this.addUsers = function(scale) {
         var modeledScale = scale*100;
+        console.log(modeledScale);
         if(scale < 10) {
             this.postsToRead++;
         }
         else {
-            this.postsToRead += 3;
+            this.postsToRead += 10;
         }
         var amountToAdd = modeledScale/this.users.length;
         for (var i = 0; i < this.users.length; i++) {
             this.users[i].generateMoreNames(amountToAdd);
             this.users[i].generateNewActivityLevel();
         }
-        this.connectionsScale = this.users[0].names.length;
+        this.totalConnections = this.totalConnections + modeledScale;
     }
 
     this.addNewTopics = function(scale) {
         topicsAmt = topicsAmt + scale;
         this.topics = generateTopics();
+        this.collector.clearData();
 
         for (var i = 0; i < this.users.length; i++) {
             this.users[i].generateNewFeelings();

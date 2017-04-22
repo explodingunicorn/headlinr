@@ -83,6 +83,7 @@ export default function User(game, group) {
         var sub;
         if (this.names.length > 100) {
             activityLevel = activityLevel - 100
+            console.log(activityLevel);
         }
         else {
             activityLevel = activityLevel - (this.names.length * 10); 

@@ -1,5 +1,5 @@
 var headline = 35;
-var interaction = 15;
+var interaction = 5;
 var comment = 120;
 
 exports.rand10 = function () {

@@ -13,16 +13,16 @@ var formatTextOpts = function(list) {
     }
 }
 
-var beginnings = ['I think', 'I know', 'I feel', 'Everyone knows', 'It\'s weird, ', 'Ya know,', 'Omg,', 'You should know', 'Woah,', 'Yo'];
+var beginnings = ['I think', 'I know', 'I feel', 'Everyone knows', 'It\'s weird, ', 'Ya know,', 'Omg,', 'You should know', 'Woah,', 'Yo', 'Hey', 'Uhh'];
 var possibleBeginnings = formatTextOpts(beginnings);
 
-var badEndings = ['suck', 'are the worst', 'are terrible', 'are dirty', 'can stink', 'are bad', 'make <p> sick', 'make <p> cry', 'hurt babies', 'destroyed the world', 'are nonsense', 'killed my parents', 'ruined my relationship', 'stole my friends', 'gave me aids', 'murder bunnies'];
+var badEndings = ['suck', 'are the worst', 'are terrible', 'are dirty', 'can stink', 'are bad', 'make <p> sick', 'make <p> cry', 'hurt babies', 'destroyed the world', 'are nonsense', 'killed my parents', 'ruined my relationship', 'stole my friends', 'gave me aids', 'murder bunnies', 'made <p> sad'];
 var possibleBadEndings = formatTextOpts(badEndings);
 
-var goodEndings = ['are the best', 'make <p> happy', 'are cool', 'make <p> smile', 'give <p> hope', 'fill <p> with glee', 'are pretty chill', 'make <p> joyous', 'are super', 'make everything better'];
+var goodEndings = ['are the best', 'make <p> happy', 'are cool', 'make <p> smile', 'give <p> hope', 'fill <p> with glee', 'are pretty chill', 'make <p> joyous', 'are super', 'make everything better', 'make the world better', 'should be given an award', 'created world peace'];
 var possibleGoodEndings = formatTextOpts(goodEndings);
 
-var person = ['me', 'us', 'everyone', 'people', 'my friends'];
+var person = ['me', 'us', 'everyone', 'people', 'my friends', 'my family', 'my pets'];
 var p = formatTextOpts(person);
 
 generator.addRule('<start>', 'Rita init');
@@ -56,13 +56,13 @@ exports.generate = function(feeling, topic) {
     return generator.expand();
 }
 
-var affirmations = ['Yeah', 'Good', 'Yes', 'Better', 'Awesome', 'Love', 'Great', 'Fantastic'];
+var affirmations = ['Yeah', 'Good', 'Yes', 'Better', 'Awesome', 'Love', 'Great', 'Fantastic', 'woohoo', 'Cowabunga', 'Sweet', 'Nice', 'Agree', 'Cool'];
 
 exports.affirm = function() {
     return affirmations[Math.floor(Math.random() * affirmations.length)];
 };
 
-var denials = ['Terrible', 'No', 'Disagree', 'Awful', 'Nonsense', 'Worst'];
+var denials = ['Terrible', 'No', 'Disagree', 'Awful', 'Nonsense', 'Worst', 'Stupid', 'Nah', 'Dumb', 'Lame'];
 
 exports.deny = function() {
     return denials[Math.floor(Math.random() * denials.length)];

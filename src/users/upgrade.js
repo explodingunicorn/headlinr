@@ -28,6 +28,14 @@ trees = {
             desc: 'Gain 50000 more connections',
             scale: 500
         },
+        {
+            desc: 'Gain 120000 more connections',
+            scale: 1200
+        },
+        {
+            desc: 'Gain 400000 more connections',
+            scale: 4000
+        },
     ],
 
     trends: [

@@ -74,6 +74,7 @@ a {
   padding: 10px;
   text-align: center;
   transition: all .5s;
+  user-select: none;
 }
 .btn:hover {
   cursor: pointer;
@@ -192,16 +193,11 @@ input:focus {
 }
 ::-webkit-scrollbar {
   background-color: white;
-  border-left: 1px solid #AAACA9;
-  width: 10px;
-}
-::-webkit-scrollbar-track {
-  border-right: 1px solid #AAACA9;
+  width: 7px;
 }
 ::-webkit-scrollbar-thumb {
-  background-color: #5E6572;
-  border: 1px solid #AAACA9;
-  border-radius: 3px;
+  background-color: #6A66A3;
+  border-radius: 10px;
 }
 /*Animations ---------------------------------------------------------
 ----------------------------------------------------------------------
@@ -252,25 +248,75 @@ input:focus {
 .dashboard {
   box-sizing: border-box;
   padding: 20px;
+  padding-top: 60px;
 }
 .dashboard .graphs-container {
   display: flex;
   flex-direction: row;
 }
 .dashboard .graphs-container .graphs-column {
+  box-sizing: border-box;
   flex: 1;
+  padding: 10px;
+}
+.dashboard .graphs-container .graphs-column.large {
+  flex: 2;
+}
+.dashboard .graphs-container .graphs-column .graph-padding {
+  border: 1px solid #AAACA9;
+  border-radius: 3px;
+  padding: 10px;
+  margin-bottom: 20px;
 }
 .dashboard .graphs-container .graphs-column .bar-container {
   align-items: center;
+  background-color: #efefef;
   display: flex;
   flex-direction: row;
   margin: 10px 0;
 }
+.dashboard .graphs-container .graphs-column .bar-container.left {
+  text-align: left;
+}
+.dashboard .graphs-container .graphs-column .bar-container.right {
+  justify-content: flex-end;
+  text-align: right;
+}
 .dashboard .graphs-container .graphs-column .bar-container .bar {
   background-color: #7CC7A9;
-  color: white;
   margin-right: 10px;
-  padding: 5px;
+  padding: 5px 10px;
+}
+.dashboard .graphs-container .graphs-column .bar-container .bar p {
+  color: #F0F1ED;
+}
+.dashboard .graphs-container .graphs-column .bar-container .bar.negative {
+  margin-right: 0;
+  margin-left: 10px;
+  background-color: #6A66A3;
+}
+.dashboard .graphs-container .graphs-column .text-container {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  padding: 10px;
+}
+.dashboard .graphs-container .graphs-column .text-container h3 {
+  font-size: 20px;
+}
+.dashboard .graphs-container .graphs-column .text-container .feeling {
+  color: white;
+  padding: 10px;
+  margin-left: 10px;
+}
+.dashboard .graphs-container .graphs-column .text-container .feeling.good {
+  background-color: #7CC7A9;
+}
+.dashboard .graphs-container .graphs-column .text-container .feeling.neutral {
+  background-color: #5E6572;
+}
+.dashboard .graphs-container .graphs-column .text-container .feeling.bad {
+  background-color: #6A66A3;
 }
 .userInput {
   margin-bottom: 20px;
@@ -297,6 +343,7 @@ input:focus {
   border-bottom: 3px solid #AAACA9;
   border-radius: 3px;
   display: flex;
+  height: auto;
   flex-direction: column;
   margin-bottom: 20px;
 }
@@ -352,6 +399,16 @@ input:focus {
   color: white;
   cursor: pointer;
   background-color: #6A66A3;
+}
+.post .moreComments {
+  border-bottom: 1px solid #AAACA9;
+  padding: 10px 15px;
+}
+.post .moreComments a {
+  color: #4F2D87;
+}
+.post .moreComments a:hover {
+  text-decoration: underline;
 }
 .post .commentSection {
   display: flex;
@@ -519,7 +576,6 @@ body {
   height: 100%;
   margin: 0;
   padding: 0;
-  overflow-y: none;
 }
 a {
   text-decoration: none;
@@ -536,21 +592,24 @@ a {
   padding: 20px;
   padding-top: 60px;
 }
+.stats {
+  box-sizing: border-box;
+  padding: 20px;
+  padding-top: 60px;
+}
 .headlinr {
   box-sizing: border-box;
   width: 100%;
-  height: 100%;
   display: flex;
   flex-direction: column;
 }
 .headlinr .column {
   display: flex;
   padding: 20px;
+  flex-direction: column;
 }
 .headlinr .left {
-  display: flex;
   flex: 1;
-  flex-direction: column;
 }
 .headlinr .left h1 {
   margin-bottom: 15px;
@@ -575,13 +634,10 @@ a {
   padding: 15px;
 }
 .headlinr .middle {
-  display: flex;
   flex: 2;
-  flex-direction: column;
 }
 .headlinr .right {
   flex: 1;
-  flex-direction: column;
 }
 .headlinr .right .trends-panel {
   border-radius: 3px;
