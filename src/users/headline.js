@@ -22,6 +22,7 @@ exports.Headline = function (headline, user, topic, name, creation) {
     this.topic = topic;
     this.score = 0;
     this.comments = [];
+    this.commentsAmt = 0;
     this.interacted = {};
     this.playerCreated = creation || false;
     this.sentimentScore = sentiment(headline).score;
@@ -31,7 +32,10 @@ exports.Headline = function (headline, user, topic, name, creation) {
         //Creates a new comment to push to comments
         var comment = new HeadlineComment(comment, user, name);
         //Pushing the comment to our comments array
-        this.comments.push(comment);
+        if(this.comments.length < 10) {
+            this.comments.push(comment);
+        }
+        this.commentsAmt++;
     }
 
     this.alertUser = function(comment) {
@@ -49,8 +53,8 @@ exports.Headline = function (headline, user, topic, name, creation) {
     }
 
     //function to add to the posts score
-    this.like = function() {
-        this.score++;
+    this.like = function(scale) {
+        this.score+=scale;
     }
 
     //function to subtract from the posts score

@@ -30,7 +30,8 @@ export default function User(game, group) {
     this.game = game;
     this.group = group;
     this.playerOpinion = rand10() * 5;
-    var activityLevel = 1000 + Math.floor((Math.random() * 500) + 1);
+    var activityLevel = 1000 + Math.floor((Math.random() * 100) + 1);
+    var scaleReacts = 1;
     var aggression = rand10();
     var sex = Math.floor((Math.random() * 2) + 1);
     this.pic = '';
@@ -74,16 +75,22 @@ export default function User(game, group) {
     var topicFeelings = this.generateTopicFeelings();
 
     this.generateMoreNames = function(num) {
-        for(var i = 0; i < num; i++) {
-            this.names.push(generateName());
+        if(num<1000) {
+            for(var i = 0; i < num; i++) {
+                this.names.push(generateName());
+            }
         }
     }
 
     this.generateNewActivityLevel = function() {
         var sub;
         if (this.names.length > 100) {
-            activityLevel = activityLevel - 100
-            console.log(activityLevel);
+            if(activityLevel < 100) {
+                scaleReacts += 5;
+            }
+            else {
+                activityLevel = activityLevel - 100
+            }
         }
         else {
             activityLevel = activityLevel - (this.names.length * 10); 
@@ -103,7 +110,6 @@ export default function User(game, group) {
 
     this.influence = function(val) {
         if (this.playerOpinion < 100 && this.playerOpinion > 0) {
-            console.log(this.info.first, this.playerOpinion);
             this.playerOpinion += val;
         }
     }
@@ -130,14 +136,17 @@ export default function User(game, group) {
             var playerFactor = 0;
             var repeatFactor = 0;
             var player = false;
+            var scale = 1;
 
-            if(headlines[i].playerCreated && game.userHeadlines.length > 2) {
+            if(headlines[i].playerCreated) {
                 playerFactor = user.playerOpinion/10;
                 player = true;
-                for(var j = game.userHeadlines.length-2; j > 0; j--) {
-                    if (game.userHeadlines[j].topic === topic) {
-                        console.log('repeat');
-                        repeatFactor += 7;
+                scale = scaleReacts;
+                if(game.userHeadlines.length > 2) {
+                    for(var j = game.userHeadlines.length-2; j > 0; j--) {
+                        if (game.userHeadlines[j].topic === topic) {
+                            repeatFactor += 7;
+                        }
                     }
                 }
             }
@@ -145,12 +154,11 @@ export default function User(game, group) {
             if (sentiment > 0 && userFeeling > 5) {
                 if (player) {
                     user.playerOpinion += rand10();
-                    console.log('increase');
                 }
                 //If the user feels positively towards the topic, there's a chance to like
                 var total = userFeeling + sentiment + playerFactor - repeatFactor;
                 if (total >= interactChance()) {
-                    headlines[i].like();
+                    headlines[i].like(scale);
                 }
 
                 if((total+aggression) >= commentChance()) {
@@ -166,7 +174,7 @@ export default function User(game, group) {
                 var total = (userFeeling + 5) + sentiment - playerFactor - repeatFactor;
 
                 if (total >= interactChance()) {
-                    headlines[i].dislike();
+                    headlines[i].dislike(scale);
                 }
 
                 if((total+aggression) >= commentChance()) {
@@ -184,7 +192,7 @@ export default function User(game, group) {
 
                 //React if it's greater than the interaction chance, and they haven't interacted before
                 if (total >= interactChance()) {
-                    headlines[i].dislike();
+                    headlines[i].dislike(scale);
                 }
 
                 if((total+aggression) >= commentChance()) {
@@ -195,13 +203,12 @@ export default function User(game, group) {
             else {
                 if (player) {
                     user.playerOpinion += rand10();
-                    console.log('increase');
                 }
                 //Add 5 to users feeling to simulate negative feeling, reverse sentiment
                 var total = (userFeeling + 5) + (-1 * sentiment) + playerFactor - repeatFactor;
 
                 if (total >= interactChance()) {
-                    headlines[i].like();
+                    headlines[i].like(scale);
                 }
 
                 if((total+aggression) >= commentChance()) {

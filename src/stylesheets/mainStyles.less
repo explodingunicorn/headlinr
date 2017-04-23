@@ -6,6 +6,8 @@
 @mediumGray: #5E6572;
 @darkGray: #393D3F;
 @white: #F0F1ED;
+@blue: #08B2E3;
+@yellow: #EAC435;
 
 
 
@@ -106,6 +108,19 @@ a {
         cursor: pointer;
         background-color: hsl(hue(@darkPurple), 50%, 50%);
         box-shadow: 0px 0px 20px -5px @darkGray;
+    }
+
+    &.inverse {
+        background-color: transparent;
+        border: 1px solid @darkPurple;
+        border-radius: 3px;
+        color: @darkPurple;
+        padding: 10px 50px;
+
+        &:hover {
+            background-color: @darkPurple;
+            color: @white;
+        }
     }
 
     &.backGreen {

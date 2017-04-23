@@ -42,7 +42,9 @@
         <!--Upgrades popup-->
         <div class="upgrades" v-if="upgrades">
             <div class="upgrades-container">
-                <h1>{{user.score.famePoints}} Fame left!</h1>
+                <h2 class="close" v-on:click="upgrades = false"><i class="fa fa-times" aria-hidden="true"></i></h2>
+                <h1>What would you like to spend your points on?</h1>
+                <h1><span class="darkPurple">{{user.score.famePoints}}</span> Fame Points left</h1>
                 <div class="power-ups">
                     <div class="power-up-container border green raised">
                         <img src="./img/connections.png"/>
@@ -69,7 +71,7 @@
                         <h5 class="btn backBlack fullWidth" v-on:click="">Spend Points!</h5>
                     </div>
                 </div>
-                <h1 v-on:click="upgrades = false">Done</h1>
+                <h1 class="btn inverse" v-on:click="upgrades = false">Done</h1>
             </div>
         </div>
 
@@ -82,7 +84,7 @@
                     <h2 class="mgn-btm-10">Post Frequency</h2>
                     <div class="graph-padding raised">
                         <div v-for="topic in data.topics" class="bar-container">
-                            <div class="bar" v-bind:style="{width: topic.amount / data.max * 50 + '%'}"><p><b>{{topic.amount}}</b></p></div>
+                            <div class="bar blue" v-bind:style="{width: topic.amount / data.max * 50 + '%'}"><p><b>{{topic.amount}}</b></p></div>
                             <p>{{topic.name}}</p>
                         </div>
                     </div>
@@ -102,12 +104,19 @@
                         <div v-for="topic in data.topics" class="">
                             <div v-if="topic.likesAverage < 0" class="bar-container right">
                                 <p>{{topic.name}}</p>
-                                <div class="bar negative" v-bind:style="{width: topic.likesAverage / data.likesMin * 50 + '%'}"><p><b>{{topic.likesAverage}}</b></p></div>
+                                <div class="bar negative purple" v-bind:style="{width: topic.likesAverage / data.likesMin * 50 + '%'}"><p><b>{{topic.likesAverage}}</b></p></div>
                             </div>
                             <div v-else class="bar-container left">
-                                <div class="bar" v-bind:style="{width: topic.likesAverage / data.likesMax * 50 + '%'}"><p><b>{{topic.likesAverage}}</b></p></div>
+                                <div class="bar green" v-bind:style="{width: topic.likesAverage / data.likesMax * 50 + '%'}"><p><b>{{topic.likesAverage}}</b></p></div>
                                 <p>{{topic.name}}</p>
                             </div>
+                        </div>
+                    </div>
+                    <h2 class="mgn-btm-10">Comments Average</h2>
+                    <div class="graph-padding raised">
+                        <div v-for="topic in data.topics" class="bar-container">
+                            <div class="bar yellow" v-bind:style="{width: topic.commentsAverage / data.commentsMax * 50 + '%'}"><p><b>{{topic.commentsAverage}}</b></p></div>
+                            <p>{{topic.name}}</p>
                         </div>
                     </div>
                 </div>
@@ -210,26 +219,17 @@
                             <a class="dislike" v-bind:class="{disliked: item.isDisliked}" v-on:click="dislikePost(i)"><i class="fa fa-thumbs-down" aria-hidden="true"></i> Dislike</a>
                         </div>
                     </div>
-                    <div class="moreComments" v-if="item.comments.length > 5">
-                        <a href="#">Show all {{item.comments.length}} comments</a>
+                    <div class="moreComments" v-if="item.comments.length === 10">
+                        <a href="#">Show all {{item.commentsAmt}} comments</a>
                     </div>
                     <div class="commentSection">
-                        <div class="comment" v-if="item.comments.length < 5" v-for="n in item.comments.length">
+                        <div class="comment" v-for="comment in item.comments">
                             <div class="thumbnail">
-                                <img class="portrait" v-bind:src="resolvePic(item.comments[n-1].user.pic)" alt="Image">
+                                <img class="portrait" v-bind:src="resolvePic(comment.user.pic)" alt="Image">
                             </div>
                             <div class="content">
-                                <h4>{{item.comments[n-1].commentName.first}} {{item.comments[n-1].commentName.last}}</h4>
-                                <h3>{{item.comments[n-1].comment}}</h3>
-                            </div>
-                        </div>
-                        <div class="comment" v-if="item.comments.length >= 5" v-for="n in 5">
-                            <div class="thumbnail">
-                                <img class="portrait" v-bind:src="resolvePic(item.comments[n-1].user.pic)" alt="Image">
-                            </div>
-                            <div class="content">
-                                <h4>{{item.comments[n-1].commentName.first}} {{item.comments[n-1].commentName.last}}</h4>
-                                <h3>{{item.comments[n-1].comment}}</h3>
+                                <h4>{{comment.commentName.first}} {{comment.commentName.last}}</h4>
+                                <h3>{{comment.comment}}</h3>
                             </div>
                         </div>
                     </div>
@@ -244,7 +244,7 @@
                     </div>
                 </div>
             </div>
-            <div class="colum right">
+            <div class="column right">
             
             </div>
         </div>

@@ -56,6 +56,40 @@ export default function Game() {
         }
     }
 
+    this.playerLike = function(index) {
+        if(this.headlines[index].isDisliked) {
+                this.headlines[index].isDisliked = false;
+                this.headlines[index].isLiked = true;
+                this.headlines[index].user.influence(10);
+                this.headlines[index].like(1);
+        }
+        else if(this.headlines[index].isLiked) {
+            this.headlines[index].isLiked = true;
+        }
+        else {
+            this.headlines[index].isLiked = true;
+            this.headlines[index].user.influence(10);
+            this.headlines[index].like(1);
+        }  
+    }
+
+    this.playerDislike = function(index) {
+        if(this.headlines[index].isLiked) {
+                this.headlines[index].isLiked = false;
+                this.headlines[index].isDisliked = true;
+                this.headlines[index].user.influence(-10);
+                this.headlines[index].dislike(1);
+        }
+        else if (this.headlines[index].isDisliked) {
+            this.headlines[index].isDisliked = true;
+        }
+        else {
+            this.headlines[index].isDisliked = true;
+            this.headlines[index].user.influence(-10);
+            this.headlines[index].dislike(1);
+        }
+    }
+
     this.pushHeadline = function(headline, group, user) {
         this.collector.pushNewHeadline(headline);
         //If a user is posting, post to all groups
@@ -104,7 +138,7 @@ export default function Game() {
             this.postsToRead++;
         }
         else {
-            this.postsToRead += 10;
+            this.postsToRead += 8;
         }
         var amountToAdd = modeledScale/this.users.length;
         for (var i = 0; i < this.users.length; i++) {

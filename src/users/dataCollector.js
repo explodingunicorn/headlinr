@@ -66,7 +66,6 @@ exports.DataCollector = function(game) {
         }
         else if (data.topics[topic].likesAverage < 0 && data.topics[topic].likesAverage < data.likesMin) {
             data.likesMin = data.topics[topic].likesAverage;
-            data.game.pushBestHeadline(post);
         }
 
         //Getting the max comments

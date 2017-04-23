@@ -72,43 +72,17 @@ var app = new Vue({
                 }
             }
             if (key) {
-                var headline = new Headline(this.user.headline, this.user, userTopic, true)
+                var headline = new Headline(this.user.headline, this.user, userTopic, this.user.info, true)
                 this.game.pushHeadline(headline, 'all', true);
                 this.user.headline = '';
             }
             this.pause = false;
         },
         likePost: function(index) {
-            if(this.game.headlines[index].isDisliked) {
-                this.game.headlines[index].isDisliked = false;
-                this.game.headlines[index].isLiked = true;
-                this.game.headlines[index].user.influence(10);
-                this.game.headlines[index].like();
-            }
-            else if(this.game.headlines[index].isLiked) {
-                this.game.headlines[index].isLiked = true;
-            }
-            else {
-                this.game.headlines[index].isLiked = true;
-                this.game.headlines[index].user.influence(10);
-                this.game.headlines[index].like();
-            }  
+            this.game.playerLike(index);
         },
         dislikePost: function(index) {
-            if(this.game.headlines[index].isLiked) {
-                this.game.headlines[index].isLiked = false;
-                this.game.headlines[index].isDisliked = true;
-                this.game.headlines[index].user.influence(-10);
-                this.game.headlines[index].dislike();
-            }
-            else if (this.game.headlines[index].isDisliked) {
-                this.game.headlines[index].isDisliked = true;
-            }
-            else {
-                this.game.headlines[index].isDisliked = true;
-                this.game.headlines[index].user.influence(-10);
-                this.game.headlines[index].dislike();
-            }
+            this.game.playerDislike(index);
         },
         addComment: function(index) {
             var headline = this.game.headlines[index];
