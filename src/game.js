@@ -1,11 +1,13 @@
 import User from './users/user.js';
 var Headline = require('../src/users/headline.js').Headline;
 var DataCollector = require('../src/users/dataCollector.js').DataCollector;
+var sentenceGenerator = require('../src/users/sentenceGeneration');
 
 var topics = ['cats', 'dogs', 'birth-control', 'the police', 'teachers', 'babies', 'white people', 'purple people', 'fire fighters', 'hamsters', 'macaroni','kangaroos', 'politicians', 'hospitals', 'girlfriends', 'boyfriends', 'exercises', 'eating dinner', 'pool parties', 'scooters', 'skateboards', 'apples', 'oranges', 'hotdogs', 'hamburgers', 'fat people', 'skinny people', 'doors', 'houses', 'cigars', 'marijuanas', 'bands', 'popcorn', 'sodas', 'movies', 'blind people', 'elephants', 'shoes', 'hippies', 'beards', 'eyeballs', 'hands', 'noses', 'farts', 'computers', 'hackers', 'men', 'women', 'actors', 'actresses', 'pencils', 'fries', 'fires', 'lights', 'cities', 'websites', 'hopes', 'dreams', 'subs', 'hamsters', 'keyboards', 'phones', 'moms', 'dads', 'grandparents', 'old people', 'millenials', 'wars', 'christians', 'muslims', 'liberals', 'rednecks', 'neo-nazis', 'snow-flakes', 'ducks', 'colds', 'fevers', 'pancakes', 'boogers', 'white people', 'black people', 'red people', 'green people', 'televisions', 'haters', 'bugs', 'basketballs', 'sweatshirts', 'clothes', 'donuts', 'dinosaurs', 'bosses', 'co-workers', 'snakes'];
 
-export default function Game() {
+export default function Game(user) {
     var connections = 50;
+    this.player = null;
     this.totalConnections = 50;
     this.collector = new DataCollector(this);
     var game = this;
@@ -14,8 +16,21 @@ export default function Game() {
     this.bestHeadlines = [];
     var topicsAmt = 10;
     this.topics = generateTopics();
-    this.data = null;
     this.postsToRead = 5;
+    this.visualsUnlocked = {
+        posts: false,
+        likes: false,
+        comments: false,
+        feelings: false,
+        topPosts: false
+    };
+    this.automation = {
+        like: 0,
+        likeCount: 0,
+        comment: 0,
+        commentCount: 0,
+        post: 0,
+    }
     this.userGroupQueues = (function() {
         var arr = [];
         for (var i = 0; i < 5; i++) {
@@ -50,6 +65,11 @@ export default function Game() {
         this.topics = generateTopics();
     }
 
+    this.newPlayer = function(user) {
+        this.player = user;
+        console.log(user);
+    }
+
     this.update = function(time) {
         for (var i = 0; i < this.users.length; i++) {
             game.users[i].checkUpdate(time);
@@ -57,20 +77,22 @@ export default function Game() {
     }
 
     this.playerLike = function(index) {
-        if(this.headlines[index].isDisliked) {
-                this.headlines[index].isDisliked = false;
+        if(!this.headlines[index].playerCreated) {
+            if(this.headlines[index].isDisliked) {
+                    this.headlines[index].isDisliked = false;
+                    this.headlines[index].isLiked = true;
+                    this.headlines[index].user.influence(10);
+                    this.headlines[index].like(1);
+            }
+            else if(this.headlines[index].isLiked) {
+                this.headlines[index].isLiked = true;
+            }
+            else {
                 this.headlines[index].isLiked = true;
                 this.headlines[index].user.influence(10);
                 this.headlines[index].like(1);
+            }  
         }
-        else if(this.headlines[index].isLiked) {
-            this.headlines[index].isLiked = true;
-        }
-        else {
-            this.headlines[index].isLiked = true;
-            this.headlines[index].user.influence(10);
-            this.headlines[index].like(1);
-        }  
     }
 
     this.playerDislike = function(index) {
@@ -87,6 +109,42 @@ export default function Game() {
             this.headlines[index].isDisliked = true;
             this.headlines[index].user.influence(-10);
             this.headlines[index].dislike(1);
+        }
+    }
+
+    this.playerComment = function(index, user) {
+        var headline = this.headlines[index];
+        var comment = this.headlines[index].commentValue;
+
+        if(!comment) {
+            comment = sentenceGenerator.affirm();
+        }
+
+        this.headlines[index].addComment(comment, user, user.info);
+        this.headlines[index].alertUser(comment);
+        this.headlines[index].commentValue = '';
+    }
+
+    function checkAutomation() {
+        //Check if like is activated
+        if(game.automation.like) {
+            game.automation.likeCount++;
+            console.log('hi');
+
+            if(game.automation.like === game.automation.likeCount) {
+                game.playerLike(0);
+                game.automation.likeCount = 0;
+                console.log('liked');
+            }
+        }
+
+        if(game.automation.comment) {
+            game.automation.commentCount++;
+
+            if(game.automation.comment === game.automation.commentCount) {
+                game.playerComment(0, game.player);
+                game.automation.commentCount = 0;
+            }
         }
     }
 
@@ -118,9 +176,12 @@ export default function Game() {
             this.userHeadlines.unshift(headline);
         }
 
+        //Pop off the 30th post so the timeline isn't infinite
         if(this.headlines.length > 30) {
             this.headlines.pop();
         }
+
+        checkAutomation();
     }
 
     this.pushBestHeadline = function(post) {
@@ -156,5 +217,15 @@ export default function Game() {
         for (var i = 0; i < this.users.length; i++) {
             this.users[i].generateNewFeelings();
         }
+    }
+
+    this.addVisual = function(type) {
+        this.visualsUnlocked[type] = true;
+    }
+
+    this.addAutomation = function(type, scale) {
+        console.log(type, scale);
+        this.automation[type] = scale;
+        this.automation[type+'Count'] = 0;
     }
 }

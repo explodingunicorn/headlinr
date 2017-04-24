@@ -92,6 +92,9 @@ a {
   background-color: #4F2D87;
   color: #F0F1ED;
 }
+.btn.backGray {
+  background-color: #AAACA9;
+}
 .btn.backGreen {
   background-color: #7CC7A9;
 }

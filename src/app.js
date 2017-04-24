@@ -33,7 +33,7 @@ var app = new Vue({
                 likes: 0,
                 comments: 0,
                 users: 0,
-                famePoints: 1000000
+                famePoints: 9999999999
             }
         },
         time: 'Time',
@@ -85,12 +85,7 @@ var app = new Vue({
             this.game.playerDislike(index);
         },
         addComment: function(index) {
-            var headline = this.game.headlines[index];
-            var comment = this.game.headlines[index].commentValue;
-
-            this.game.headlines[index].addComment(comment, this.user);
-            this.game.headlines[index].alertUser(comment);
-            this.game.headlines[index].commentValue = '';
+            this.game.playerComment(index, this.user);
             this.pause = false;
         },
         resolvePic: function(pic) {
@@ -101,9 +96,13 @@ var app = new Vue({
                 var link = 'http://bulma.io/images/placeholders/96x96.png';
             }
             return link;
+        },
+        formatNum: function(x) {
+            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         }
     },
     mounted: function() {
+        this.game.newPlayer(this.user);
         this.data = this.game.collector;
         var sec = 0;
         var pastLikes = 0;
