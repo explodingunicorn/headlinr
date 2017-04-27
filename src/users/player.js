@@ -4,11 +4,15 @@ var Headline = require('./headline.js').Headline;
 exports.Player = function(game) {
     this.firstName = 'Player';
     this.lastName = 'One';
-    this.pic = '';
+    this.pic = {
+        type: 'player',
+        link: ''
+    };
+    this.bio = 'Nothing here yet';
     this.likesTotal = 0;
     this.commentsTotal = 0;
     this.connections = 0;
-    this.points = 0;
+    this.points = 9999999999;
     this.game = game
 
     var pastLikes = 0;
@@ -69,41 +73,47 @@ exports.Player = function(game) {
 
     this.comment = function(index) {
         var headline = this.game.headlines[index];
-        var comment = this.game.headlines[index].commentValue;
 
-        if(!comment) {
-            comment = sentenceGenerator.affirm();
+        if(!headline.playerCreated) {
+            var comment = this.game.headlines[index].commentValue;
+
+            if(!comment) {
+                comment = sentenceGenerator.affirm();
+            }
+
+            this.game.headlines[index].addComment(comment, this, {first: this.firstName, last: this.lastName, pic: this.pic});
+            this.game.headlines[index].alertUser(comment);
+            this.game.headlines[index].commentValue = '';
         }
-
-        this.game.headlines[index].addComment(comment, this, {first: this.firstName, last: this.lastName});
-        this.game.headlines[index].alertUser(comment);
-        this.game.headlines[index].commentValue = '';
     }
 
     this.headline = function(headline) {
         if (!headline) {
             var topic = this.game.trends[Math.floor(Math.random() * this.game.trends.length)];
-            var feeling = Maht.floor(Math.random() * 10);
+            var feeling = Math.floor(Math.random() * 10);
             var statement = sentenceGenerator.generate(feeling, topic);
-        }
-        
-        var userTopic = '';
-        var key = false;
-        for (var i = 0; i < this.game.trends.length; i++) {
-            var topic = this.game.trends[i];
-            if(headline.includes(topic)) {
-                key = true;
-                userTopic = topic;
-                break;
-            }
-        }
-        if (key) {
-            var headline = new Headline(headline, this, userTopic, {first: this.firstName, last: this.lastName}, true)
+            var headline = new Headline(statement, this, topic, {first: this.firstName, last: this.lastName, pic: this.pic}, true)
             this.game.pushHeadline(headline, 'all', true);
-            return true;
         }
         else {
-            return false;
+            var userTopic = '';
+            var key = false;
+            for (var i = 0; i < this.game.trends.length; i++) {
+                var topic = this.game.trends[i];
+                if(headline.includes(topic)) {
+                    key = true;
+                    userTopic = topic;
+                    break;
+                }
+            }
+            if (key) {
+                var headline = new Headline(headline, this, userTopic, {first: this.firstName, last: this.lastName, pic: this.pic}, true)
+                this.game.pushHeadline(headline, 'all', true);
+                return true;
+            }
+            else {
+                return false;
+            }
         }
     }
 

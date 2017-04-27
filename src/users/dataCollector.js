@@ -21,7 +21,7 @@ exports.DataCollector = function(game) {
     }
 
     function formatData(post) {
-        var topic = post.topic;
+        var topic = post.trend;
         if (!data.trends[topic]) {
             data.trends[topic] = {
                 name: topic,
@@ -45,7 +45,7 @@ exports.DataCollector = function(game) {
         var sentiment = 0;
         for (var i = 0; i < data.trends[topic].posts.length; i++) {
             likes += data.trends[topic].posts[i].score;
-            comments += data.trends[topic].posts[i].comments.length;
+            comments += data.trends[topic].posts[i].commentsAmt;
             sentiment += data.trends[topic].posts[i].sentimentScore;
         }
 

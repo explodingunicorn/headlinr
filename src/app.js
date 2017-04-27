@@ -11,6 +11,7 @@ var Headline =  require('../src/users/headline.js').Headline;
 var Player = require('../src/users/player.js').Player;
 var UpgradeSystem = require('../src/users/upgrade.js').Upgrade;
 var Vue = require('vue/dist/vue.common.js');
+var Webcam = require('../src/webcam.js');
 
 var app = remote.app;
 var appDir = jetpack.cwd(app.getAppPath());
@@ -31,13 +32,25 @@ var app = new Vue({
         data: null,
         pause: false,
         upgradeSystem: new UpgradeSystem(),
-        upgrades: 0
+        upgrades: 0,
+        takingPicture: false,
+        editing: false
     },
     methods: {
+        attachCamera: function() {
+            setTimeout(function() {
+                Webcam.attach('#myCamera');
+            }, 0)
+        },
+        takePicture: function() {
+            var app = this;
+            Webcam.snap( function(data_uri) {
+				app.player.pic.link = data_uri;
+                app.takingPicture = false;
+			} );
+        },
         startGame: function() {
-            if (this.user.info.first && this.user.info.last) {
-                this.moveState('game');
-            }
+            this.moveState('game');
         },
         moveState: function(state) {
             for(var name in this.state) {
@@ -79,8 +92,13 @@ var app = new Vue({
             }
         },
         resolvePic: function(pic) {
-            if (pic) {
-                var link = './img' + encodeURI(pic) + '.jpg';
+            if (pic.link) {
+                if (pic.type === 'player') {
+                    var link = this.player.pic.link;
+                }
+                else {
+                    var link = './img' + encodeURI(pic.link) + '.jpg';
+                }
             }
             else {
                 var link = 'http://bulma.io/images/placeholders/96x96.png';

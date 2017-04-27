@@ -1,0 +1,59 @@
+.stats {
+    .textbox {
+        box-sizing: border-box;
+        font-family: 'Lato';
+        font-size: 18px;
+        height: 200px;
+        width: 100%;
+        background-color: transparent;
+        border: 1px solid @darkGray;
+        border-radius: 3px;
+    }
+
+    .textbox:focus {
+        outline: none;
+    }
+
+    .stats-panel {
+        background-color: #efefef;
+        border: 1px solid @lightGray;
+        border-radius: 3px;
+        padding: 10px;
+    }
+
+    .player-info {
+        align-items: center;
+        display: flex;
+        margin-bottom: 20px;
+        
+        flex-direction: row;
+        .player-name {
+            flex: 1;
+            margin-left: 10px;
+
+            h2 {
+                margin-bottom: 5px;
+                margin-top: 0;
+            }
+        }
+    }
+
+    .about-me {
+        align-items: center;
+        display: flex;
+        flex-direction: row;
+
+        h2 {
+            margin: 0;
+        }
+
+        .spacer {
+            flex: 1;
+        }
+
+        i:hover {
+            color: @darkPurple;
+            cursor: pointer;
+        }
+    }
+}

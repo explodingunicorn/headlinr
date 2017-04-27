@@ -43,11 +43,14 @@ function User(game, group) {
     var scaleReacts = 1;
     var aggression = rand10();
     var sex = Math.floor((Math.random() * 2) + 1);
-    this.pic = '';
+    this.pic = {
+        type: 'user',
+        link: ''
+    };
     if (sex === 1) {
-        this.pic = '/boys/boy (' + Math.floor((Math.random() * 35) + 1) + ')';
+        this.pic.link = '/boys/boy (' + Math.floor((Math.random() * 35) + 1) + ')';
     } else {
-        this.pic = '/girls/girl (' + Math.floor((Math.random() * 42) + 1) + ')';
+        this.pic.link = '/girls/girl (' + Math.floor((Math.random() * 42) + 1) + ')';
     }
     var self = this;
 
@@ -56,12 +59,15 @@ function User(game, group) {
         var randFirstM = Math.floor((Math.random() * mFirstNames.length) + 1);
         var randLast = Math.floor((Math.random() * lastNames.length) + 1);
         var name = {};
+        name.pic = {
+            type: 'user'
+        };
         if (sex === 1) {
             name.first = mFirstNames[randFirstM];
-            name.pic = '/boys/boy (' + Math.floor((Math.random() * 35) + 1) + ')';
+            name.pic.link = '/boys/boy (' + Math.floor((Math.random() * 35) + 1) + ')';
         } else {
             name.first = fFirstNames[randFirstF];
-            name.pic = '/girls/girl (' + Math.floor((Math.random() * 42) + 1) + ')';
+            name.pic.link = '/girls/girl (' + Math.floor((Math.random() * 42) + 1) + ')';
         }
         name.last = lastNames[randLast];
 
@@ -277,7 +283,7 @@ function Game(user) {
         likeCount: 0,
         comment: 0,
         commentCount: 0,
-        post: 0,
+        headline: false,
     };
     this.userGroupQueues = (function() {
         var arr = [];
@@ -318,9 +324,9 @@ function Game(user) {
             game.users[i].checkUpdate(time);
         }
 
-        if(this.automation.post) {
-            if(time % this.automation.post === 0) {
-
+        if(this.automation.headline) {
+            if(time % this.automation.headline === 0) {
+                this.player.headline();
             }
         }
     };
@@ -329,12 +335,10 @@ function Game(user) {
         //Check if like is activated
         if(game.automation.like) {
             game.automation.likeCount++;
-            console.log('hi');
 
             if(game.automation.like === game.automation.likeCount) {
                 game.player.like(0);
                 game.automation.likeCount = 0;
-                console.log('liked');
             }
         }
 
@@ -435,12 +439,12 @@ function Game(user) {
 
     this.addAutomation = function(type, scale) {
         console.log(type, scale);
-        if(type !== 'post') {
+        if(type !== 'headline') {
             this.automation[type] = scale;
             this.automation[type+'Count'] = 0;
         }
         else {
-            this.automation[type] = 100;
+            this.automation[type] = 400;
         }
     };
 }
@@ -453,6 +457,7 @@ var Headline =  require('../src/users/headline.js').Headline;
 var Player = require('../src/users/player.js').Player;
 var UpgradeSystem = require('../src/users/upgrade.js').Upgrade;
 var Vue = require('vue/dist/vue.common.js');
+var Webcam = require('../src/webcam.js');
 
 var app = electron.remote.app;
 var appDir = jetpack.cwd(app.getAppPath());
@@ -473,13 +478,25 @@ var app = new Vue({
         data: null,
         pause: false,
         upgradeSystem: new UpgradeSystem(),
-        upgrades: 0
+        upgrades: 0,
+        takingPicture: false,
+        editing: false
     },
     methods: {
+        attachCamera: function() {
+            setTimeout(function() {
+                Webcam.attach('#myCamera');
+            }, 0);
+        },
+        takePicture: function() {
+            var app = this;
+            Webcam.snap( function(data_uri) {
+				app.player.pic.link = data_uri;
+                app.takingPicture = false;
+			} );
+        },
         startGame: function() {
-            if (this.user.info.first && this.user.info.last) {
-                this.moveState('game');
-            }
+            this.moveState('game');
         },
         moveState: function(state) {
             for(var name in this.state) {
@@ -521,8 +538,13 @@ var app = new Vue({
             }
         },
         resolvePic: function(pic) {
-            if (pic) {
-                var link = './img' + encodeURI(pic) + '.jpg';
+            if (pic.link) {
+                if (pic.type === 'player') {
+                    var link = this.player.pic.link;
+                }
+                else {
+                    var link = './img' + encodeURI(pic.link) + '.jpg';
+                }
             }
             else {
                 var link = 'http://bulma.io/images/placeholders/96x96.png';

@@ -102,7 +102,7 @@ a {
     padding: 10px;
     text-align: center;
     transition: all .5s;
-    user-select: none;
+    -webkit-user-select: none;
 
     &:hover {
         cursor: pointer;
@@ -132,6 +132,14 @@ a {
 
         &:hover {
             background-color: hsl(hue(@yellow), 90%, 60%);
+        }
+    }
+
+    &.backBlue {
+        background-color: @blue;
+
+        &:hover {
+            background-color: hsl(hue(@blue), 50%, 50%);
         }
     }
 
@@ -262,11 +270,22 @@ input:focus {
 }
 
 .thumbnail {
+    border-radius: 3px;
     background-color: @darkGray;
     position: relative;
     width: 40px;
     height: 40px;
     overflow: hidden;
+
+    &.large {
+        width: 70px;
+        height: 70px;
+    }
+
+    &.extraLarge {
+        width: 96px;
+        height: 96px;
+    }
 }
 .thumbnail img {
     position: absolute;

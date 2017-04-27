@@ -18,10 +18,22 @@
                 <h1 class="logo" v-on:click="moveState('game')">headlinr</h1>
                 <div class="spacer"></div>
                 <div class="user-info" v-on:click="moveState('stats')">
-                    <img src="http://bulma.io/images/placeholders/96x96.png"/>
+                    <div class="thumbnail">
+                        <img class="portrait" v-bind:src="player.pic.link"/>
+                    </div>
                     <p class="white">{{player.firstName}} {{player.lastName}}</p>
                 </div>
                 <p class="dashboard-link" v-on:click="moveState('dashboard')"><i class="fa fa-tachometer" aria-hidden="true"></i> Dashboard</p>
+            </div>
+
+
+            <!--Web Cam Access-->
+            <div class="camera" v-if="takingPicture">
+                <div class="camera-container">
+                    <h2>Lookin' Good!</h2>
+                    <div id="myCamera"></div>
+                    <h2 class="btn backBlue mgn-top-10" v-on:click="takePicture">Take Picture!</h2>
+                </div>
             </div>
 
             <!--Start screen-->
@@ -37,7 +49,10 @@
                     <input type="text" placeholder="Joe" v-model="player.firstName"></input>
                     <p>Last name</p>
                     <input type="text" placeholder="Shmo" v-model="player.lastName" v-on:keyup.enter="startGame"></input>
-                    <h5 class="btn backPurple fullWidth mgn-top-10" v-on:click="startGame">Sign-up!</h5>
+                    <h5 v-if="player.pic.link" class="btn backGray fullWidth mgn-top-10">Picture Uploaded</h5>
+                    <h5 v-else class="btn backBlue fullWidth mgn-top-10" v-on:click="takingPicture = true; attachCamera()">Upload Picture</h5>
+                    <h5 v-if="player.pic.link" class="btn backPurple fullWidth mgn-top-10" v-on:click="startGame">Sign-up!</h5>
+                    <h5 v-else class="btn backGray fullWidth mgn-top-10">Sign-up!</h5>
                 </div>
             </div>
 
@@ -84,26 +99,25 @@
 
             <!--Player dashboard-->
             <div class="dashboard" v-if="state.dashboard">
-                <h1>{{player.firstName}}'s Dashboard</h1>
                 <div class="graphs-container">
                     <div class="graphs-column">
                         <div v-if="game.visualsUnlocked.posts">
                             <h2 class="mgn-btm-10">Post Frequency</h2>
                             <div class="graph-padding raised">
-                                <div v-for="topic in data.trends" class="bar-container">
-                                    <div class="bar blue" v-bind:style="{width: topic.amount / data.max * 50 + '%'}"><p><b>{{topic.amount}}</b></p></div>
-                                    <p>{{topic.name}}</p>
+                                <div v-for="trend in data.trends" class="bar-container">
+                                    <div class="bar blue" v-bind:style="{width: trend.amount / data.max * 50 + '%'}"><p><b>{{trend.amount}}</b></p></div>
+                                    <p>{{trend.name}}</p>
                                 </div>
                             </div>
                         </div>
                         <div v-if="game.visualsUnlocked.feelings">
                             <h2 class="mgn-btm-10">Trend Feelings</h2>
                             <div class="graph-padding raised">
-                                <div v-for="topic in data.trends" class="text-container">
-                                    <h3>{{topic.name}}</h3>
-                                    <h3 class="feeling good" v-if="topic.sentimentAverage > 0">Good</h3>
-                                    <h3 class="feeling neutral" v-if="topic.sentimentAverage < 0">Neutral</h3>
-                                    <h3 class="feeling bad" v-if="topic.sentimentAverage === 0">Bad</h3>
+                                <div v-for="trend in data.trends" class="text-container">
+                                    <h3>{{trend.name}}</h3>
+                                    <h3 class="feeling good" v-if="trend.sentimentAverage > 0">Good</h3>
+                                    <h3 class="feeling neutral" v-if="trend.sentimentAverage < 0">Neutral</h3>
+                                    <h3 class="feeling bad" v-if="trend.sentimentAverage === 0">Bad</h3>
                                 </div>
                             </div>
                         </div>
@@ -112,14 +126,14 @@
                         <div v-if="game.visualsUnlocked.likes">
                             <h2 class="mgn-btm-10">Average Score</h2>
                             <div class="graph-padding raised">
-                                <div v-for="topic in data.trends" class="">
-                                    <div v-if="topic.likesAverage < 0" class="bar-container right">
-                                        <p>{{topic.name}}</p>
-                                        <div class="bar negative purple" v-bind:style="{width: topic.likesAverage / data.likesMin * 50 + '%'}"><p><b>{{topic.likesAverage}}</b></p></div>
+                                <div v-for="trend in data.trends" class="">
+                                    <div v-if="trend.likesAverage < 0" class="bar-container right">
+                                        <p>{{trend.name}}</p>
+                                        <div class="bar negative purple" v-bind:style="{width: trend.likesAverage / data.likesMin * 50 + '%'}"><p><b>{{trend.likesAverage}}</b></p></div>
                                     </div>
                                     <div v-else class="bar-container left">
-                                        <div class="bar green" v-bind:style="{width: topic.likesAverage / data.likesMax * 50 + '%'}"><p><b>{{topic.likesAverage}}</b></p></div>
-                                        <p>{{topic.name}}</p>
+                                        <div class="bar green" v-bind:style="{width: trend.likesAverage / data.likesMax * 50 + '%'}"><p><b>{{trend.likesAverage}}</b></p></div>
+                                        <p>{{trend.name}}</p>
                                     </div>
                                 </div>
                             </div>
@@ -127,9 +141,9 @@
                         <div v-if="game.visualsUnlocked.comments">
                             <h2 class="mgn-btm-10">Comments Average</h2>
                             <div class="graph-padding raised">
-                                <div v-for="topic in data.trends" class="bar-container">
-                                    <div class="bar yellow" v-bind:style="{width: topic.commentsAverage / data.commentsMax * 50 + '%'}"><p><b>{{topic.commentsAverage}}</b></p></div>
-                                    <p>{{topic.name}}</p>
+                                <div v-for="trend in data.trends" class="bar-container">
+                                    <div class="bar yellow" v-bind:style="{width: trend.commentsAverage / data.commentsMax * 50 + '%'}"><p><b>{{trend.commentsAverage}}</b></p></div>
+                                    <p>{{trend.name}}</p>
                                 </div>
                             </div>
                         </div>
@@ -141,11 +155,10 @@
                                 <div class="head">
                                     <div class="info">
                                         <div class="thumbnail">
-                                            <img class="portrait" v-bind:src="resolvePic(item.user.pic)" alt="Image">
+                                            <img class="portrait" v-bind:src="resolvePic(item.postName.pic)" alt="Image">
                                         </div>
                                         <div class="name">
                                             <h3 class="title">{{item.postName.first}} {{item.postName.last}}</h3>
-                                            <p>{{time}}</p>
                                         </div>
                                         <div class="score">
                                             <h1 v-bind:class="{darkPurple: item.score >= 0, mediumPurple: item.score < 0}">{{item.score}}</h1>
@@ -165,7 +178,7 @@
                                 <div class="commentSection">
                                     <div class="comment" v-if="item.comments.length < 5" v-for="n in item.comments.length">
                                         <div class="thumbnail">
-                                            <img class="portrait" v-bind:src="resolvePic(item.comments[n-1].user.pic)" alt="Image">
+                                            <img class="portrait" v-bind:src="resolvePic(item.comments[n-1].commentName.pic)" alt="Image">
                                         </div>
                                         <div class="content">
                                             <h4>{{item.comments[n-1].commentName.first}} {{item.comments[n-1].commentName.last}}</h4>
@@ -174,7 +187,7 @@
                                     </div>
                                     <div class="comment" v-if="item.comments.length >= 5" v-for="n in 5">
                                         <div class="thumbnail">
-                                            <img class="portrait" v-bind:src="resolvePic(item.comments[n-1].user.pic)" alt="Image">
+                                            <img class="portrait" v-bind:src="resolvePic(item.comments[n-1].commentName.pic)" alt="Image">
                                         </div>
                                         <div class="content">
                                             <h4>{{item.comments[n-1].commentName.first}} {{item.comments[n-1].commentName.last}}</h4>
@@ -184,7 +197,7 @@
                                 </div>
                                 <div class="userComment">
                                     <div class="thumbnail">
-                                        <img class="portrait" src="http://bulma.io/images/placeholders/96x96.png" alt="Image">
+                                        <img class="portrait" v-bind:src="player.pic.link" alt="Image">
                                     </div>
                                     <input type="text" placeholder="Comment..." v-on:click="pause = true" v-model="item.commentValue" v-on:keyup.enter="addComment(i)"></input>
                                 </div>
@@ -201,14 +214,30 @@
             <!--Player stats page-->
             <div class="stats" v-if="state.stats">
                 <div class="column left">
-                    <img src="http://bulma.io/images/placeholders/96x96.png" width="96px"/>
-                    <h2>{{player.firstName}} {{player.lastName}}</h2>
-                    <h5 class="btn backGreen fullWidth" v-on:click="moveState('dashboard')">View dashboard</h5>
+                    <div class="player-info mgn-btm-10 stats-panel">
+                        <div class="thumbnail extraLarge">
+                            <img class="portrait player-img" v-bind:src="player.pic.link" width="96px"/>
+                        </div>
+                        <div class='player-name'>
+                            <h2>{{player.firstName}} {{player.lastName}}</h2>
+                        </div>
+                    </div>
+                    <div class="about-me">
+                        <h2 class="mgn-top-10" v-on:click="editing=true">About Me:</h2>
+                        <div class="spacer"></div>
+                        <h2 v-on:click="editing=true"><i class="fa fa-pencil" aria-hidden="true"></i></h2>
+                    </div>
+                    <div class="player-bio stats-panel">
+                        <p v-if="!editing">{{player.bio}}</p>
+                        <textarea v-else class="textbox" placeholder="Write in here" v-model="player.bio" v-on:keyup.enter="editing=false"></textarea>
+                    </div>
                 </div>
                 <div class="column middle">
                     <div class="userInput">
                         <div class="headline-submission">
-                            <img src="http://bulma.io/images/placeholders/96x96.png"/>
+                            <div class="thumbnail large">
+                                <img v-bind:src="player.pic.link"/>
+                            </div>
                             <input type="text" placeholder="Post a headline" v-model="headline" v-on:keyup.enter="submitHeadline"></input>
                         </div>
                         <h5 class="btn backPurple fullWidth" v-on:click="submitHeadline">Add Headline</h5>
@@ -217,11 +246,10 @@
                         <div class="head">
                             <div class="info">
                                 <div class="thumbnail">
-                                    <img class="portrait" src="http://bulma.io/images/placeholders/96x96.png"/> alt="Image">
+                                    <img class="portrait" v-bind:src="player.pic.link"/> alt="Image">
                                 </div>
                                 <div class="name">
                                     <h3 class="title">{{item.postName.first}} {{item.postName.last}}</h3>
-                                    <p>{{time}}</p>
                                 </div>
                                 <div class="score">
                                     <h1 v-bind:class="{darkPurple: item.score >= 0, mediumPurple: item.score < 0}">{{item.score}}</h1>
@@ -241,7 +269,7 @@
                         <div class="commentSection">
                             <div class="comment" v-for="comment in item.comments">
                                 <div class="thumbnail">
-                                    <img class="portrait" v-bind:src="resolvePic(comment.user.pic)" alt="Image">
+                                    <img class="portrait" v-bind:src="resolvePic(comment.commentName.pic)" alt="Image">
                                 </div>
                                 <div class="content">
                                     <h4>{{comment.commentName.first}} {{comment.commentName.last}}</h4>
@@ -251,7 +279,7 @@
                         </div>
                         <div class="userComment">
                             <div class="thumbnail">
-                                <img class="portrait" src="http://bulma.io/images/placeholders/96x96.png" alt="Image">
+                                <img class="portrait" v-bind:src="player.pic.link" alt="Image">
                             </div>
                             <input type="text" placeholder="Comment..." v-on:click="pause = true" v-model="item.commentValue" v-on:keyup.enter="addComment(i)"></input>
                         </div>
@@ -264,8 +292,8 @@
                     <div class="trends-panel">
                         <h2>Trending Now:</h2>
                         <h6 v-for="item in game.trends">{{item}}</h6>
-                        <p class="mgn-top-10">Change the trends:</p>
-                        <h2 class="btn backGreen fullWidth">30,000</h2>
+                        <h3 class="mgn-top-10 mgn-btm-10">Change the trends:</h3>
+                        <h2 class="btn backGreen fullWidth" v-on:click="changeTrends">{{game.trendsCost}} Points</h2>
                     </div>
                 </div>
             </div>
@@ -288,7 +316,9 @@
                 <div class="column middle">
                     <div class="userInput">
                         <div class="headline-submission">
-                            <img src="http://bulma.io/images/placeholders/96x96.png"/>
+                            <div class="thumbnail large">
+                                <img class="portrait" v-bind:src="player.pic.link"/>
+                            </div>
                             <input type="text" placeholder="Post a headline" v-model="headline" v-on:keyup.enter="submitHeadline"></input>
                         </div>
                         <h5 class="btn backPurple fullWidth" v-on:click="submitHeadline">Add Headline</h5>
@@ -297,11 +327,10 @@
                         <div class="head">
                             <div class="info">
                                 <div class="thumbnail">
-                                    <img class="portrait" v-bind:src="resolvePic(item.user.pic)" alt="Image">
+                                    <img class="portrait" v-bind:src="resolvePic(item.postName.pic)" alt="Image">
                                 </div>
                                 <div class="name">
                                     <h3 class="title">{{item.postName.first}} {{item.postName.last}}</h3>
-                                    <p>{{time}}</p>
                                 </div>
                                 <div class="score">
                                     <h1 v-bind:class="{darkPurple: item.score >= 0, mediumPurple: item.score < 0}">{{item.score}}</h1>
@@ -321,7 +350,7 @@
                         <div class="commentSection">
                             <div class="comment" v-if="item.comments.length < 5" v-for="n in item.comments.length">
                                 <div class="thumbnail">
-                                    <img class="portrait" v-bind:src="resolvePic(item.comments[n-1].user.pic)" alt="Image">
+                                    <img class="portrait" v-bind:src="resolvePic(item.comments[n-1].commentName.pic)" alt="Image">
                                 </div>
                                 <div class="content">
                                     <h4>{{item.comments[n-1].commentName.first}} {{item.comments[n-1].commentName.last}}</h4>
@@ -330,7 +359,7 @@
                             </div>
                             <div class="comment" v-if="item.comments.length >= 5" v-for="n in 5">
                                 <div class="thumbnail">
-                                    <img class="portrait" v-bind:src="resolvePic(item.comments[n-1].user.pic)" alt="Image">
+                                    <img class="portrait" v-bind:src="resolvePic(item.comments[n-1].commentName.pic)" alt="Image">
                                 </div>
                                 <div class="content">
                                     <h4>{{item.comments[n-1].commentName.first}} {{item.comments[n-1].commentName.last}}</h4>
@@ -340,7 +369,7 @@
                         </div>
                         <div class="userComment">
                             <div class="thumbnail">
-                                <img class="portrait" src="http://bulma.io/images/placeholders/96x96.png" alt="Image">
+                                <img class="portrait" v-bind:src="player.pic.link" alt="Image">
                             </div>
                             <input type="text" placeholder="Comment..." v-on:click="pause = true" v-model="item.commentValue" v-on:keyup.enter="addComment(i)"></input>
                         </div>
@@ -353,8 +382,8 @@
                     <div class="trends-panel">
                         <h2>Trending Now:</h2>
                         <h6 v-for="item in game.trends">{{item}}</h6>
-                        <p class="mgn-top-10">Change the trends:</p>
-                        <h2 class="btn backGreen fullWidth" v-on:click="changeTrends">30,000</h2>
+                        <h3 class="mgn-top-10 mgn-btm-10">Change the trends:</h3>
+                        <h2 class="btn backGreen fullWidth" v-on:click="changeTrends">{{game.trendsCost}} Points</h2>
                     </div>
                 </div>
             </div>

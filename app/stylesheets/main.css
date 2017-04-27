@@ -74,7 +74,7 @@ a {
   padding: 10px;
   text-align: center;
   transition: all .5s;
-  user-select: none;
+  -webkit-user-select: none;
 }
 .btn:hover {
   cursor: pointer;
@@ -100,6 +100,12 @@ a {
 }
 .btn.backYellow:hover {
   background-color: #f5ce3d;
+}
+.btn.backBlue {
+  background-color: #08B2E3;
+}
+.btn.backBlue:hover {
+  background-color: #40a3bf;
 }
 .btn.backGreen {
   background-color: #7CC7A9;
@@ -197,11 +203,20 @@ input:focus {
   box-shadow: 0px 0px 20px -5px #393D3F;
 }
 .thumbnail {
+  border-radius: 3px;
   background-color: #393D3F;
   position: relative;
   width: 40px;
   height: 40px;
   overflow: hidden;
+}
+.thumbnail.large {
+  width: 70px;
+  height: 70px;
+}
+.thumbnail.extraLarge {
+  width: 96px;
+  height: 96px;
 }
 .thumbnail img {
   position: absolute;
@@ -356,10 +371,6 @@ input:focus {
   display: flex;
   flex-direction: row;
   margin-bottom: 10px;
-}
-.userInput .headline-submission img {
-  height: 70px;
-  width: auto;
 }
 .userInput .headline-submission input {
   box-sizing: border-box;
@@ -518,9 +529,8 @@ input:focus {
   align-items: center;
   flex-direction: row;
 }
-.headlinr-nav .user-info img {
-  height: 24px;
-  margin-right: 10px;
+.headlinr-nav .user-info p {
+  margin-left: 10px;
 }
 .start {
   background-color: rgba(0, 0, 0, 0.2);
@@ -554,17 +564,52 @@ input:focus {
   margin-bottom: 10px;
   text-align: center;
 }
-.start .start-screen .start-button {
-  background-color: #4F2D87;
+.stats .textbox {
   box-sizing: border-box;
-  color: white;
-  display: inline-block;
-  text-align: center;
-  margin-top: 10px;
-  padding: 10px;
+  font-family: 'Lato';
+  font-size: 18px;
+  height: 200px;
   width: 100%;
+  background-color: transparent;
+  border: 1px solid #393D3F;
+  border-radius: 3px;
 }
-.start .start-screen .start-button:hover {
+.stats .textbox:focus {
+  outline: none;
+}
+.stats .stats-panel {
+  background-color: #efefef;
+  border: 1px solid #AAACA9;
+  border-radius: 3px;
+  padding: 10px;
+}
+.stats .player-info {
+  align-items: center;
+  display: flex;
+  margin-bottom: 20px;
+  flex-direction: row;
+}
+.stats .player-info .player-name {
+  flex: 1;
+  margin-left: 10px;
+}
+.stats .player-info .player-name h2 {
+  margin-bottom: 5px;
+  margin-top: 0;
+}
+.stats .about-me {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+}
+.stats .about-me h2 {
+  margin: 0;
+}
+.stats .about-me .spacer {
+  flex: 1;
+}
+.stats .about-me i:hover {
+  color: #4F2D87;
   cursor: pointer;
 }
 .upgrades {
@@ -626,6 +671,31 @@ input:focus {
   height: auto;
   margin-bottom: 15px;
 }
+.camera {
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  justify-content: center;
+  z-index: 200;
+}
+.camera .camera-container {
+  align-items: center;
+  background-color: #F0F1ED;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 80%;
+  height: 80%;
+}
+.camera .camera-container #myCamera {
+  width: 900px;
+  height: 600px;
+}
 html,
 body {
   display: flex;
@@ -637,6 +707,7 @@ body {
 #app {
   display: flex;
   flex: 1;
+  position: relative;
 }
 a {
   text-decoration: none;

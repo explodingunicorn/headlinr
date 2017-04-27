@@ -1,8 +1,8 @@
 trees = {
     connections: [
         {
-            desc: 'Gain 100 more connections',
-            scale: 1,
+            desc: 'Gain 150 more connections',
+            scale: 1.5,
             cost: 50000
         },
         {
@@ -236,17 +236,15 @@ exports.Upgrade = function() {
     }
 
     this.trendsLeveled = function(branch, game) {
-        console.log('Leveled Trends');
         if(branch.type === 'addition') {
             game.addNewTrends(branch.scale);
         }
         else {
-            game.reduceTrendCost(branch.scale);
+            game.reduceTrendsCost(branch.scale);
         }
     }
 
     this.dashboardLeveled = function(branch, game) {
-        console.log(branch.type);
         game.addVisual(branch.type);
     }
 

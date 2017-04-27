@@ -65,10 +65,10 @@ exports.Headline = function (headline, user, trend, name, creation) {
     }
 
     //function to subtract from the posts score
-    this.dislike = function() {
-        this.score--;
+    this.dislike = function(scale) {
+        this.score -= scale;
         if(this.playerCreated) {
-            this.user.changeScore(-1);
+            this.user.changeScore(-scale);
         }
     }
 }

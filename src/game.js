@@ -34,7 +34,7 @@ export default function Game(user) {
         likeCount: 0,
         comment: 0,
         commentCount: 0,
-        post: 0,
+        headline: false,
     }
     this.userGroupQueues = (function() {
         var arr = [];
@@ -75,9 +75,9 @@ export default function Game(user) {
             game.users[i].checkUpdate(time);
         }
 
-        if(this.automation.post) {
-            if(time % this.automation.post === 0) {
-
+        if(this.automation.headline) {
+            if(time % this.automation.headline === 0) {
+                this.player.headline();
             }
         }
     }
@@ -86,12 +86,10 @@ export default function Game(user) {
         //Check if like is activated
         if(game.automation.like) {
             game.automation.likeCount++;
-            console.log('hi');
 
             if(game.automation.like === game.automation.likeCount) {
                 game.player.like(0);
                 game.automation.likeCount = 0;
-                console.log('liked');
             }
         }
 
@@ -192,12 +190,12 @@ export default function Game(user) {
 
     this.addAutomation = function(type, scale) {
         console.log(type, scale);
-        if(type !== 'post') {
+        if(type !== 'headline') {
             this.automation[type] = scale;
             this.automation[type+'Count'] = 0;
         }
         else {
-            this.automation[type] = 100;
+            this.automation[type] = 400;
         }
     }
 }

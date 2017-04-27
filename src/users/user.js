@@ -34,11 +34,14 @@ export default function User(game, group) {
     var scaleReacts = 1;
     var aggression = rand10();
     var sex = Math.floor((Math.random() * 2) + 1);
-    this.pic = '';
+    this.pic = {
+        type: 'user',
+        link: ''
+    }
     if (sex === 1) {
-        this.pic = '/boys/boy (' + Math.floor((Math.random() * 35) + 1) + ')';
+        this.pic.link = '/boys/boy (' + Math.floor((Math.random() * 35) + 1) + ')';
     } else {
-        this.pic = '/girls/girl (' + Math.floor((Math.random() * 42) + 1) + ')';
+        this.pic.link = '/girls/girl (' + Math.floor((Math.random() * 42) + 1) + ')';
     }
     var self = this;
 
@@ -47,12 +50,15 @@ export default function User(game, group) {
         var randFirstM = Math.floor((Math.random() * mFirstNames.length) + 1);
         var randLast = Math.floor((Math.random() * lastNames.length) + 1);
         var name = {};
+        name.pic = {
+            type: 'user'
+        };
         if (sex === 1) {
             name.first = mFirstNames[randFirstM];
-            name.pic = '/boys/boy (' + Math.floor((Math.random() * 35) + 1) + ')';
+            name.pic.link = '/boys/boy (' + Math.floor((Math.random() * 35) + 1) + ')';
         } else {
             name.first = fFirstNames[randFirstF];
-            name.pic = '/girls/girl (' + Math.floor((Math.random() * 42) + 1) + ')';
+            name.pic.link = '/girls/girl (' + Math.floor((Math.random() * 42) + 1) + ')';
         }
         name.last = lastNames[randLast];
 
