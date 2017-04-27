@@ -202,10 +202,10 @@ exports.Upgrade = function() {
     this.automationCost = trees.automation[this.automationLevel].cost;
     this.automationDone = false;
 
-    this.upgrade = function(type, game, userScore) {
-        if(trees[type][this[type+'Level']].cost <= userScore.famePoints) {
+    this.upgrade = function(type, game, player) {
+        if(trees[type][this[type+'Level']].cost <= player.points) {
             //Subtract the cost from the users points
-            userScore.famePoints = userScore.famePoints - trees[type][this[type+'Level']].cost;
+            player.points = player.points - trees[type][this[type+'Level']].cost;
 
             //Select the current branch, and level from the tree
             var currentBranch = trees[type][this[type+'Level']]

@@ -19,7 +19,7 @@
                 <div class="spacer"></div>
                 <div class="user-info" v-on:click="moveState('stats')">
                     <img src="http://bulma.io/images/placeholders/96x96.png"/>
-                    <p class="white">{{user.info.first}} {{user.info.last}}</p>
+                    <p class="white">{{player.firstName}} {{player.lastName}}</p>
                 </div>
                 <p class="dashboard-link" v-on:click="moveState('dashboard')"><i class="fa fa-tachometer" aria-hidden="true"></i> Dashboard</p>
             </div>
@@ -34,9 +34,9 @@
                     <p>Email</p>
                     <input type="text" placeholder="joeshmo@email.com"></input>
                     <p>First name</p>
-                    <input type="text" placeholder="Joe" v-model="user.info.first"></input>
+                    <input type="text" placeholder="Joe" v-model="player.firstName"></input>
                     <p>Last name</p>
-                    <input type="text" placeholder="Shmo" v-model="user.info.last" v-on:keyup.enter="startGame"></input>
+                    <input type="text" placeholder="Shmo" v-model="player.lastName" v-on:keyup.enter="startGame"></input>
                     <h5 class="btn backPurple fullWidth mgn-top-10" v-on:click="startGame">Sign-up!</h5>
                 </div>
             </div>
@@ -46,34 +46,34 @@
                 <div class="upgrades-container">
                     <h2 class="close" v-on:click="upgrades = false"><i class="fa fa-times" aria-hidden="true"></i></h2>
                     <h1>What would you like to spend your points on?</h1>
-                    <h1><span class="darkPurple">{{formatNum(user.score.famePoints)}}</span> Fame Points left</h1>
+                    <h1><span class="darkPurple">{{formatNum(player.points)}}</span> Fame Points left</h1>
                     <div class="power-ups">
                         <div class="power-up-container border green raised">
                             <img src="./img/connections.png"/>
                             <h2>Connections</h2>
                             <p>{{upgradeSystem.connectionsText}}</p>
-                            <h5 class="btn backGreen fullWidth" v-if="!upgradeSystem.connectionsDone" v-on:click="upgradeSystem.upgrade('connections', game, user.score)">{{formatNum(upgradeSystem.connectionsCost)}}</h5>
+                            <h5 class="btn backGreen fullWidth" v-if="!upgradeSystem.connectionsDone" v-on:click="upgradeSystem.upgrade('connections', game, player)">{{formatNum(upgradeSystem.connectionsCost)}}</h5>
                             <h5 class="btn backGray fullWidth" v-else>Completed</h5>
                         </div>
                         <div class="power-up-container border darkPurple raised">
                             <img src="./img/trends.png"/>
                             <h2>Trends</h2>
                             <p>{{upgradeSystem.trendsText}}</p>
-                            <h5 class="btn backPurple fullWidth" v-if="!upgradeSystem.trendsDone" v-on:click="upgradeSystem.upgrade('trends', game, user.score)">{{formatNum(upgradeSystem.trendsCost)}}</h5>
+                            <h5 class="btn backPurple fullWidth" v-if="!upgradeSystem.trendsDone" v-on:click="upgradeSystem.upgrade('trends', game, player)">{{formatNum(upgradeSystem.trendsCost)}}</h5>
                             <h5 class="btn backGray fullWidth" v-else>Completed</h5>
                         </div>
                         <div class="power-up-container border medPurple raised">
                             <img src="./img/dashboard.png"/>
                             <h2>Dashboard</h2>
                             <p>{{upgradeSystem.dashboardText}}</p>
-                            <h5 class="btn backMedPurple fullWidth" v-if="!upgradeSystem.dashboardDone" v-on:click="upgradeSystem.upgrade('dashboard', game, user.score)">{{formatNum(upgradeSystem.dashboardCost)}}</h5>
+                            <h5 class="btn backMedPurple fullWidth" v-if="!upgradeSystem.dashboardDone" v-on:click="upgradeSystem.upgrade('dashboard', game, player)">{{formatNum(upgradeSystem.dashboardCost)}}</h5>
                             <h5 class="btn backGray fullWidth" v-else>Completed</h5>
                         </div>
                         <div class="power-up-container border black raised">
                             <img src="./img/automation.png"/>
                             <h2>Automation</h2>
                             <p>{{upgradeSystem.automationText}}</p>
-                            <h5 class="btn backBlack fullWidth" v-if="!upgradeSystem.automationDone" v-on:click="upgradeSystem.upgrade('automation', game, user.score)">{{formatNum(upgradeSystem.automationCost)}}</h5>
+                            <h5 class="btn backBlack fullWidth" v-if="!upgradeSystem.automationDone" v-on:click="upgradeSystem.upgrade('automation', game, player)">{{formatNum(upgradeSystem.automationCost)}}</h5>
                             <h5 class="btn backGray fullWidth" v-else>Completed</h5>
                         </div>
                     </div>
@@ -84,7 +84,7 @@
 
             <!--Player dashboard-->
             <div class="dashboard" v-if="state.dashboard">
-                <h1>{{user.info.first}}'s Dashboard</h1>
+                <h1>{{player.firstName}}'s Dashboard</h1>
                 <div class="graphs-container">
                     <div class="graphs-column">
                         <div v-if="game.visualsUnlocked.posts">
@@ -202,14 +202,14 @@
             <div class="stats" v-if="state.stats">
                 <div class="column left">
                     <img src="http://bulma.io/images/placeholders/96x96.png" width="96px"/>
-                    <h2>{{user.info.first}} {{user.info.last}}</h2>
+                    <h2>{{player.firstName}} {{player.lastName}}</h2>
                     <h5 class="btn backGreen fullWidth" v-on:click="moveState('dashboard')">View dashboard</h5>
                 </div>
                 <div class="column middle">
                     <div class="userInput">
                         <div class="headline-submission">
                             <img src="http://bulma.io/images/placeholders/96x96.png"/>
-                            <input type="text" placeholder="Post a headline" v-model="user.headline" v-on:keyup.enter="submitHeadline"></input>
+                            <input type="text" placeholder="Post a headline" v-model="headline" v-on:keyup.enter="submitHeadline"></input>
                         </div>
                         <h5 class="btn backPurple fullWidth" v-on:click="submitHeadline">Add Headline</h5>
                     </div>
@@ -276,12 +276,12 @@
                 <div class="column left">
                     <div class="panel raised">
                         <h2>Totals:</h2>
-                        <h1 class="darkPurple">{{formatNum(user.score.likes)}} <p>Likes</p></h1>
-                        <h1 class="mediumPurple">{{formatNum(user.score.comments)}} <p>Comments</p></h1>
+                        <h1 class="darkPurple">{{formatNum(player.likesTotal)}} <p>Likes</p></h1>
+                        <h1 class="mediumPurple">{{formatNum(player.commentsTotal)}} <p>Comments</p></h1>
                         <h1>{{formatNum(game.totalConnections)}} <p>Connections</p></h1>
                         <hr></hr>
                         <h2>Fame Points:</h2>
-                        <h1>{{formatNum(user.score.famePoints)}}</h1>
+                        <h1>{{formatNum(player.points)}}</h1>
                         <h5 class="btn backYellow fullWidth" v-on:click="upgrades = true">Spend Points!</h5>
                     </div>
                 </div>
@@ -289,7 +289,7 @@
                     <div class="userInput">
                         <div class="headline-submission">
                             <img src="http://bulma.io/images/placeholders/96x96.png"/>
-                            <input type="text" placeholder="Post a headline" v-model="user.headline" v-on:keyup.enter="submitHeadline"></input>
+                            <input type="text" placeholder="Post a headline" v-model="headline" v-on:keyup.enter="submitHeadline"></input>
                         </div>
                         <h5 class="btn backPurple fullWidth" v-on:click="submitHeadline">Add Headline</h5>
                     </div>

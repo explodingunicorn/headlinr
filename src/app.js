@@ -8,6 +8,7 @@ import jetpack from 'fs-jetpack'; // module loaded from npm
 import sentiment from 'sentiment';
 import Game from './game.js';
 var Headline =  require('../src/users/headline.js').Headline;
+var Player = require('../src/users/player.js').Player;
 var UpgradeSystem = require('../src/users/upgrade.js').Upgrade;
 var Vue = require('vue/dist/vue.common.js');
 
@@ -18,26 +19,15 @@ var app = new Vue({
     el: "#app",
     data: {
         state: {
-            start: 1,
-            game: 0,
+            start: 0,
+            game: 1,
             stats: 0,
             dashboard: 0
         },
-        user: {
-            info: {
-                first: 'Player',
-                last: 'One'
-            },
-            headline: '',
-            score: {
-                likes: 0,
-                comments: 0,
-                users: 0,
-                famePoints: 9999999999
-            }
-        },
+        headline: '',
         time: 'Time',
         game: new Game(),
+        player: new Player(),
         data: null,
         pause: false,
         upgradeSystem: new UpgradeSystem(),
@@ -62,30 +52,30 @@ var app = new Vue({
         submitHeadline: function() {
             var key = false;
             var userTopic;
-            var headline = this.user.headline.toLowerCase()
+            var headline = this.headline.toLowerCase()
             var len = headline.split(' ').length;
             if (len < 10) {
-                var check = this.game.playerHeadline(headline);
+                var check = this.player.headline(headline);
             }
 
             if(check) {
-                this.user.headline = '';
+                this.headline = '';
             }
         },
         likePost: function(index) {
-            this.game.playerLike(index);
+            this.player.like(index);
         },
         dislikePost: function(index) {
-            this.game.playerDislike(index);
+            this.player.dislike(index);
         },
         addComment: function(index) {
-            this.game.playerComment(index, this.user);
+            this.player.comment(index, this.user);
             this.pause = false;
         },
         changeTrends: function() {
-            if (this.user.score.famePoints > this.game.trendsCost) {
+            if (this.player.points > this.game.trendsCost) {
                 this.game.addNewTrends('purchase');
-                this.user.score.famePoints = this.user.score.famePoints - this.game.trendsCost;
+                this.player.points = this.player.points - this.game.trendsCost;
             }
         },
         resolvePic: function(pic) {
@@ -102,8 +92,8 @@ var app = new Vue({
         }
     },
     mounted: function() {
-        this.game.newPlayer(this.user);
         this.data = this.game.collector;
+        this.player = this.game.player;
         var sec = 0;
         var pastLikes = 0;
         var pastComments = 0;
@@ -113,26 +103,7 @@ var app = new Vue({
                 app.game.update(sec);
             }
 
-            app.user.score.likes = 0;
-            app.user.score.comments = 0;
-            app.user.score.users = 0;
-
-            app.user.score.likes = app.game.playerScore;
-            app.user.score.comments = app.game.playerComments;
-
-            if (pastLikes !== app.user.score.likes && app.user.score.likes >= 0) {
-                var dif = app.user.score.likes - pastLikes;
-                var pointsToAdd = 1000*dif;
-                app.user.score.famePoints += pointsToAdd;
-                pastLikes = app.user.score.likes;
-            }
-
-            if (pastComments !== app.user.score.likes) {
-                var dif = app.user.score.comments - pastComments;
-                var pointsToAdd = 500*dif;
-                app.user.score.famePoints += pointsToAdd;
-                pastComments = app.user.score.comments;
-            }
+            app.player.calculateCurrentPoints();
 
             window.requestAnimationFrame(gameLoop);
         }
