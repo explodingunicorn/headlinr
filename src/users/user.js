@@ -60,19 +60,19 @@ export default function User(game, group) {
     }
 
     this.generateTopicFeelings = function() {
-        var topics = {};
+        var trends = {};
 
-        for (var i = 0; i < this.game.topics.length; i++) {
-            topics[this.game.topics[i]] = rand10();
+        for (var i = 0; i < this.game.trends.length; i++) {
+            trends[this.game.trends[i]] = rand10();
         }
-        return topics;
+        return trends;
     }
 
     this.generateNewFeelings = function() {
-        topicFeelings = this.generateTopicFeelings();
+        trendFeelings = this.generateTopicFeelings();
     }
 
-    var topicFeelings = this.generateTopicFeelings();
+    var trendFeelings = this.generateTopicFeelings();
 
     this.generateMoreNames = function(num) {
         if(num<1000) {
@@ -130,8 +130,8 @@ export default function User(game, group) {
 
         for (var i = 0; i < postsToCheck; i++) {
             //Read the headline, and determine the reaction to the headline
-            var topic = headlines[i].topic;
-            var userFeeling = topicFeelings[topic];
+            var trend = headlines[i].trend;
+            var userFeeling = trendFeelings[trend];
             var sentiment = headlines[i].sentimentScore;
             var playerFactor = 0;
             var repeatFactor = 0;
@@ -144,7 +144,7 @@ export default function User(game, group) {
                 scale = scaleReacts;
                 if(game.userHeadlines.length > 2) {
                     for(var j = game.userHeadlines.length-2; j > 0; j--) {
-                        if (game.userHeadlines[j].topic === topic) {
+                        if (game.userHeadlines[j].trend === trend) {
                             repeatFactor += 7;
                         }
                     }
@@ -155,7 +155,7 @@ export default function User(game, group) {
                 if (player) {
                     user.playerOpinion += rand10();
                 }
-                //If the user feels positively towards the topic, there's a chance to like
+                //If the user feels positively towards the trend, there's a chance to like
                 var total = userFeeling + sentiment + playerFactor - repeatFactor;
                 if (total >= interactChance()) {
                     headlines[i].like(scale);
@@ -165,7 +165,7 @@ export default function User(game, group) {
                     headlines[i].addComment(sentence.affirm(), user, name);
                 }
             }
-            //If the user feels negatively towards the topic, there's a chance to dislike
+            //If the user feels negatively towards the trend, there's a chance to dislike
             else if (sentiment > 0 && userFeeling <= 5) {
                 if (player) {
                     user.playerOpinion -= rand10();
@@ -221,12 +221,12 @@ export default function User(game, group) {
     //Function for user to push a new headline
     function createHeadline(game, user, name) {
         if (aggression >= headlineChance()) {
-            var topic = game.topics[Math.floor(Math.random() * game.topics.length)];
-            var feeling = topicFeelings[topic];
-            var statement = sentence.generate(feeling, topic);
+            var trend = game.trends[Math.floor(Math.random() * game.trends.length)];
+            var feeling = trendFeelings[trend];
+            var statement = sentence.generate(feeling, trend);
 
             //Creating a new headline
-            var headline = new Headline(statement, user, topic, name);
+            var headline = new Headline(statement, user, trend, name);
             //
             game.pushHeadline(headline, self.group);
         }

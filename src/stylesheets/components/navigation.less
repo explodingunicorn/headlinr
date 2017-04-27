@@ -4,12 +4,32 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    padding: 10px;
+    padding-left: 15px;
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     z-index: 100;
+
+    p {
+        color: @white;
+
+        &:hover {
+            color: white;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+    }
+
+    .logo:hover {
+        cursor: pointer;
+    }
+
+    .dashboard-link {
+        padding: 25px 15px;
+        background-color: @blue;
+        margin-left: 15px;
+    }
 
     h1 {
         color: @white;
@@ -28,12 +48,6 @@
         img {
             height: 24px;
             margin-right: 10px;
-        }
-
-        &:hover {
-            color: white;
-            cursor: pointer;
-            text-decoration: underline;
         }
     }
 }

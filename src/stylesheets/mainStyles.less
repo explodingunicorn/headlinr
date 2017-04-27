@@ -64,7 +64,7 @@ h5 {
 h6 {
     color: @green;
     font-family: 'Montserrat';
-    font-size: 16px;
+    font-size: 20px;
     font-weight: 500;
     text-transform: uppercase;
 }
@@ -125,6 +125,14 @@ a {
 
     &.backGray {
         background-color: @lightGray;
+    }
+
+    &.backYellow {
+        background-color: @yellow;
+
+        &:hover {
+            background-color: hsl(hue(@yellow), 90%, 60%);
+        }
     }
 
     &.backGreen {

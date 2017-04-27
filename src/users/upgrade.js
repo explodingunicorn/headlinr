@@ -238,10 +238,10 @@ exports.Upgrade = function() {
     this.trendsLeveled = function(branch, game) {
         console.log('Leveled Trends');
         if(branch.type === 'addition') {
-            game.addNewTopics(branch.scale);
+            game.addNewTrends(branch.scale);
         }
         else {
-            console.log('Make price less');
+            game.reduceTrendCost(branch.scale);
         }
     }
 

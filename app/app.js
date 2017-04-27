@@ -16,7 +16,7 @@ var lastNames = fs.readFileSync(path.join(__dirname, 'family.txt')).toString().s
 
 //Other classes needed
 var Headline$2 = require('../src/users/headline.js').Headline;
-var sentence = require('../src/users/sentenceGeneration.js');
+var sentence$1 = require('../src/users/sentenceGeneration.js');
 
 //Utilities
 var rand10 = require('../src/utilities.js').rand10;
@@ -69,19 +69,19 @@ function User(game, group) {
     }
 
     this.generateTopicFeelings = function() {
-        var topics = {};
+        var trends = {};
 
-        for (var i = 0; i < this.game.topics.length; i++) {
-            topics[this.game.topics[i]] = rand10();
+        for (var i = 0; i < this.game.trends.length; i++) {
+            trends[this.game.trends[i]] = rand10();
         }
-        return topics;
+        return trends;
     };
 
     this.generateNewFeelings = function() {
-        topicFeelings = this.generateTopicFeelings();
+        trendFeelings = this.generateTopicFeelings();
     };
 
-    var topicFeelings = this.generateTopicFeelings();
+    var trendFeelings = this.generateTopicFeelings();
 
     this.generateMoreNames = function(num) {
         if(num<1000) {
@@ -139,8 +139,8 @@ function User(game, group) {
 
         for (var i = 0; i < postsToCheck; i++) {
             //Read the headline, and determine the reaction to the headline
-            var topic = headlines[i].topic;
-            var userFeeling = topicFeelings[topic];
+            var trend = headlines[i].trend;
+            var userFeeling = trendFeelings[trend];
             var sentiment$$1 = headlines[i].sentimentScore;
             var playerFactor = 0;
             var repeatFactor = 0;
@@ -153,7 +153,7 @@ function User(game, group) {
                 scale = scaleReacts;
                 if(game.userHeadlines.length > 2) {
                     for(var j = game.userHeadlines.length-2; j > 0; j--) {
-                        if (game.userHeadlines[j].topic === topic) {
+                        if (game.userHeadlines[j].trend === trend) {
                             repeatFactor += 7;
                         }
                     }
@@ -164,17 +164,17 @@ function User(game, group) {
                 if (player) {
                     user.playerOpinion += rand10();
                 }
-                //If the user feels positively towards the topic, there's a chance to like
+                //If the user feels positively towards the trend, there's a chance to like
                 var total = userFeeling + sentiment$$1 + playerFactor - repeatFactor;
                 if (total >= interactChance()) {
                     headlines[i].like(scale);
                 }
 
                 if((total+aggression) >= commentChance()) {
-                    headlines[i].addComment(sentence.affirm(), user, name);
+                    headlines[i].addComment(sentence$1.affirm(), user, name);
                 }
             }
-            //If the user feels negatively towards the topic, there's a chance to dislike
+            //If the user feels negatively towards the trend, there's a chance to dislike
             else if (sentiment$$1 > 0 && userFeeling <= 5) {
                 if (player) {
                     user.playerOpinion -= rand10();
@@ -187,7 +187,7 @@ function User(game, group) {
                 }
 
                 if((total+aggression) >= commentChance()) {
-                    headlines[i].addComment(sentence.deny(), user, name);
+                    headlines[i].addComment(sentence$1.deny(), user, name);
                 }
             }
             //If it's negative
@@ -205,7 +205,7 @@ function User(game, group) {
                 }
 
                 if((total+aggression) >= commentChance()) {
-                    headlines[i].addComment(sentence.deny(), user, name);
+                    headlines[i].addComment(sentence$1.deny(), user, name);
                 }
             }
             //If the user feels negatively also, there's a chance to like
@@ -221,7 +221,7 @@ function User(game, group) {
                 }
 
                 if((total+aggression) >= commentChance()) {
-                    headlines[i].addComment(sentence.affirm(), user, name);
+                    headlines[i].addComment(sentence$1.affirm(), user, name);
                 }
             }
         }
@@ -230,12 +230,12 @@ function User(game, group) {
     //Function for user to push a new headline
     function createHeadline(game, user, name) {
         if (aggression >= headlineChance()) {
-            var topic = game.topics[Math.floor(Math.random() * game.topics.length)];
-            var feeling = topicFeelings[topic];
-            var statement = sentence.generate(feeling, topic);
+            var trend = game.trends[Math.floor(Math.random() * game.trends.length)];
+            var feeling = trendFeelings[trend];
+            var statement = sentence$1.generate(feeling, trend);
 
             //Creating a new headline
-            var headline = new Headline$2(statement, user, topic, name);
+            var headline = new Headline$2(statement, user, trend, name);
             //
             game.pushHeadline(headline, self.group);
         }
@@ -246,19 +246,22 @@ var Headline$1 = require('../src/users/headline.js').Headline;
 var DataCollector = require('../src/users/dataCollector.js').DataCollector;
 var sentenceGenerator = require('../src/users/sentenceGeneration');
 
-var topics = ['cats', 'dogs', 'birth-control', 'the police', 'teachers', 'babies', 'white people', 'purple people', 'fire fighters', 'hamsters', 'macaroni','kangaroos', 'politicians', 'hospitals', 'girlfriends', 'boyfriends', 'exercises', 'eating dinner', 'pool parties', 'scooters', 'skateboards', 'apples', 'oranges', 'hotdogs', 'hamburgers', 'fat people', 'skinny people', 'doors', 'houses', 'cigars', 'marijuanas', 'bands', 'popcorn', 'sodas', 'movies', 'blind people', 'elephants', 'shoes', 'hippies', 'beards', 'eyeballs', 'hands', 'noses', 'farts', 'computers', 'hackers', 'men', 'women', 'actors', 'actresses', 'pencils', 'fries', 'fires', 'lights', 'cities', 'websites', 'hopes', 'dreams', 'subs', 'hamsters', 'keyboards', 'phones', 'moms', 'dads', 'grandparents', 'old people', 'millenials', 'wars', 'christians', 'muslims', 'liberals', 'rednecks', 'neo-nazis', 'snow-flakes', 'ducks', 'colds', 'fevers', 'pancakes', 'boogers', 'white people', 'black people', 'red people', 'green people', 'televisions', 'haters', 'bugs', 'basketballs', 'sweatshirts', 'clothes', 'donuts', 'dinosaurs', 'bosses', 'co-workers', 'snakes'];
+var trends = ['cats', 'dogs', 'birth-control', 'the police', 'teachers', 'babies', 'white people', 'purple people', 'fire fighters', 'hamsters', 'macaroni','kangaroos', 'politicians', 'hospitals', 'girlfriends', 'boyfriends', 'exercises', 'eating dinner', 'pool parties', 'scooters', 'skateboards', 'apples', 'oranges', 'hotdogs', 'hamburgers', 'fat people', 'skinny people', 'doors', 'houses', 'cigars', 'marijuanas', 'bands', 'popcorn', 'sodas', 'movies', 'blind people', 'elephants', 'shoes', 'hippies', 'beards', 'eyeballs', 'hands', 'noses', 'farts', 'computers', 'hackers', 'men', 'women', 'actors', 'actresses', 'pencils', 'fries', 'fires', 'lights', 'cities', 'websites', 'hopes', 'dreams', 'subs', 'hamsters', 'keyboards', 'phones', 'moms', 'dads', 'grandparents', 'old people', 'millenials', 'wars', 'christians', 'muslims', 'liberals', 'rednecks', 'neo-nazis', 'snow-flakes', 'ducks', 'colds', 'fevers', 'pancakes', 'boogers', 'white people', 'black people', 'red people', 'green people', 'televisions', 'haters', 'bugs', 'basketballs', 'sweatshirts', 'clothes', 'donuts', 'dinosaurs', 'bosses', 'co-workers', 'snakes'];
 
 function Game(user) {
     var connections = 50;
     this.player = null;
+    this.playerScore = 0;
+    this.playerComments = 0;
     this.totalConnections = 50;
     this.collector = new DataCollector(this);
     var game = this;
     this.headlines = [];
     this.userHeadlines = [];
     this.bestHeadlines = [];
-    var topicsAmt = 10;
-    this.topics = generateTopics();
+    var trendsAmt = 10;
+    this.trends = generateTrends();
+    this.trendsCost = 30000;
     this.postsToRead = 5;
     this.visualsUnlocked = {
         posts: false,
@@ -283,14 +286,14 @@ function Game(user) {
         return arr;
     })();
 
-    function generateTopics() {
-        var gameTopics = [];
-        topics.sort(function() { return 0.5 - Math.random() });
-        for (var i = 0; i < topicsAmt; i++) {
-            gameTopics[i] = topics[i];
+    function generateTrends() {
+        var gameTrends = [];
+        trends.sort(function() { return 0.5 - Math.random() });
+        for (var i = 0; i < trendsAmt; i++) {
+            gameTrends[i] = trends[i];
         }
 
-        return gameTopics;
+        return gameTrends;
     }
 
     this.users = (function () {
@@ -304,8 +307,8 @@ function Game(user) {
         return usersArr;
     })();
 
-    this.createNewTopics = function() {
-        this.topics = generateTopics();
+    this.createNewTrends = function() {
+        this.trends = generateTrends();
     };
 
     this.newPlayer = function(user) {
@@ -316,6 +319,12 @@ function Game(user) {
     this.update = function(time) {
         for (var i = 0; i < this.users.length; i++) {
             game.users[i].checkUpdate(time);
+        }
+
+        if(automation.post) {
+            if(time % automation.post === 0) {
+
+            }
         }
     };
 
@@ -368,6 +377,38 @@ function Game(user) {
         this.headlines[index].commentValue = '';
     };
 
+    this.playerHeadline = function(headline) {
+        if (!headline) {
+            var topic = this.trends[Math.floor(Math.random() * this.trends.length)];
+            var feeling = Maht.floor(Math.random() * 10);
+            var statement = sentence.generate(feeling, topic);
+        }
+        for (var i = 0; i < this.trends.length; i++) {
+            var topic = this.trends[i];
+            if(headline.includes(topic)) {
+                key = true;
+                userTopic = topic;
+                break;
+            }
+        }
+        if (key) {
+            var headline = new Headline$1(headline, this.user, userTopic, this.user.info, true, this.game);
+            this.pushHeadline(headline, 'all', true);
+            return true;
+        }
+        else {
+            return false;
+        }
+    };
+
+    this.changePlayerScore = function(points) {
+        this.playerScore += points;
+    };
+
+    this.addPlayerComments = function() {
+        this.playerComments++;
+    };
+
     function checkAutomation() {
         //Check if like is activated
         if(game.automation.like) {
@@ -417,6 +458,10 @@ function Game(user) {
         //If the user is posting push it to the users headlines as well
         if(user) {
             this.userHeadlines.unshift(headline);
+
+            if(this.userHeadlines.length > 20) {
+                this.userHeadlines.pop();
+            }
         }
 
         //Pop off the 30th post so the timeline isn't infinite
@@ -452,9 +497,15 @@ function Game(user) {
         this.totalConnections = this.totalConnections + modeledScale;
     };
 
-    this.addNewTopics = function(scale) {
-        topicsAmt = topicsAmt + scale;
-        this.topics = generateTopics();
+    this.reduceTrendsCost = function(scale) {
+        this.trendsCost = this.trendsCost - scale;
+    };
+
+    this.addNewTrends = function(scale, points) {
+        if(scale !== "purchase") {
+            trendsAmt = trendsAmt + scale;
+        }
+        this.trends = generateTrends();
         this.collector.clearData();
 
         for (var i = 0; i < this.users.length; i++) {
@@ -468,8 +519,13 @@ function Game(user) {
 
     this.addAutomation = function(type, scale) {
         console.log(type, scale);
-        this.automation[type] = scale;
-        this.automation[type+'Count'] = 0;
+        if(type !== 'post') {
+            this.automation[type] = scale;
+            this.automation[type+'Count'] = 0;
+        }
+        else {
+            this.automation[type] = 100;
+        }
     };
 }
 
@@ -488,8 +544,8 @@ var app = new Vue({
     el: "#app",
     data: {
         state: {
-            start: 0,
-            game: 1,
+            start: 1,
+            game: 0,
             stats: 0,
             dashboard: 0
         },
@@ -533,20 +589,14 @@ var app = new Vue({
             var key = false;
             var userTopic;
             var headline = this.user.headline.toLowerCase();
-            for (var i = 0; i < this.game.topics.length; i++) {
-                var topic = this.game.topics[i];
-                if(headline.includes(topic)) {
-                    key = true;
-                    userTopic = topic;
-                    break;
-                }
+            var len = headline.split(' ').length;
+            if (len < 10) {
+                var check = this.game.playerHeadline(headline);
             }
-            if (key) {
-                var headline = new Headline(this.user.headline, this.user, userTopic, this.user.info, true);
-                this.game.pushHeadline(headline, 'all', true);
+
+            if(check) {
                 this.user.headline = '';
             }
-            this.pause = false;
         },
         likePost: function(index) {
             this.game.playerLike(index);
@@ -557,6 +607,12 @@ var app = new Vue({
         addComment: function(index) {
             this.game.playerComment(index, this.user);
             this.pause = false;
+        },
+        changeTrends: function() {
+            if (this.user.score.famePoints > this.game.trendsCost) {
+                this.game.addNewTrends('purchase');
+                this.user.score.famePoints = this.user.score.famePoints - this.game.trendsCost;
+            }
         },
         resolvePic: function(pic) {
             if (pic) {
@@ -586,10 +642,9 @@ var app = new Vue({
             app.user.score.likes = 0;
             app.user.score.comments = 0;
             app.user.score.users = 0;
-            for (var i = 0; i < app.game.userHeadlines.length; i++) {
-                app.user.score.likes += app.game.userHeadlines[i].score;
-                app.user.score.comments += app.game.userHeadlines[i].comments.length;
-            }
+
+            app.user.score.likes = app.game.playerScore;
+            app.user.score.comments = app.game.playerComments;
 
             if (pastLikes !== app.user.score.likes && app.user.score.likes >= 0) {
                 var dif = app.user.score.likes - pastLikes;

@@ -18,8 +18,8 @@ var app = new Vue({
     el: "#app",
     data: {
         state: {
-            start: 0,
-            game: 1,
+            start: 1,
+            game: 0,
             stats: 0,
             dashboard: 0
         },
@@ -63,20 +63,14 @@ var app = new Vue({
             var key = false;
             var userTopic;
             var headline = this.user.headline.toLowerCase()
-            for (var i = 0; i < this.game.topics.length; i++) {
-                var topic = this.game.topics[i];
-                if(headline.includes(topic)) {
-                    key = true;
-                    userTopic = topic;
-                    break;
-                }
+            var len = headline.split(' ').length;
+            if (len < 10) {
+                var check = this.game.playerHeadline(headline);
             }
-            if (key) {
-                var headline = new Headline(this.user.headline, this.user, userTopic, this.user.info, true)
-                this.game.pushHeadline(headline, 'all', true);
+
+            if(check) {
                 this.user.headline = '';
             }
-            this.pause = false;
         },
         likePost: function(index) {
             this.game.playerLike(index);
@@ -87,6 +81,12 @@ var app = new Vue({
         addComment: function(index) {
             this.game.playerComment(index, this.user);
             this.pause = false;
+        },
+        changeTrends: function() {
+            if (this.user.score.famePoints > this.game.trendsCost) {
+                this.game.addNewTrends('purchase');
+                this.user.score.famePoints = this.user.score.famePoints - this.game.trendsCost;
+            }
         },
         resolvePic: function(pic) {
             if (pic) {
@@ -116,10 +116,9 @@ var app = new Vue({
             app.user.score.likes = 0;
             app.user.score.comments = 0;
             app.user.score.users = 0;
-            for (var i = 0; i < app.game.userHeadlines.length; i++) {
-                app.user.score.likes += app.game.userHeadlines[i].score;
-                app.user.score.comments += app.game.userHeadlines[i].comments.length;
-            }
+
+            app.user.score.likes = app.game.playerScore;
+            app.user.score.comments = app.game.playerComments;
 
             if (pastLikes !== app.user.score.likes && app.user.score.likes >= 0) {
                 var dif = app.user.score.likes - pastLikes;

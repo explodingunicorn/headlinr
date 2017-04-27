@@ -15,16 +15,17 @@ function HeadlineComment(comment, user, name) {
     }
 }
 
-exports.Headline = function (headline, user, topic, name, creation) {
+exports.Headline = function (headline, user, trend, name, creation, game) {
     this.headline = headline;
     this.user = user;
     this.postName = name;
-    this.topic = topic;
+    this.trend = trend;
     this.score = 0;
     this.comments = [];
     this.commentsAmt = 0;
     this.interacted = {};
     this.playerCreated = creation || false;
+    this.game = game || false;
     this.sentimentScore = sentiment(headline).score;
 
     //function to add a user comment
@@ -36,6 +37,10 @@ exports.Headline = function (headline, user, topic, name, creation) {
             this.comments.push(comment);
         }
         this.commentsAmt++;
+
+        if(this.playerCreated) {
+            this.game.addPlayerComments();
+        }
     }
 
     this.alertUser = function(comment) {
@@ -55,10 +60,16 @@ exports.Headline = function (headline, user, topic, name, creation) {
     //function to add to the posts score
     this.like = function(scale) {
         this.score+=scale;
+        if (this.playerCreated) {
+            this.game.changePlayerScore(scale);
+        }
     }
 
     //function to subtract from the posts score
     this.dislike = function() {
         this.score--;
+        if(this.playerCreated) {
+            this.game.changePlayerScore(-1);
+        }
     }
 }
