@@ -18,13 +18,26 @@
         background-color: #efefef;
         border: 1px solid @lightGray;
         border-radius: 3px;
-        padding: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+
+        .like {
+            display: inline-block;
+            color: @darkPurple;
+            margin-right: 3px;
+        }
+
+        .dislike {
+            display: inline-block;
+            color: @mediumPurple;
+            margin-right: 3px;
+        }
     }
+
 
     .player-info {
         align-items: center;
         display: flex;
-        margin-bottom: 20px;
         
         flex-direction: row;
         .player-name {

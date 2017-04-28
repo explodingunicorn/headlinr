@@ -125,6 +125,12 @@ a {
 .btn.backMedPurple:hover {
   background-color: #433d8f;
 }
+.btn.backLightPurple {
+  background-color: #9D96B8;
+}
+.btn.backLightPurple:hover {
+  background-color: #4e3d8f;
+}
 .btn.backBlack {
   background-color: #393D3F;
 }
@@ -281,10 +287,20 @@ input:focus {
   -webkit-animation: wiggle 10s infinite;
 }
 .dashboard {
+  display: flex;
+  flex-direction: column;
   box-sizing: border-box;
   padding: 20px;
   padding-top: 75px;
+  height: 100%;
   min-height: min-content;
+}
+.dashboard .no-unlocks {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  width: 100%;
+  justify-content: center;
 }
 .dashboard .graphs-container {
   display: flex;
@@ -515,7 +531,12 @@ input:focus {
 .headlinr-nav .dashboard-link {
   padding: 25px 15px;
   background-color: #08B2E3;
-  margin-left: 15px;
+}
+.headlinr-nav .dashboard-link.blue {
+  background-color: #08B2E3;
+}
+.headlinr-nav .dashboard-link.medPurple {
+  background-color: #6A66A3;
 }
 .headlinr-nav h1 {
   color: #F0F1ED;
@@ -528,9 +549,14 @@ input:focus {
   display: flex;
   align-items: center;
   flex-direction: row;
+  padding-right: 10px;
+  margin-right: 15px;
 }
 .headlinr-nav .user-info p {
   margin-left: 10px;
+}
+.headlinr-nav .user-info:hover {
+  cursor: pointer;
 }
 .start {
   background-color: rgba(0, 0, 0, 0.2);
@@ -581,12 +607,22 @@ input:focus {
   background-color: #efefef;
   border: 1px solid #AAACA9;
   border-radius: 3px;
-  padding: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+.stats .stats-panel .like {
+  display: inline-block;
+  color: #4F2D87;
+  margin-right: 3px;
+}
+.stats .stats-panel .dislike {
+  display: inline-block;
+  color: #6A66A3;
+  margin-right: 3px;
 }
 .stats .player-info {
   align-items: center;
   display: flex;
-  margin-bottom: 20px;
   flex-direction: row;
 }
 .stats .player-info .player-name {
@@ -647,6 +683,7 @@ input:focus {
 .upgrades .upgrades-container .power-ups {
   display: flex;
   padding: 40px 0px;
+  min-height: 320px;
   width: 90%;
 }
 .upgrades .upgrades-container .power-ups .power-up-container {
@@ -709,6 +746,12 @@ body {
   flex: 1;
   position: relative;
 }
+.pause-play {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  z-index: 99;
+}
 a {
   text-decoration: none;
 }
@@ -769,7 +812,9 @@ a {
   padding: 0;
 }
 .headlinr .left .panel {
+  box-sizing: border-box;
   background-color: #efefef;
+  border: 1px solid #AAACA9;
   border-radius: 3px;
   padding: 15px;
 }

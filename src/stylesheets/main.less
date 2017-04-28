@@ -21,6 +21,13 @@ html, body {
     position: relative;
 }
 
+.pause-play {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    z-index: 99;
+}
+
 a {
     text-decoration: none;
 }
@@ -93,7 +100,9 @@ a {
         }
 
         .panel {
+            box-sizing: border-box;
             background-color: #efefef;
+            border: 1px solid @lightGray;
             border-radius: 3px;
             padding: 15px;
         }

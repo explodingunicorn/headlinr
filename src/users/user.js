@@ -30,18 +30,18 @@ export default function User(game, group) {
     this.game = game;
     this.group = group;
     this.playerOpinion = rand10() * 5;
-    var activityLevel = 1000 + Math.floor((Math.random() * 100) + 1);
+    var activityLevel = 800 + Math.floor((Math.random() * 300) + 1);
     var scaleReacts = 1;
     var aggression = rand10();
-    var sex = Math.floor((Math.random() * 2) + 1);
+    var sex = Math.floor(Math.random() * 10);
     this.pic = {
         type: 'user',
         link: ''
     }
-    if (sex === 1) {
-        this.pic.link = '/boys/boy (' + Math.floor((Math.random() * 35) + 1) + ')';
+    if (sex > 5) {
+        this.pic.link = '/boys/boy (' + Math.floor((Math.random() * 60) + 1) + ')';
     } else {
-        this.pic.link = '/girls/girl (' + Math.floor((Math.random() * 42) + 1) + ')';
+        this.pic.link = '/girls/girl (' + Math.floor((Math.random() * 60) + 1) + ')';
     }
     var self = this;
 
@@ -53,12 +53,12 @@ export default function User(game, group) {
         name.pic = {
             type: 'user'
         };
-        if (sex === 1) {
+        if (sex > 5) {
             name.first = mFirstNames[randFirstM];
-            name.pic.link = '/boys/boy (' + Math.floor((Math.random() * 35) + 1) + ')';
+            name.pic.link = '/boys/boy (' + Math.floor((Math.random() * 60) + 1) + ')';
         } else {
             name.first = fFirstNames[randFirstF];
-            name.pic.link = '/girls/girl (' + Math.floor((Math.random() * 42) + 1) + ')';
+            name.pic.link = '/girls/girl (' + Math.floor((Math.random() * 60) + 1) + ')';
         }
         name.last = lastNames[randLast];
 
@@ -92,15 +92,19 @@ export default function User(game, group) {
         var sub;
         if (this.names.length > 100) {
             if(activityLevel < 100) {
-                scaleReacts += 5;
+                scaleReacts += 8;
             }
             else {
-                activityLevel = activityLevel - 100
+                activityLevel = activityLevel - 150
+                console.log(activityLevel);
             }
         }
         else {
-            activityLevel = activityLevel - (this.names.length * 10); 
+            activityLevel = activityLevel - (this.names.length * 5);
+            scaleReacts += 1;
+            console.log(activityLevel);
         }
+        console.log(this.names.length);
     }
 
     //Function exposed to game, determines when the user is checking the timeline
@@ -148,10 +152,10 @@ export default function User(game, group) {
                 playerFactor = user.playerOpinion/10;
                 player = true;
                 scale = scaleReacts;
-                if(game.userHeadlines.length > 2) {
-                    for(var j = game.userHeadlines.length-2; j > 0; j--) {
+                if(game.userHeadlines.length > 1) {
+                    for(var j = game.userHeadlines.length-2; j >= 0; j--) {
                         if (game.userHeadlines[j].trend === trend) {
-                            repeatFactor += 7;
+                            repeatFactor += 4;
                         }
                     }
                 }
@@ -180,7 +184,7 @@ export default function User(game, group) {
                 var total = (userFeeling + 5) + sentiment - playerFactor - repeatFactor;
 
                 if (total >= interactChance()) {
-                    headlines[i].dislike(scale);
+                    headlines[i].dislike(scale-1);
                 }
 
                 if((total+aggression) >= commentChance()) {
@@ -198,7 +202,7 @@ export default function User(game, group) {
 
                 //React if it's greater than the interaction chance, and they haven't interacted before
                 if (total >= interactChance()) {
-                    headlines[i].dislike(scale);
+                    headlines[i].dislike(scale-1);
                 }
 
                 if((total+aggression) >= commentChance()) {

@@ -5,10 +5,16 @@ exports.DataCollector = function(game) {
     this.likesMin = 0;
     this.commentsMax = 0;
     this.trends = {};
+    this.playerLikes = {};
+    this.playerDislikes = {};
     var data = this;
 
     this.pushNewHeadline = function(post) {
         formatData(post);
+
+        if (post.playerCreated) {
+            formatPlayerData(post);
+        }
     }
 
     this.clearData = function() {
@@ -20,11 +26,29 @@ exports.DataCollector = function(game) {
         this.trends = {};
     }
 
+    function formatPlayerData(post) {
+        var trend = post.trend;
+        if (post.sentimentScore > 0) {
+             if (data.playerDislikes[trend]) {
+                 data.playerDislikes[trend] = false;
+             }
+
+             data.playerLikes[trend] = true;
+        }
+        else if (post.sentimentScore < 0) {
+            if (data.playerLikes[trend]) {
+                 data.playerLikes[trend] = false;
+             }
+
+             data.playerDislikes[trend] = true;
+        }
+    }
+
     function formatData(post) {
-        var topic = post.trend;
-        if (!data.trends[topic]) {
-            data.trends[topic] = {
-                name: topic,
+        var trend = post.trend;
+        if (!data.trends[trend]) {
+            data.trends[trend] = {
+                name: trend,
                 amount: 0,
                 posts: [],
                 likesAverage: 0,
@@ -32,45 +56,45 @@ exports.DataCollector = function(game) {
                 sentimentAverage: 0,
             };
         }
-        data.trends[topic].amount++;
-        data.trends[topic].posts.unshift(post);
+        data.trends[trend].amount++;
+        data.trends[trend].posts.unshift(post);
         
         //Popping data from our array
-        if (data.trends[topic].posts > 20) {
-            data.trends[topic].posts.pop();
+        if (data.trends[trend].posts > 20) {
+            data.trends[trend].posts.pop();
         }
 
         var likes = 0;
         var comments = 0;
         var sentiment = 0;
-        for (var i = 0; i < data.trends[topic].posts.length; i++) {
-            likes += data.trends[topic].posts[i].score;
-            comments += data.trends[topic].posts[i].commentsAmt;
-            sentiment += data.trends[topic].posts[i].sentimentScore;
+        for (var i = 0; i < data.trends[trend].posts.length; i++) {
+            likes += data.trends[trend].posts[i].score;
+            comments += data.trends[trend].posts[i].commentsAmt;
+            sentiment += data.trends[trend].posts[i].sentimentScore;
         }
 
         //Averaging our likes, and comments, and sentiment
-        data.trends[topic].likesAverage = Math.floor(likes/data.trends[topic].posts.length);
-        data.trends[topic].commentsAverage = Math.floor(comments/data.trends[topic].posts.length);
-        data.trends[topic].sentimentAverage = Math.floor(sentiment/data.trends[topic].posts.length);
+        data.trends[trend].likesAverage = Math.floor(likes/data.trends[trend].posts.length);
+        data.trends[trend].commentsAverage = Math.floor(comments/data.trends[trend].posts.length);
+        data.trends[trend].sentimentAverage = Math.floor(sentiment/data.trends[trend].posts.length);
 
         //Getting the maximum comments 
-        if (data.trends[topic].amount > data.max) {
-            data.max = data.trends[topic].amount;
+        if (data.trends[trend].amount > data.max) {
+            data.max = data.trends[trend].amount;
         }
 
         //Getting the maximum or minimum like rating
-        if (data.trends[topic].likesAverage > 0 && data.trends[topic].likesAverage > data.likesMax) {
-            data.likesMax = data.trends[topic].likesAverage;
+        if (data.trends[trend].likesAverage > 0 && data.trends[trend].likesAverage > data.likesMax) {
+            data.likesMax = data.trends[trend].likesAverage;
             data.game.pushBestHeadline(post);
         }
-        else if (data.trends[topic].likesAverage < 0 && data.trends[topic].likesAverage < data.likesMin) {
-            data.likesMin = data.trends[topic].likesAverage;
+        else if (data.trends[trend].likesAverage < 0 && data.trends[trend].likesAverage < data.likesMin) {
+            data.likesMin = data.trends[trend].likesAverage;
         }
 
         //Getting the max comments
-        if (data.trends[topic].commentsAverage > data.commentsMax) {
-            data.commentsMax = data.trends[topic].commentsAverage;
+        if (data.trends[trend].commentsAverage > data.commentsMax) {
+            data.commentsMax = data.trends[trend].commentsAverage;
         }
     }
 }

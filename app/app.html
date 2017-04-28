@@ -14,16 +14,22 @@
 <body>
     <div id="app">
         <div class="headlinr">
+            <div class="pause-play">
+                <h2 v-if="pause" class="btn backLightPurple" v-on:click="pause=false"><i class="fa fa-play-circle" aria-hidden="true"></i> Resume Game</h2>
+                <h2 v-else class="btn backMedPurple" v-on:click="pause=true"><i class="fa fa-pause-circle" aria-hidden="true"></i> Pause Game</h2>
+            </div>
+
             <div class="headlinr-nav raised" v-if="!state.start">
                 <h1 class="logo" v-on:click="moveState('game')">headlinr</h1>
                 <div class="spacer"></div>
                 <div class="user-info" v-on:click="moveState('stats')">
                     <div class="thumbnail">
-                        <img class="portrait" v-bind:src="player.pic.link"/>
+                        <img class="portrait" v-bind:src="resolvePic(player.pic)"/>
                     </div>
                     <p class="white">{{player.firstName}} {{player.lastName}}</p>
                 </div>
-                <p class="dashboard-link" v-on:click="moveState('dashboard')"><i class="fa fa-tachometer" aria-hidden="true"></i> Dashboard</p>
+                <p class="dashboard-link medPurple" v-on:click="moveState('game')"><i class="fa fa-home" aria-hidden="true"> </i> Home</p>
+                <p class="dashboard-link blue" v-on:click="moveState('dashboard')"><i class="fa fa-tachometer" aria-hidden="true"> </i> Dashboard</p>
             </div>
 
 
@@ -99,6 +105,9 @@
 
             <!--Player dashboard-->
             <div class="dashboard" v-if="state.dashboard">
+                <div class="no-unlocks"v-if="!game.visualsUnlocked.posts">
+                    <h2 >Sorry you haven't unlocked anything for your dashboard yet!</h2>
+                </div>
                 <div class="graphs-container">
                     <div class="graphs-column">
                         <div v-if="game.visualsUnlocked.posts">
@@ -172,32 +181,23 @@
                                         <a class="dislike" v-bind:class="{disliked: item.isDisliked}" v-on:click="dislikePost(i)"><i class="fa fa-thumbs-down" aria-hidden="true"></i> Dislike</a>
                                     </div>
                                 </div>
-                                <div class="moreComments" v-if="item.comments.length > 5">
-                                    <a href="#">Show all {{item.comments.length}} comments</a>
+                                <div class="moreComments" v-if="item.comments.length === 10">
+                                    <a href="#">{{item.commentsAmt}} total comments</a>
                                 </div>
                                 <div class="commentSection">
-                                    <div class="comment" v-if="item.comments.length < 5" v-for="n in item.comments.length">
+                                    <div class="comment" v-for="comment in item.comments">
                                         <div class="thumbnail">
-                                            <img class="portrait" v-bind:src="resolvePic(item.comments[n-1].commentName.pic)" alt="Image">
+                                            <img class="portrait" v-bind:src="resolvePic(comment.commentName.pic)" alt="Image">
                                         </div>
                                         <div class="content">
-                                            <h4>{{item.comments[n-1].commentName.first}} {{item.comments[n-1].commentName.last}}</h4>
-                                            <h3>{{item.comments[n-1].comment}}</h3>
-                                        </div>
-                                    </div>
-                                    <div class="comment" v-if="item.comments.length >= 5" v-for="n in 5">
-                                        <div class="thumbnail">
-                                            <img class="portrait" v-bind:src="resolvePic(item.comments[n-1].commentName.pic)" alt="Image">
-                                        </div>
-                                        <div class="content">
-                                            <h4>{{item.comments[n-1].commentName.first}} {{item.comments[n-1].commentName.last}}</h4>
-                                            <h3>{{item.comments[n-1].comment}}</h3>
+                                            <h4>{{comment.commentName.first}} {{comment.commentName.last}}</h4>
+                                            <h3>{{comment.comment}}</h3>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="userComment">
                                     <div class="thumbnail">
-                                        <img class="portrait" v-bind:src="player.pic.link" alt="Image">
+                                        <img class="portrait" v-bind:src="resolvePic(player.pic)" alt="Image">
                                     </div>
                                     <input type="text" placeholder="Comment..." v-on:click="pause = true" v-model="item.commentValue" v-on:keyup.enter="addComment(i)"></input>
                                 </div>
@@ -214,9 +214,9 @@
             <!--Player stats page-->
             <div class="stats" v-if="state.stats">
                 <div class="column left">
-                    <div class="player-info mgn-btm-10 stats-panel">
+                    <div class="player-info mgn-btm-10 stats-panel raised">
                         <div class="thumbnail extraLarge">
-                            <img class="portrait player-img" v-bind:src="player.pic.link" width="96px"/>
+                            <img class="portrait player-img" v-bind:src="resolvePic(player.pic)" width="96px"/>
                         </div>
                         <div class='player-name'>
                             <h2>{{player.firstName}} {{player.lastName}}</h2>
@@ -227,16 +227,24 @@
                         <div class="spacer"></div>
                         <h2 v-on:click="editing=true"><i class="fa fa-pencil" aria-hidden="true"></i></h2>
                     </div>
-                    <div class="player-bio stats-panel">
+                    <div class="player-bio stats-panel raised">
                         <p v-if="!editing">{{player.bio}}</p>
                         <textarea v-else class="textbox" placeholder="Write in here" v-model="player.bio" v-on:keyup.enter="editing=false"></textarea>
+                    </div>
+                    <h2>Likes:</h2>
+                    <div class="likes stats-panel raised">
+                        <h3 class="like" v-for="(like, key) in data.playerLikes" v-if="like">{{key}}, </h3>
+                    </div>
+                    <h2>Dislikes:</h2>
+                    <div class="dislikes stats-panel raised">
+                        <h3 class="dislike" v-for="(dislike, key) in data.playerDislikes" v-if="dislike">{{key}}, </h3>
                     </div>
                 </div>
                 <div class="column middle">
                     <div class="userInput">
                         <div class="headline-submission">
                             <div class="thumbnail large">
-                                <img v-bind:src="player.pic.link"/>
+                                <img v-bind:src="resolvePic(player.pic)"/>
                             </div>
                             <input type="text" placeholder="Post a headline" v-model="headline" v-on:keyup.enter="submitHeadline"></input>
                         </div>
@@ -246,7 +254,7 @@
                         <div class="head">
                             <div class="info">
                                 <div class="thumbnail">
-                                    <img class="portrait" v-bind:src="player.pic.link"/> alt="Image">
+                                    <img class="portrait" v-bind:src="resolvePic(player.pic)"/> alt="Image">
                                 </div>
                                 <div class="name">
                                     <h3 class="title">{{item.postName.first}} {{item.postName.last}}</h3>
@@ -264,7 +272,7 @@
                             </div>
                         </div>
                         <div class="moreComments" v-if="item.comments.length === 10">
-                            <a href="#">Show all {{item.commentsAmt}} comments</a>
+                            <a href="#">{{item.commentsAmt}} total comments</a>
                         </div>
                         <div class="commentSection">
                             <div class="comment" v-for="comment in item.comments">
@@ -293,7 +301,7 @@
                         <h2>Trending Now:</h2>
                         <h6 v-for="item in game.trends">{{item}}</h6>
                         <h3 class="mgn-top-10 mgn-btm-10">Change the trends:</h3>
-                        <h2 class="btn backGreen fullWidth" v-on:click="changeTrends">{{game.trendsCost}} Points</h2>
+                        <h2 class="btn backGreen fullWidth" v-on:click="changeTrends">{{formatNum(game.trendsCost)}} Points</h2>
                     </div>
                 </div>
             </div>
@@ -317,7 +325,7 @@
                     <div class="userInput">
                         <div class="headline-submission">
                             <div class="thumbnail large">
-                                <img class="portrait" v-bind:src="player.pic.link"/>
+                                <img class="portrait" v-bind:src="resolvePic(player.pic)"/>
                             </div>
                             <input type="text" placeholder="Post a headline" v-model="headline" v-on:keyup.enter="submitHeadline"></input>
                         </div>
@@ -344,32 +352,23 @@
                                 <a class="dislike" v-bind:class="{disliked: item.isDisliked}" v-on:click="dislikePost(i)"><i class="fa fa-thumbs-down" aria-hidden="true"></i> Dislike</a>
                             </div>
                         </div>
-                        <div class="moreComments" v-if="item.comments.length > 5">
-                            <a>Show all {{item.comments.length}} comments</a>
+                        <div class="moreComments" v-if="item.comments.length === 10">
+                            <a href="#">{{item.commentsAmt}} total comments</a>
                         </div>
                         <div class="commentSection">
-                            <div class="comment" v-if="item.comments.length < 5" v-for="n in item.comments.length">
+                             <div class="comment" v-for="comment in item.comments">
                                 <div class="thumbnail">
-                                    <img class="portrait" v-bind:src="resolvePic(item.comments[n-1].commentName.pic)" alt="Image">
+                                    <img class="portrait" v-bind:src="resolvePic(comment.commentName.pic)" alt="Image">
                                 </div>
                                 <div class="content">
-                                    <h4>{{item.comments[n-1].commentName.first}} {{item.comments[n-1].commentName.last}}</h4>
-                                    <h3>{{item.comments[n-1].comment}}</h3>
-                                </div>
-                            </div>
-                            <div class="comment" v-if="item.comments.length >= 5" v-for="n in 5">
-                                <div class="thumbnail">
-                                    <img class="portrait" v-bind:src="resolvePic(item.comments[n-1].commentName.pic)" alt="Image">
-                                </div>
-                                <div class="content">
-                                    <h4>{{item.comments[n-1].commentName.first}} {{item.comments[n-1].commentName.last}}</h4>
-                                    <h3>{{item.comments[n-1].comment}}</h3>
+                                    <h4>{{comment.commentName.first}} {{comment.commentName.last}}</h4>
+                                    <h3>{{comment.comment}}</h3>
                                 </div>
                             </div>
                         </div>
                         <div class="userComment">
                             <div class="thumbnail">
-                                <img class="portrait" v-bind:src="player.pic.link" alt="Image">
+                                <img class="portrait" v-bind:src="resolvePic(player.pic)" alt="Image">
                             </div>
                             <input type="text" placeholder="Comment..." v-on:click="pause = true" v-model="item.commentValue" v-on:keyup.enter="addComment(i)"></input>
                         </div>
@@ -383,7 +382,7 @@
                         <h2>Trending Now:</h2>
                         <h6 v-for="item in game.trends">{{item}}</h6>
                         <h3 class="mgn-top-10 mgn-btm-10">Change the trends:</h3>
-                        <h2 class="btn backGreen fullWidth" v-on:click="changeTrends">{{game.trendsCost}} Points</h2>
+                        <h2 class="btn backGreen fullWidth" v-on:click="changeTrends">{{formatNum(game.trendsCost)}} Points</h2>
                     </div>
                 </div>
             </div>

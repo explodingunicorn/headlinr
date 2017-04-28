@@ -35,6 +35,7 @@ export default function Game(user) {
         comment: 0,
         commentCount: 0,
         headline: false,
+        headlineCount: 0
     }
     this.userGroupQueues = (function() {
         var arr = [];
@@ -76,7 +77,7 @@ export default function Game(user) {
         }
 
         if(this.automation.headline) {
-            if(time % this.automation.headline === 0) {
+            if(time % this.automation.headlineCount === 0) {
                 this.player.headline();
             }
         }
@@ -195,7 +196,8 @@ export default function Game(user) {
             this.automation[type+'Count'] = 0;
         }
         else {
-            this.automation[type] = 400;
+            this.automation[type] = true;
+            this.automation[type+'Count'] = scale;
         }
     }
 }

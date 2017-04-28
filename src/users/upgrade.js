@@ -38,90 +38,95 @@ trees = {
         {
             desc: 'Gain 120000 more connections',
             scale: 1200,
-            cost: 1500000
+            cost: 2000000
         },
         {
             desc: 'Gain 400000 more connections',
             scale: 4000,
-            cost: 10000000
+            cost: 100000000
+        },
+        {
+            desc: 'Gain 400000 more connections',
+            scale: 4000,
+            cost: 300000000
         },
     ],
 
     trends: [
         {
-            desc: 'Resetting Trends Costs 5000 points less',
-            type: 'reduction',
-            scale: 1000,
-            cost: 50000
-        },
-        {
-            desc: 'Add 2 more Trends to the list',
-            type: 'addition',
-            scale: 2,
-            cost: 50000
-        },
-        {
-            desc: 'Resetting Trends Costs 5000 points less',
+            desc: 'Resetting Trends Costs 2000 points less',
             type: 'reduction',
             scale: 2000,
             cost: 50000
         },
         {
-            desc: 'Add 2 more Trends to the list',
+            desc: 'Add 1 more Trends to the list. Also resets the trends.',
             type: 'addition',
-            scale: 2,
-            cost: 50000
+            scale: 1,
+            cost: 100000
         },
         {
-            desc: 'Resetting Trends Costs 5000 points less',
+            desc: 'Resetting Trends Costs 3000 points less',
             type: 'reduction',
             scale: 3000,
-            cost: 50000
+            cost: 300000
         },
         {
-            desc: 'Add 1 more Trends to the list',
+            desc: 'Add 2 more Trends to the list. Also resets the trends.',
             type: 'addition',
-            scale: 1,
-            cost: 50000
+            scale: 2,
+            cost: 600000
+        },
+        {
+            desc: 'Resetting Trends Costs 4000 points less',
+            type: 'reduction',
+            scale: 4000,
+            cost: 1000000
+        },
+        {
+            desc: 'Add 3 more Trends to the list. Also resets the trends.',
+            type: 'addition',
+            scale: 3,
+            cost: 2000000
         },
         {
             desc: 'Resetting Trends Costs 5000 points less',
             type: 'reduction',
-            scale: 4000,
-            cost: 50000
+            scale: 5000,
+            cost: 10000000
         },
         {
-            desc: 'Add 1 more Trends to the list',
+            desc: 'Add 4 more Trends to the list. Also resets the trends.',
             type: 'addition',
-            scale: 1,
-            cost: 50000
+            scale: 4,
+            cost: 100000000
         },
     ],
     dashboard: [
         {
             desc: "Unlock the 'Amount of Posts' visualizer",
             type: 'posts',
-            cost: 50000
+            cost: 100000
         },
         {
             desc: "Unlock the 'Average Likes/Dislikes' visualizer",
             type: 'likes',
-            cost: 100000
+            cost: 500000
         },
         {
             desc: "Unlock the 'Average Comments' visualizer",
             type: 'comments',
-            cost: 500000
+            cost: 1000000
         },
         {
             desc: "Unlock the 'Average Feelings' visualizer",
             type: 'feelings',
-            cost: 2000000
+            cost: 10000000
         },
         {
             desc: "Unlock the 'Top Liked/Disliked Posts' visualizer",
             type: 'topPosts',
-            cost: 10000000
+            cost: 100000000
         },
     ],
     automation: [
@@ -132,50 +137,69 @@ trees = {
             cost: 50000,
         },
         {
-            desc: "Automatically 'Like' every 5th post",
-            type: 'like',
-            scale: 5,
-            cost: 200000,
-        },
-        {
-            desc: "Automatically 'Like' every 2nd post",
-            type: 'like',
-            scale: 2,
-            cost: 1000000,
-        },
-        {
-            desc: "Automatically 'Like' every post",
-            type: 'like',
-            scale: 1,
-            cost: 10000000,
-        },
-        {
             desc: "Automatically 'Comment' on every 10th post",
             type: 'comment',
             scale: 10,
-            cost: 20000000,
+            cost: 100000,
+        },
+        {
+            desc: "Automatically 'Post' Headlines once in a while",
+            type: 'headline',
+            scale: 1200,
+            cost: 200000,
+        },
+        {
+            desc: "Automatically 'Like' every 5th post",
+            type: 'like',
+            scale: 5,
+            cost: 10000000,
         },
         {
             desc: "Automatically 'Comment' on every 5th post",
             type: 'comment',
             scale: 5,
-            cost: 50000000,
+            cost: 20000000,
+        },
+        {
+            desc: "Automatically 'Post' Headlines sometimes",
+            type: 'headline',
+            scale: 800,
+            cost: 100000000,
+        },
+        {
+            desc: "Automatically 'Like' every 2nd post",
+            type: 'like',
+            scale: 2,
+            cost: 200000000,
         },
         {
             desc: "Automatically 'Comment' on every 2nd post",
             type: 'comment',
             scale: 2,
-            cost: 200000000,
+            cost: 300000000,
+        },
+        {
+            desc: "Automatically 'Post' Headlines pretty often",
+            type: 'headline',
+            scale: 300,
+            cost: 500000000,
+        },
+        {
+            desc: "Automatically 'Like' every post",
+            type: 'like',
+            scale: 1,
+            cost: 600000000,
         },
         {
             desc: "Automatically 'Comment' on every post",
             type: 'comment',
             scale: 1,
-            cost: 500000000,
+            cost: 700000000,
         },
         {
-            desc: "Automatically 'Post' Headlines",
+            desc: "Automatically 'Post' Headlines all the time, everyday",
             type: 'headline',
+            scale: 100,
             cost: 1000000000,
         },
     ]

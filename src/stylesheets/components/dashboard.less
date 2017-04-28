@@ -1,8 +1,19 @@
 .dashboard {
+    display: flex;
+    flex-direction: column;
     box-sizing: border-box;
     padding: 20px;
     padding-top: 75px;
+    height: 100%;
     min-height: min-content;
+
+    .no-unlocks {
+        display: flex;
+        align-items: center;
+        flex: 1;
+        width: 100%;
+        justify-content: center;
+    }
 
     .graphs-container {
         display: flex;
