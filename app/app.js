@@ -30,6 +30,7 @@ var sentimentAnalysis = require('sentiment');
 //Basic class for user, a user represents multiple connections
 function User(game, group) {
         //Age, sex, name
+    var sex = Math.floor(Math.random() * 10);
     this.names = (function() {
         var arr = [];
         arr.push(generateName());
@@ -42,15 +43,17 @@ function User(game, group) {
     var activityLevel = 800 + Math.floor((Math.random() * 300) + 1);
     var scaleReacts = 1;
     var aggression = rand10();
-    var sex = Math.floor(Math.random() * 10);
+    console.log(aggression);
     this.pic = {
         type: 'user',
         link: ''
     };
-    if (sex > 5) {
+    if (sex > 4) {
         this.pic.link = '/boys/boy (' + Math.floor((Math.random() * 60) + 1) + ')';
+        console.log('boy');
     } else {
         this.pic.link = '/girls/girl (' + Math.floor((Math.random() * 60) + 1) + ')';
+        console.log('girl');
     }
     var self = this;
 
@@ -62,7 +65,7 @@ function User(game, group) {
         name.pic = {
             type: 'user'
         };
-        if (sex > 5) {
+        if (sex > 4) {
             name.first = mFirstNames[randFirstM];
             name.pic.link = '/boys/boy (' + Math.floor((Math.random() * 60) + 1) + ')';
         } else {
@@ -193,7 +196,7 @@ function User(game, group) {
                 var total = (userFeeling + 5) + sentiment$$1 - playerFactor - repeatFactor;
 
                 if (total >= interactChance()) {
-                    headlines[i].dislike(scale-1);
+                    headlines[i].dislike(scale);
                 }
 
                 if((total+aggression) >= commentChance()) {
@@ -211,7 +214,7 @@ function User(game, group) {
 
                 //React if it's greater than the interaction chance, and they haven't interacted before
                 if (total >= interactChance()) {
-                    headlines[i].dislike(scale-1);
+                    headlines[i].dislike(scale);
                 }
 
                 if((total+aggression) >= commentChance()) {
@@ -257,7 +260,7 @@ var DataCollector = require('../src/users/dataCollector.js').DataCollector;
 var Player$1 = require('../src/users/player.js').Player;
 var sentenceGenerator = require('../src/users/sentenceGeneration');
 
-var trends = ['cats', 'dogs', 'birth-control', 'the police', 'teachers', 'babies', 'white people', 'purple people', 'fire fighters', 'hamsters', 'macaroni','kangaroos', 'politicians', 'hospitals', 'girlfriends', 'boyfriends', 'exercises', 'eating dinner', 'pool parties', 'scooters', 'skateboards', 'apples', 'oranges', 'hotdogs', 'hamburgers', 'fat people', 'skinny people', 'doors', 'houses', 'cigars', 'marijuanas', 'bands', 'popcorn', 'sodas', 'movies', 'blind people', 'elephants', 'shoes', 'hippies', 'beards', 'eyeballs', 'hands', 'noses', 'farts', 'computers', 'hackers', 'men', 'women', 'actors', 'actresses', 'pencils', 'fries', 'fires', 'lights', 'cities', 'websites', 'hopes', 'dreams', 'subs', 'hamsters', 'keyboards', 'phones', 'moms', 'dads', 'grandparents', 'old people', 'millenials', 'wars', 'christians', 'muslims', 'liberals', 'rednecks', 'neo-nazis', 'snow-flakes', 'ducks', 'colds', 'fevers', 'pancakes', 'boogers', 'white people', 'black people', 'red people', 'green people', 'televisions', 'haters', 'bugs', 'basketballs', 'sweatshirts', 'clothes', 'donuts', 'dinosaurs', 'bosses', 'co-workers', 'snakes'];
+var trends = ['cats', 'dogs', 'birth-control', 'the police', 'teachers', 'babies', 'white people', 'purple people', 'fire fighters', 'hamsters', 'macaroni','kangaroos', 'politicians', 'hospitals', 'girlfriends', 'boyfriends', 'exercises', 'eating dinner', 'pool parties', 'scooters', 'skateboards', 'apples', 'oranges', 'hotdogs', 'hamburgers', 'fat people', 'skinny people', 'doors', 'houses', 'cigars', 'marijuanas', 'bands', 'popcorn', 'sodas', 'movies', 'blind people', 'elephants', 'shoes', 'hippies', 'beards', 'eyeballs', 'hands', 'noses', 'farts', 'computers', 'hackers', 'men', 'women', 'actors', 'actresses', 'pencils', 'fries', 'fires', 'lights', 'cities', 'websites', 'hopes', 'dreams', 'subs', 'hamsters', 'keyboards', 'phones', 'moms', 'dads', 'grandparents', 'old people', 'millenials', 'wars', 'christians', 'muslims', 'liberals', 'rednecks', 'neo-nazis', 'snow-flakes', 'ducks', 'colds', 'fevers', 'pancakes', 'boogers', 'white people', 'black people', 'red people', 'green people', 'televisions', 'haters', 'bugs', 'basketballs', 'sweatshirts', 'clothes', 'donuts', 'dinosaurs', 'bosses', 'co-workers', 'snakes', 'fingers', 'coats', 'jellies', 'essays', 'toys', 'marbles', 'grenades', 'bombs', 'guns', 'bicycles', 'tricycles', 'indians', 'paraplegics', 'nurses', 'doctors', 'maids', 'mexican people', 'drinks', 'bananas', 'keys', 'chairs', 'couches', 'lions', 'video games', 'mountains', 'trees', 'plants', 'flowers', 'Tyranosaurus', 'parties', 'birthdays', 'republicans', 'democrats', 'presidents', 'dictators'];
 
 function Game(user) {
     var connections = 50;
@@ -472,8 +475,8 @@ var app = new Vue({
     el: "#app",
     data: {
         state: {
-            start: 0,
-            game: 1,
+            start: 1,
+            game: 0,
             stats: 0,
             dashboard: 0
         },
@@ -486,7 +489,9 @@ var app = new Vue({
         upgradeSystem: new UpgradeSystem(),
         upgrades: 0,
         takingPicture: false,
-        editing: false
+        editing: false,
+        wordLimit: false,
+        noTrend: false
     },
     methods: {
         attachCamera: function() {
@@ -520,11 +525,16 @@ var app = new Vue({
             var headline = this.headline.toLowerCase();
             var len = headline.split(' ').length;
             if (len < 10) {
-                var check = this.player.headline(headline);
+                var check = this.player.headline(headline, this);
+            }
+            else {
+                this.wordLimit = true;
             }
 
             if(check) {
                 this.headline = '';
+                this.wordLimit = false;
+                this.noTrend = false;
             }
         },
         likePost: function(index) {

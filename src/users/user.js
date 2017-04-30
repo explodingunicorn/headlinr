@@ -21,6 +21,7 @@ var sentimentAnalysis = require('sentiment');
 //Basic class for user, a user represents multiple connections
 export default function User(game, group) {
         //Age, sex, name
+    var sex = Math.floor(Math.random() * 10);
     this.names = (function() {
         var arr = [];
         arr.push(generateName());
@@ -33,15 +34,17 @@ export default function User(game, group) {
     var activityLevel = 800 + Math.floor((Math.random() * 300) + 1);
     var scaleReacts = 1;
     var aggression = rand10();
-    var sex = Math.floor(Math.random() * 10);
+    console.log(aggression);
     this.pic = {
         type: 'user',
         link: ''
     }
-    if (sex > 5) {
+    if (sex > 4) {
         this.pic.link = '/boys/boy (' + Math.floor((Math.random() * 60) + 1) + ')';
+        console.log('boy');
     } else {
         this.pic.link = '/girls/girl (' + Math.floor((Math.random() * 60) + 1) + ')';
+        console.log('girl');
     }
     var self = this;
 
@@ -53,7 +56,7 @@ export default function User(game, group) {
         name.pic = {
             type: 'user'
         };
-        if (sex > 5) {
+        if (sex > 4) {
             name.first = mFirstNames[randFirstM];
             name.pic.link = '/boys/boy (' + Math.floor((Math.random() * 60) + 1) + ')';
         } else {
@@ -184,7 +187,7 @@ export default function User(game, group) {
                 var total = (userFeeling + 5) + sentiment - playerFactor - repeatFactor;
 
                 if (total >= interactChance()) {
-                    headlines[i].dislike(scale-1);
+                    headlines[i].dislike(scale);
                 }
 
                 if((total+aggression) >= commentChance()) {
@@ -202,7 +205,7 @@ export default function User(game, group) {
 
                 //React if it's greater than the interaction chance, and they haven't interacted before
                 if (total >= interactChance()) {
-                    headlines[i].dislike(scale-1);
+                    headlines[i].dislike(scale);
                 }
 
                 if((total+aggression) >= commentChance()) {

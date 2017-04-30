@@ -2,8 +2,8 @@ var sentenceGenerator = require('./sentenceGeneration.js');
 var Headline = require('./headline.js').Headline;
 
 exports.Player = function(game) {
-    this.firstName = 'Player';
-    this.lastName = 'One';
+    this.firstName = '';
+    this.lastName = '';
     this.pic = {
         type: 'player',
         link: ''
@@ -12,7 +12,7 @@ exports.Player = function(game) {
     this.likesTotal = 0;
     this.commentsTotal = 0;
     this.connections = 0;
-    this.points = 9999999999;
+    this.points = 0;
     this.game = game
 
     var pastLikes = 0;
@@ -87,7 +87,7 @@ exports.Player = function(game) {
         }
     }
 
-    this.headline = function(headline) {
+    this.headline = function(headline, app) {
         if (!headline) {
             var topic = this.game.trends[Math.floor(Math.random() * this.game.trends.length)];
             var feeling = Math.floor(Math.random() * 10);
@@ -112,6 +112,7 @@ exports.Player = function(game) {
                 return true;
             }
             else {
+                app.noTrend = true;
                 return false;
             }
         }

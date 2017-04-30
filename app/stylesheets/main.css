@@ -823,6 +823,34 @@ a {
 }
 .headlinr .right {
   flex: 1;
+  position: relative;
+}
+.headlinr .right .error-popup {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 15px;
+  right: 0;
+  left: 0;
+  padding: 15px;
+  animation: fadeIn .7s;
+}
+.headlinr .right .error-popup h2 {
+  color: white;
+}
+.headlinr .right .error-popup a {
+  color: white;
+  justify-content: flex-end;
+  text-align: right;
+}
+.headlinr .right .error-popup a:hover {
+  text-decoration: underline;
+}
+.headlinr .right .error-popup.blue {
+  background-color: #08B2E3;
+}
+.headlinr .right .error-popup.yellow {
+  background-color: #EAC435;
 }
 .headlinr .right .trends-panel {
   border-radius: 3px;
@@ -831,4 +859,14 @@ a {
 }
 .headlinr .right h2 {
   margin-bottom: 10px;
+}
+@keyframes fadeIn {
+  0% {
+    top: 40px;
+    opacity: 0;
+  }
+  100% {
+    top: 15px;
+    opacity: 1;
+  }
 }

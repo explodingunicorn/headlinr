@@ -50,13 +50,13 @@
                         <h3>Everyone has an opinion.<br>Wouldn't you like to share yours?<br>Sign up now:</h3>
                     </div>
                     <p>Email</p>
-                    <input type="text" placeholder="joeshmo@email.com"></input>
+                    <input type="text" placeholder="youremail@email.com"></input>
                     <p>First name</p>
-                    <input type="text" placeholder="Joe" v-model="player.firstName"></input>
+                    <input type="text" placeholder="Your first name" v-model="player.firstName"></input>
                     <p>Last name</p>
-                    <input type="text" placeholder="Shmo" v-model="player.lastName" v-on:keyup.enter="startGame"></input>
+                    <input type="text" placeholder="Your last name" v-model="player.lastName" v-on:keyup.enter="startGame"></input>
                     <h5 v-if="player.pic.link" class="btn backGray fullWidth mgn-top-10">Picture Uploaded</h5>
-                    <h5 v-else class="btn backBlue fullWidth mgn-top-10" v-on:click="takingPicture = true; attachCamera()">Upload Picture</h5>
+                    <h5 v-else class="btn backBlue fullWidth mgn-top-10" v-on:click="takingPicture = true; attachCamera()">Take your picture!</h5>
                     <h5 v-if="player.pic.link" class="btn backPurple fullWidth mgn-top-10" v-on:click="startGame">Sign-up!</h5>
                     <h5 v-else class="btn backGray fullWidth mgn-top-10">Sign-up!</h5>
                 </div>
@@ -297,6 +297,14 @@
                     </div>
                 </div>
                 <div class="column right">
+                    <div v-if="wordLimit" class="error-popup blue raised">
+                        <h2>You can only have 10 words in your headline!</h2>
+                        <a href="#" v-on:click="wordLimit=false">Close</a>
+                    </div>
+                    <div v-if="noTrend" class="error-popup yellow raised">
+                        <h2>There is no trend in your headline! (Pick from the right)</h2>
+                        <a href="#" v-on:click="noTrend=false">Close</a>
+                    </div>
                     <div class="trends-panel">
                         <h2>Trending Now:</h2>
                         <h6 v-for="item in game.trends">{{item}}</h6>
@@ -378,6 +386,14 @@
                     </div>
                 </div>
                 <div class="column right">
+                    <div v-if="wordLimit" class="error-popup blue raised">
+                        <h2>You can only have 10 words in your headline!</h2>
+                        <a href="#" v-on:click="wordLimit=false">Close</a>
+                    </div>
+                    <div v-if="noTrend" class="error-popup yellow raised">
+                        <h2>There is no trend in your headline! (Pick from the right)</h2>
+                        <a href="#" v-on:click="noTrend=false">Close</a>
+                    </div>
                     <div class="trends-panel">
                         <h2>Trending Now:</h2>
                         <h6 v-for="item in game.trends">{{item}}</h6>

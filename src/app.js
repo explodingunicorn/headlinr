@@ -20,8 +20,8 @@ var app = new Vue({
     el: "#app",
     data: {
         state: {
-            start: 0,
-            game: 1,
+            start: 1,
+            game: 0,
             stats: 0,
             dashboard: 0
         },
@@ -34,7 +34,9 @@ var app = new Vue({
         upgradeSystem: new UpgradeSystem(),
         upgrades: 0,
         takingPicture: false,
-        editing: false
+        editing: false,
+        wordLimit: false,
+        noTrend: false
     },
     methods: {
         attachCamera: function() {
@@ -68,11 +70,16 @@ var app = new Vue({
             var headline = this.headline.toLowerCase()
             var len = headline.split(' ').length;
             if (len < 10) {
-                var check = this.player.headline(headline);
+                var check = this.player.headline(headline, this);
+            }
+            else {
+                this.wordLimit = true;
             }
 
             if(check) {
                 this.headline = '';
+                this.wordLimit = false;
+                this.noTrend = false;
             }
         },
         likePost: function(index) {
