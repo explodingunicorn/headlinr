@@ -1,0 +1,34 @@
+{
+  "name": "svelte-app",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "start": "sirv public",
+    "validate": "svelte-check"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^12.0.0",
+    "@rollup/plugin-node-resolve": "^8.0.0",
+    "@rollup/plugin-typescript": "^4.0.0",
+    "@tsconfig/svelte": "^1.0.0",
+    "rollup": "^2.3.4",
+    "rollup-plugin-livereload": "^1.0.0",
+    "rollup-plugin-svelte": "^5.0.3",
+    "rollup-plugin-terser": "^5.1.2",
+    "svelte": "^3.0.0",
+    "svelte-check": "^0.1.0",
+    "svelte-preprocess": "^4.0.8",
+    "tslib": "^2.0.0",
+    "typescript": "^3.9.3"
+  },
+  "dependencies": {
+    "@rollup/plugin-json": "^4.1.0",
+    "jdenticon": "^2.2.0",
+    "node-sass": "^4.14.1",
+    "rollup-plugin-less": "^1.1.2",
+    "sentiment": "^5.0.2",
+    "sirv-cli": "^0.4.4",
+    "svelte-spa-router": "^2.2.0"
+  }
+}

@@ -1,0 +1,364 @@
+$lightPurple: #9d96b8;
+$mediumPurple: #6a66a3;
+$darkPurple: #4f2d87;
+$green: #7cc7a9;
+$lightGray: #aaaca9;
+$mediumGray: #5e6572;
+$darkGray: #393d3f;
+$white: #f0f1ed;
+$blue: #08b2e3;
+$yellow: #eac435;
+
+/*Fonts --------------------------------------------------------------
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+--------------------------------------------------------------------*/
+
+@import url("https://fonts.googleapis.com/css?family=Lato:300,400,700|Montserrat:500,700,800");
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    color: $darkGray;
+    font-family: "Montserrat" !important;
+    font-weight: 800 !important;
+    font-size: 36px !important;
+}
+
+h2 {
+    color: $darkGray;
+    font-family: "Montserrat";
+    font-weight: 500;
+    font-size: 24px;
+}
+
+h3 {
+    color: $darkGray;
+    font-family: "Montserrat";
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 20px;
+}
+
+h4 {
+    color: $darkGray;
+    font-family: "Montserrat";
+    font-weight: 500;
+    font-size: 16px;
+}
+
+h5 {
+    color: $darkPurple;
+    font-family: "Montserrat";
+    font-weight: 500;
+    font-size: 24px;
+}
+
+h6 {
+    color: $green;
+    font-family: "Montserrat";
+    font-size: 20px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+p {
+    color: $mediumGray;
+    font-family: "Lato";
+    font-weight: 400;
+    font-size: 18px;
+}
+
+a {
+    font-family: "Lato";
+    font-weight: 400;
+    font-size: 18px;
+}
+
+/*Forms --------------------------------------------------------------
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+--------------------------------------------------------------------*/
+
+.btn {
+    background-color: $darkPurple;
+    box-sizing: border-box;
+    color: white;
+    display: inline-block;
+    padding: 10px;
+    text-align: center;
+    transition: all 0.5s;
+    -webkit-user-select: none;
+
+    &:hover {
+        cursor: pointer;
+        background-color: hsl(hue($darkPurple), 50%, 50%);
+        box-shadow: 0px 0px 20px -5px $darkGray;
+    }
+
+    &.inverse {
+        background-color: transparent;
+        border: 1px solid $darkPurple;
+        border-radius: 3px;
+        color: $darkPurple;
+        padding: 10px 50px;
+
+        &:hover {
+            background-color: $darkPurple;
+            color: $white;
+        }
+    }
+
+    &.backGray {
+        background-color: $lightGray;
+    }
+
+    &.backYellow {
+        background-color: $yellow;
+
+        &:hover {
+            background-color: hsl(hue($yellow), 90%, 60%);
+        }
+    }
+
+    &.backBlue {
+        background-color: $blue;
+
+        &:hover {
+            background-color: hsl(hue($blue), 50%, 50%);
+        }
+    }
+
+    &.backGreen {
+        background-color: $green;
+
+        &:hover {
+            background-color: hsl(hue($green), 50%, 50%);
+        }
+    }
+
+    &.backPurple {
+        background-color: $darkPurple;
+
+        &:hover {
+            background-color: hsl(hue($darkPurple), 50%, 50%);
+        }
+    }
+
+    &.backMedPurple {
+        background-color: $mediumPurple;
+
+        &:hover {
+            background-color: hsl(hue($mediumPurple), 40%, 40%);
+        }
+    }
+
+    &.backLightPurple {
+        background-color: $lightPurple;
+
+        &:hover {
+            background-color: hsl(hue($lightPurple), 40%, 40%);
+        }
+    }
+
+    &.backBlack {
+        background-color: $darkGray;
+
+        &:hover {
+            background-color: hsl(hue($darkGray), 10%, 10%);
+        }
+    }
+}
+
+.fullWidth {
+    width: 100%;
+}
+
+.border {
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 3px;
+
+    &.darkPurple {
+        border-color: $darkPurple;
+    }
+
+    &.green {
+        border-color: $green;
+    }
+
+    &.medPurple {
+        border-color: $mediumPurple;
+    }
+
+    &.black {
+        border-color: $darkGray;
+    }
+}
+
+input {
+    border: 1px solid $lightGray;
+    border-radius: 3px;
+    color: $mediumGray;
+    box-sizing: border-box;
+    font-family: "Lato";
+    font-size: 18px;
+    flex: 1;
+    margin-left: 15px;
+    padding: 10px;
+    position: relative;
+    transition: all 0.2s;
+}
+
+input:focus {
+    border-bottom: 5px solid $mediumPurple;
+    outline: none;
+}
+
+/*Helpers ------------------------------------------------------------
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+--------------------------------------------------------------------*/
+
+.mgn-btm-10 {
+    margin-bottom: 10px;
+}
+
+.mgn-right-10 {
+    margin-right: 10px;
+}
+
+.mgn-top-10 {
+    margin-top: 10px;
+}
+
+.mgn-left-10 {
+    margin-left: 10px;
+}
+
+.white {
+    color: white;
+}
+
+.mediumGray {
+    color: $mediumGray;
+}
+
+.darkGray {
+    color: $darkGray;
+}
+
+.darkPurple {
+    color: $darkPurple !important;
+}
+
+.mediumPurple {
+    color: $mediumPurple !important;
+}
+
+.raised {
+    box-shadow: 0px 0px 20px -5px $darkGray;
+}
+
+.thumbnail {
+    border-radius: 3px;
+    position: relative;
+    width: 40px;
+    height: 40px;
+    overflow: hidden;
+
+    &.large {
+        width: 70px;
+        height: 70px;
+    }
+
+    &.extraLarge {
+        width: 96px;
+        height: 96px;
+    }
+}
+.thumbnail img {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    height: 100%;
+    width: auto;
+    transform: translate(-50%, -50%);
+}
+
+::-webkit-scrollbar {
+    background-color: white;
+    width: 7px;
+}
+
+::-webkit-scrollbar-track {
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: $mediumPurple;
+    border-radius: 10px;
+}
+
+/*Animations ---------------------------------------------------------
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+--------------------------------------------------------------------*/
+
+.headline-add-item {
+    transition: all 1s;
+}
+
+.headline-add-enter, .headline-add-leave-to
+/* .list-complete-leave-active for <2.1.8 */ {
+    opacity: 0;
+    transform: translateY(-100px);
+}
+
+.headline-add-leave-active {
+    position: absolute;
+}
+
+.comment-add-item {
+    transition: all 1s;
+}
+
+.comment-add-enter, .comment-add-leave-to
+/* .list-complete-leave-active for <2.1.8 */ {
+    opacity: 0;
+    transform: translateY(40px);
+}
+
+.comment-add-leave-active {
+    position: absolute;
+}
+
+@keyframes wiggle {
+    0% {
+        transform: rotate(5deg);
+    }
+    1% {
+        transform: rotate(-5deg);
+    }
+    2% {
+        transform: rotate(5deg);
+    }
+    3% {
+        transform: rotate(-5deg);
+    }
+    4% {
+        transform: rotate(0deg);
+    }
+}
+
+.wiggle {
+    -webkit-animation: wiggle 10s infinite;
+}

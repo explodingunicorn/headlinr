@@ -1,0 +1,114 @@
+.dashboard {
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    padding: 20px;
+    padding-top: 75px;
+    height: 100%;
+    min-height: min-content;
+
+    .no-unlocks {
+        display: flex;
+        align-items: center;
+        flex: 1;
+        width: 100%;
+        justify-content: center;
+    }
+
+    .graphs-container {
+        display: flex;
+        flex-direction: row;
+
+        .graphs-column {
+            box-sizing: border-box;
+            flex: 1;
+            padding: 10px;
+
+            &.large {
+                flex: 2;
+            }
+
+            .graph-padding {
+                border: 1px solid $lightGray;
+                border-radius: 3px;
+                padding: 10px;
+                margin-bottom: 20px;
+            }
+
+            .bar-container {
+                align-items: center;
+                background-color: #efefef;
+                display: flex;
+                flex-direction: row;
+                margin: 10px 0;
+
+                &.left {
+                    text-align: left;
+                }
+
+                &.right {
+                    justify-content: flex-end;
+                    text-align: right;
+                }
+
+                .bar {
+                    p {
+                        color: $white;
+                    }
+                    margin-right: 10px;
+                    padding: 5px 10px;
+
+                    &.negative {
+                        margin-right: 0;
+                        margin-left: 10px;
+                    }
+
+                    &.green {
+                        background-color: $green;
+                    }
+
+                    &.blue {
+                        background-color: $blue;
+                    }
+
+                    &.yellow {
+                        background-color: $yellow;
+                    }
+
+                    &.purple {
+                        background-color: $mediumPurple;
+                    }
+                }
+            }
+
+            .text-container {
+                align-items: center;
+                display: flex;
+                flex-direction: row;
+                padding: 10px;
+
+                h3 {
+                    font-size: 20px;
+                }
+
+                .feeling {
+                    color: white;
+                    padding: 10px;
+                    margin-left: 10px;
+
+                    &.good {
+                        background-color: $green;
+                    }
+
+                    &.neutral {
+                        background-color: $mediumGray;
+                    }
+
+                    &.bad {
+                        background-color: $mediumPurple;
+                    }
+                }
+            }
+        }
+    }
+}

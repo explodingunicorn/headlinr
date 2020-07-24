@@ -1,0 +1,68 @@
+.upgrades {
+    padding: 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.2);
+    z-index: 101;
+
+    .upgrades-container {
+        align-items: center;
+        background-color: $white;
+        display: flex;
+        position: relative;
+        flex-direction: column;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+
+        .close {
+            color: $darkPurple;
+            position: absolute;
+            font-size: 50px;
+            padding-right: 15px;
+            padding-top: 5px;
+            top: 0;
+            right: 0;
+
+            &:hover {
+                cursor: pointer;
+            }
+        }
+
+        .power-ups {
+            display: flex;
+            padding: 40px 0px;
+            min-height: 320px;
+            width: 90%;
+
+            .power-up-container {
+                display: flex;
+                align-items: center;
+                flex: 1;
+                flex-direction: column;
+                padding: 20px;
+                margin: 0 10px;
+                text-align: center;
+                width: 25%;
+
+                p {
+                    margin-bottom: auto;
+                    padding-bottom: 20px;
+                }
+
+                .btm {
+                    margin-top: auto;
+                }
+
+                img {
+                    width: 100px;
+                    height: auto;
+                    margin-bottom: 15px;
+                }
+            }
+        }
+    }
+}
