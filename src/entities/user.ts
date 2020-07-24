@@ -15,127 +15,123 @@ import {
   interactChance,
   commentChance,
 } from '../utilities';
+import Game from './game';
+
+export interface User {
+  name: {
+    first: string;
+    last: string;
+  };
+  pic: string;
+}
 
 //Basic class for user, a user represents multiple connections
-export function User(game, group, headlineManager: HeadlineManager) {
+export class UserGroup {
   //Age, sex, name
-  var sex = Math.floor(Math.random() * 10);
-  this.names = (function () {
-    var arr = [];
-    arr.push(generateName());
-    arr.push(generateName());
-    return arr;
-  })();
-  this.game = game;
-  this.group = group;
-  this.playerOpinion = rand10() * 5;
-  this.headlineManager = headlineManager;
-  var activityLevel = 800 + Math.floor(Math.random() * 300 + 1);
-  var scaleReacts = 1;
-  var aggression = rand10();
-  console.log(aggression);
-  this.pic = {
-    type: 'user',
-    link: '',
-  };
-  var self = this;
+  private sex = Math.floor(Math.random() * 10);
+  public users: User[] = [this.generateUser(), this.generateUser()];
+  private game: Game;
+  private group;
+  public playerOpinion = rand10() * 5;
+  private headlineManager: HeadlineManager;
+  private activityLevel = 800 + Math.floor(Math.random() * 300 + 1);
+  private scaleReacts = 1;
+  private aggression = rand10();
+  private trendFeelings;
 
-  function generateName() {
+  constructor(game: Game, group: number, headlineManager: HeadlineManager) {
+    this.game = game;
+    this.group = group;
+    this.headlineManager = headlineManager;
+    this.trendFeelings = this.generateTopicFeelings();
+  }
+
+  private generateUser() {
     var randFirstF = Math.floor(Math.random() * fFirstNames.length + 1);
     var randFirstM = Math.floor(Math.random() * mFirstNames.length + 1);
     var randLast = Math.floor(Math.random() * lastNames.length + 1);
-    var name = {} as any;
-    name.pic = {
-      type: 'user',
-    };
-    if (sex > 4) {
-      name.first = mFirstNames[randFirstM];
-      name.pic.link = jdenticon.toSvg(name.first, 80);
+    const user = { name: { first: '', last: '' }, pic: '' } as User;
+    if (this.sex > 4) {
+      user.name.first = mFirstNames[randFirstM];
+      user.pic = jdenticon.toSvg(user.name.first, 80);
     } else {
-      name.first = fFirstNames[randFirstF];
-      name.pic.link = jdenticon.toSvg(name.first, 80);
+      user.name.first = fFirstNames[randFirstF];
+      user.pic = jdenticon.toSvg(user.name.first, 80);
     }
-    name.last = lastNames[randLast];
+    user.name.last = lastNames[randLast];
 
-    return name;
+    return user;
   }
 
-  this.generateTopicFeelings = function () {
-    var trends = {};
-
-    for (var i = 0; i < this.game.trends.length; i++) {
+  private generateTopicFeelings() {
+    const trends = {};
+    for (let i = 0; i < this.game.trends.length; i++) {
       trends[this.game.trends[i]] = rand10();
     }
     return trends;
-  };
+  }
 
-  this.generateNewFeelings = function () {
-    trendFeelings = this.generateTopicFeelings();
-  };
+  public generateNewFeelings() {
+    this.trendFeelings = this.generateTopicFeelings();
+  }
 
-  var trendFeelings = this.generateTopicFeelings();
-
-  this.generateMoreNames = function (num) {
+  public generateMoreNames(num: number) {
     if (num < 1000) {
-      for (var i = 0; i < num; i++) {
-        this.names.push(generateName());
+      for (let i = 0; i < num; i++) {
+        this.users.push(this.generateUser());
       }
     }
-  };
+  }
 
-  this.generateNewActivityLevel = function () {
-    var sub;
-    if (this.names.length > 100) {
-      if (activityLevel < 100) {
-        scaleReacts += 8;
+  public generateNewActivityLevel() {
+    if (this.users.length > 100) {
+      if (this.activityLevel < 100) {
+        this.scaleReacts += 8;
       } else {
-        activityLevel = activityLevel - 150;
-        console.log(activityLevel);
+        this.activityLevel = this.activityLevel - 150;
       }
     } else {
-      activityLevel = activityLevel - this.names.length * 5;
-      scaleReacts += 1;
-      console.log(activityLevel);
+      this.activityLevel = this.activityLevel - this.users.length * 5;
+      this.scaleReacts += 1;
     }
-    console.log(this.names.length);
-  };
+  }
 
   //Function exposed to game, determines when the user is checking the timeline
-  this.checkUpdate = function (time) {
+  public checkUpdate(time: number) {
     //Select random name from our pool
-    var name = this.names[Math.floor(Math.random() * this.names.length)];
+    const user = this.users[Math.floor(Math.random() * this.users.length)];
     //Checking users activity level, and seeing if it's time for them to comment
-    if (time % activityLevel === 0) {
+    if (time % this.activityLevel === 0) {
       //Running function to check headlinr, passing game, and itself
-      checkHeadlinr(this.game, this, name);
+      this.checkHeadlinr(this.game, this, user);
     }
-  };
+  }
 
-  this.influence = function (val) {
+  public influence(val: number) {
     if (this.playerOpinion < 100 && this.playerOpinion > 0) {
       this.playerOpinion += val;
     }
-  };
+  }
 
   //Function that runs everything involved in a users turn
-  function checkHeadlinr(game, user, name) {
+  private checkHeadlinr(game: Game, userGroup: UserGroup, user: User) {
     //Function to read headlines
-    checkHeadlines(self.headlineManager.getQueue(self.group), user, game, name);
+    this.checkHeadlines(this.headlineManager.getQueue(this.group), user);
     //Function to create a headline
-    createHeadline(game, user, name);
+    this.createHeadline(game, userGroup, user);
   }
 
   //Function for user to check new posts
-  function checkHeadlines(headlines, user, game, name) {
+  private checkHeadlines(headlines: Headline[], user: User) {
     var postsToCheck = 0;
     //Checks the last 10 headlines
     postsToCheck = headlines.length;
 
     for (var i = 0; i < postsToCheck; i++) {
       //Read the headline, and determine the reaction to the headline
-      const headline = self.headlineManager.getQueueHeadline(i, self.group);
+      const headline = this.headlineManager.getQueueHeadline(i, this.group);
       var trend = headline.trend;
-      var userFeeling = trendFeelings[trend];
+      var userFeeling = this.trendFeelings[trend];
       var sentiment = headline.sentimentScore;
       var playerFactor = 0;
       var repeatFactor = 0;
@@ -143,12 +139,16 @@ export function User(game, group, headlineManager: HeadlineManager) {
       var scale = 1;
 
       if (headline.playerCreated) {
-        playerFactor = user.playerOpinion / 10;
+        playerFactor = this.playerOpinion / 10;
         player = true;
-        scale = scaleReacts;
-        if (game.userHeadlines.length > 1) {
-          for (var j = game.userHeadlines.length - 2; j >= 0; j--) {
-            if (game.userHeadlines[j].trend === trend) {
+        scale = this.scaleReacts;
+        if (this.headlineManager.playerHeadlines.length > 1) {
+          for (
+            var j = this.headlineManager.playerHeadlines.length - 2;
+            j >= 0;
+            j--
+          ) {
+            if (this.headlineManager.playerHeadlines[j].trend === trend) {
               repeatFactor += 4;
             }
           }
@@ -157,7 +157,7 @@ export function User(game, group, headlineManager: HeadlineManager) {
       //Check if sentiment is positive
       if (sentiment > 0 && userFeeling > 5) {
         if (player) {
-          user.playerOpinion += rand10();
+          this.playerOpinion += rand10();
         }
         //If the user feels positively towards the trend, there's a chance to like
         var total = userFeeling + sentiment + playerFactor - repeatFactor;
@@ -165,14 +165,14 @@ export function User(game, group, headlineManager: HeadlineManager) {
           headline.like(scale);
         }
 
-        if (total + aggression >= commentChance()) {
-          headline.addComment(sentence.affirm(), user, name);
+        if (total + this.aggression >= commentChance()) {
+          headline.addComment(sentence.affirm(), this, user);
         }
       }
       //If the user feels negatively towards the trend, there's a chance to dislike
       else if (sentiment > 0 && userFeeling <= 5) {
         if (player) {
-          user.playerOpinion -= rand10();
+          this.playerOpinion -= rand10();
         }
         //Add 5 to users feeling to simulate negative feeling
         var total = userFeeling + 5 + sentiment - playerFactor - repeatFactor;
@@ -181,14 +181,14 @@ export function User(game, group, headlineManager: HeadlineManager) {
           headline.dislike(scale);
         }
 
-        if (total + aggression >= commentChance()) {
-          headline.addComment(sentence.deny(), user, name);
+        if (total + this.aggression >= commentChance()) {
+          headline.addComment(sentence.deny(), this, user);
         }
       }
       //If it's negative
       else if (sentiment <= 0 && userFeeling > 5) {
         if (player) {
-          user.playerOpinion -= rand10();
+          this.playerOpinion -= rand10();
         }
         //If the user feels positively, there's a chance to dislike
         //Create a total, reverse the sentiment
@@ -200,14 +200,14 @@ export function User(game, group, headlineManager: HeadlineManager) {
           headline.dislike(scale);
         }
 
-        if (total + aggression >= commentChance()) {
-          headline.addComment(sentence.deny(), user, name);
+        if (total + this.aggression >= commentChance()) {
+          headline.addComment(sentence.deny(), this, user);
         }
       }
       //If the user feels negatively also, there's a chance to like
       else {
         if (player) {
-          user.playerOpinion += rand10();
+          this.playerOpinion += rand10();
         }
         //Add 5 to users feeling to simulate negative feeling, reverse sentiment
         var total =
@@ -217,23 +217,23 @@ export function User(game, group, headlineManager: HeadlineManager) {
           headline.like(scale);
         }
 
-        if (total + aggression >= commentChance()) {
-          headline.addComment(sentence.affirm(), user, name);
+        if (total + this.aggression >= commentChance()) {
+          headline.addComment(sentence.affirm(), this, user);
         }
       }
     }
   }
 
   //Function for user to push a new headline
-  function createHeadline(game, user, name) {
-    if (aggression >= headlineChance()) {
+  private createHeadline(game: Game, userGroup: UserGroup, user: User) {
+    if (this.aggression >= headlineChance()) {
       var trend = game.trends[Math.floor(Math.random() * game.trends.length)];
-      var feeling = trendFeelings[trend];
+      var feeling = this.trendFeelings[trend];
       var statement = sentence.generate(feeling, trend);
 
       //Creating a new headline
-      var headline = new Headline(statement, user, name, trend);
-      self.headlineManager.addHeadline(headline, self.group);
+      var headline = new Headline(statement, userGroup, user, trend);
+      this.headlineManager.addHeadline(headline, this.group);
     }
   }
 }

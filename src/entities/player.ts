@@ -1,3 +1,4 @@
+import * as jdenticon from 'jdenticon';
 import sentenceGenerator from './sentenceGenerator';
 import { Headline } from './headline';
 
@@ -14,6 +15,7 @@ export const Player = function (game) {
   this.connections = 0;
   this.points = 9999999999;
   this.game = game;
+  this.pic = jdenticon.toSvg('blah', 80);
 
   var pastLikes = 0;
   var pastComments = 0;
@@ -96,8 +98,8 @@ export const Player = function (game) {
       var statement = sentenceGenerator.generate(feeling, topic);
       var newHeadline = new Headline(
         statement,
-        this,
-        { first: this.firstName, last: this.lastName },
+        null,
+        { name: { first: this.firstName, last: this.lastName }, pic: this.pic },
         topic,
         true
       );
@@ -116,10 +118,13 @@ export const Player = function (game) {
       if (key) {
         var newHeadline = new Headline(
           headline,
-          this,
+          null,
           {
-            first: this.firstName,
-            last: this.lastName,
+            name: {
+              first: this.firstName,
+              last: this.lastName,
+            },
+            pic: this.pic,
           },
           userTopic,
           true

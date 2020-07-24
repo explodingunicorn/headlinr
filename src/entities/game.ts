@@ -1,4 +1,4 @@
-import { User } from './user';
+import { UserGroup } from './user';
 import { Player } from './player';
 import { DataCollector } from './dataCollector';
 import trends from '../data/trends';
@@ -14,15 +14,12 @@ export default class Game {
 
   public totalConnections = 50;
   public headlines = [];
-  private userHeadlines = [];
-  private bestHeadlines = [];
 
   private HManager = new HeadlineManager();
   public runOnHeadlinesUpdated: HeadlineInteractEvent[] = [];
 
   public trends = this.generateTrends();
   public trendsCost = 30000;
-  private postsToRead = 5;
   public visualsUnlocked = {
     posts: false,
     likes: false,
@@ -54,7 +51,7 @@ export default class Game {
     const groupCount = game.userGroupQueues.length;
     for (let i = 0; i < game.connections / groupCount; i++) {
       for (let j = 0; j < groupCount; j++) {
-        usersArr.push(new User(game, j, game.HManager));
+        usersArr.push(new UserGroup(game, j, game.HManager));
       }
     }
     return usersArr;

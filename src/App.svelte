@@ -3,6 +3,7 @@
   import { game } from './gameStore';
   import { onMount, onDestroy } from 'svelte';
   import { get } from 'svelte/store';
+  import Headlines from './containers/headlines.svelte';
   export let name: string;
 
   let headlines = [];
@@ -25,7 +26,7 @@
   });
 </script>
 
-<style type="text/scss">
+<style:global type="text/scss">
   @import './stylesheets/main.scss';
 </style>
 
@@ -96,103 +97,7 @@
           </h5>
         </div>
       </div>
-      <div class="column middle">
-        <div class="userInput">
-          <div class="headline-submission">
-            <div class="thumbnail large">
-              <svg
-                class="portrait"
-                data-jdenticon-value={player && player.firstName} />
-            </div>
-            <input
-              type="text"
-              placeholder="Post a headline"
-              v-model="headline" />
-          </div>
-          <h5 class="btn backPurple fullWidth" v-on:click="submitHeadline">
-            Add Headline
-          </h5>
-        </div>
-        {#each headlines as item}
-          <div class="post">
-            <div class="head">
-              <div class="info">
-                <div class="thumbnail">
-                  {@html jdenticon.toSvg(item.postName.first, 80)}
-                </div>
-                <div class="name">
-                  <h3 class="title">
-                    {item.postName.first} {item.postName.last}
-                  </h3>
-                </div>
-                <div class="score">
-                  <h1
-                    class:darkPurple={item.score >= 0}
-                    class:mediumPurple={item.score < 0}>
-                    {item.score}
-                  </h1>
-                </div>
-              </div>
-              <div class="content">
-                <h1>{item.headline}</h1>
-              </div>
-              <div class="buttons">
-                <button
-                  class="like"
-                  class:liked={item.isLiked}
-                  v-on:click="likePost(i)">
-                  <i class="fa fa-thumbs-up" aria-hidden="true" />
-                  Like
-                </button>
-                <button
-                  class="dislike"
-                  class:disliked={item.isDisliked}
-                  v-on:click="dislikePost(i)">
-                  <i class="fa fa-thumbs-down" aria-hidden="true" />
-                  Dislike
-                </button>
-              </div>
-            </div>
-            <div class="moreComments" v-if="item.comments.length === 10">
-              <div>{item.commentsAmt} total comments</div>
-            </div>
-            <div class="commentSection">
-              {#each item.comments as comment}
-                <div class="comment" v-for="comment in item.comments">
-                  <div class="thumbnail">
-                    <img
-                      class="portrait"
-                      v-bind:src="resolvePic(comment.commentName.pic)"
-                      alt="Profile pic" />
-                  </div>
-                  <div class="content">
-                    <h4>
-                      {comment.commentName.first} {comment.commentName.last}
-                    </h4>
-                    <h3>{comment.comment}</h3>
-                  </div>
-                </div>
-              {/each}
-            </div>
-            <div class="userComment">
-              <div class="thumbnail">
-                <img
-                  class="portrait"
-                  v-bind:src="resolvePic(player.pic)"
-                  alt="Profile pic" />
-              </div>
-              <input
-                type="text"
-                placeholder="Comment..."
-                v-on:click="pause = true"
-                v-model="item.commentValue" />
-            </div>
-            <div class="submitComment" v-on:click="addComment(i)">
-              <h5>Submit Comment</h5>
-            </div>
-          </div>
-        {/each}
-      </div>
+      <Headlines />
       <div class="column right">
         <div v-if="wordLimit" class="error-popup blue raised">
           <h2>You can only have 10 words in your headline!</h2>
