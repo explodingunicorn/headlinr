@@ -3,7 +3,78 @@
   export let headline: Headline;
 </script>
 
-<div class="post">
+<style>
+  article {
+    padding: 1rem;
+    border: 1px solid var(--gray-med);
+    border-bottom: none;
+    display: flex;
+    flex-direction: column;
+  }
+
+  article:first-of-type {
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+  }
+
+  article:last-of-type {
+    border-bottom-left-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+    border-bottom: 1px solid var(--gray-med);
+  }
+
+  .head {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .info {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+  }
+
+  .info .name {
+    flex: 1;
+  }
+
+  .title {
+    color: var(--teal);
+  }
+
+  .thumbnail {
+    background-color: var(--blue-med);
+    padding: 0.25rem;
+    width: 2rem;
+    height: 2rem;
+  }
+
+  :global(.thumbnail svg) {
+    width: 100%;
+    height: 100%;
+  }
+
+  .score {
+    border-radius: 50%;
+    padding: 0.25rem 1rem;
+  }
+
+  .score.positive {
+    background-color: var(--purple-med);
+  }
+
+  .score.negative {
+    background-color: var(--orange);
+  }
+
+  .score h1 {
+    padding: 0;
+    margin: 0;
+  }
+</style>
+
+<article class="headline">
   <div class="head">
     <div class="info">
       <div class="thumbnail">
@@ -14,12 +85,11 @@
           {headline.user.name.first} {headline.user.name.last}
         </h3>
       </div>
-      <div class="score">
-        <h1
-          class:darkPurple={headline.score >= 0}
-          class:mediumPurple={headline.score < 0}>
-          {headline.score}
-        </h1>
+      <div
+        class="score"
+        class:positive={headline.score >= 0}
+        class:negative={headline.score < 0}>
+        <h1>{headline.score}</h1>
       </div>
     </div>
     <div class="content">
@@ -77,4 +147,4 @@
   <div class="submitComment" v-on:click="addComment(i)">
     <h5>Submit Comment</h5>
   </div>
-</div>
+</article>
