@@ -1,26 +1,27 @@
 import * as jdenticon from 'jdenticon';
 import sentenceGenerator from './sentenceGenerator';
 import { Headline } from './headline';
+import Game from './game';
 
-export const Player = function (game) {
-  this.firstName = '';
-  this.lastName = '';
-  this.pic = {
-    type: 'player',
-    link: '',
-  };
-  this.bio = 'Nothing here yet';
-  this.likesTotal = 0;
-  this.commentsTotal = 0;
-  this.connections = 0;
-  this.points = 9999999999;
-  this.game = game;
-  this.pic = jdenticon.toSvg('blah', 80);
+export class Player {
+  public firstName = '';
+  public lastName = '';
+  public bio = 'Nothing here yet';
+  public likesTotal = 0;
+  public commentsTotal = 0;
+  public connections = 0;
+  public points = 9999999999;
+  public game: Game;
+  public pic = jdenticon.toSvg('blah', 80);
 
-  var pastLikes = 0;
-  var pastComments = 0;
+  private pastLikes = 0;
+  private pastComments = 0;
 
-  this.changeInfo = function (first, last, pic) {
+  constructor(game: Game) {
+    this.game = game;
+  }
+
+  public changeInfo = function (first: string, last: string, pic: string) {
     this.firstName = first;
     this.lastName = last;
 
@@ -29,15 +30,15 @@ export const Player = function (game) {
     }
   };
 
-  this.changeScore = function (likes) {
+  public changeScore = function (likes: number) {
     this.likesTotal += likes;
   };
 
-  this.addComments = function () {
+  public addComments = function () {
     this.commentsTotal++;
   };
 
-  this.like = function (index) {
+  public like = function (index) {
     if (!this.game.headlines[index].playerCreated) {
       if (this.game.headlines[index].isDisliked) {
         this.game.headlines[index].isDisliked = false;
@@ -54,7 +55,7 @@ export const Player = function (game) {
     }
   };
 
-  this.dislike = function (index) {
+  public dislike = function (index) {
     if (this.game.headlines[index].isLiked) {
       this.game.headlines[index].isLiked = false;
       this.game.headlines[index].isDisliked = true;
@@ -69,7 +70,7 @@ export const Player = function (game) {
     }
   };
 
-  this.comment = function (index) {
+  public comment = function (index) {
     var headline = this.game.headlines[index];
 
     if (!headline.playerCreated) {
@@ -89,7 +90,7 @@ export const Player = function (game) {
     }
   };
 
-  this.headline = function (headline, app) {
+  public headline = function (headline?: string, app?: any) {
     if (!headline) {
       var topic = this.game.trends[
         Math.floor(Math.random() * this.game.trends.length)
@@ -138,19 +139,19 @@ export const Player = function (game) {
     }
   };
 
-  this.calculateCurrentPoints = function () {
-    if (pastLikes !== this.likesTotal && this.likesTotal >= 0) {
-      var dif = this.likesTotal - pastLikes;
+  public calculateCurrentPoints = function () {
+    if (this.pastLikes !== this.likesTotal && this.likesTotal >= 0) {
+      var dif = this.likesTotal - this.pastLikes;
       var pointsToAdd = 1000 * dif;
       this.points += pointsToAdd;
-      pastLikes = this.likesTotal;
+      this.pastLikes = this.likesTotal;
     }
 
-    if (pastComments !== this.commentsTotal) {
-      var dif = this.commentsTotal - pastComments;
+    if (this.pastComments !== this.commentsTotal) {
+      var dif = this.commentsTotal - this.pastComments;
       var pointsToAdd = 1500 * dif;
       this.points += pointsToAdd;
-      pastComments = this.commentsTotal;
+      this.pastComments = this.commentsTotal;
     }
   };
-};
+}

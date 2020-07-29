@@ -8,8 +8,9 @@ export default class Game {
   private G = this;
   private connections = 50;
   private trendsAmt = 10;
+  private paused: boolean = false;
 
-  public player = new Player(this);
+  public player: Player = new Player(this);
   public collector = new DataCollector(this);
 
   public totalConnections = 50;
@@ -84,14 +85,23 @@ export default class Game {
     this.trends = this.generateTrends();
   }
 
-  public update(time) {
-    for (let i = 0; i < this.users.length; i++) {
-      this.users[i].checkUpdate(time);
-    }
+  public play() {
+    this.paused = false;
+  }
+  public pause() {
+    this.paused = true;
+  }
 
-    if (this.automation.headline) {
-      if (time % this.automation.headlineCount === 0) {
-        this.player.headline();
+  public update(time) {
+    if (!this.paused) {
+      for (let i = 0; i < this.users.length; i++) {
+        this.users[i].checkUpdate(time);
+      }
+
+      if (this.automation.headline) {
+        if (time % this.automation.headlineCount === 0) {
+          this.player.headline();
+        }
       }
     }
   }

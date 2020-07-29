@@ -1,26 +1,27 @@
 <script lang="ts">
   import { Headline } from '../entities/headline';
+  import Avatar from './Avatar.svelte';
+  import InteractionButton from './InteractionButton.svelte';
+  import { Player } from '../entities/player';
   export let headline: Headline;
+  export let player: Player;
 </script>
 
 <style>
   article {
     padding: 1rem;
-    border: 1px solid var(--gray-med);
+    background-color: var(--blue-dark);
+    box-shadow: 0 0 0 0 transparent;
+    border-radius: 0.25rem;
     border-bottom: none;
     display: flex;
     flex-direction: column;
+    margin-bottom: 1rem;
+    transition: all 0.5s;
   }
 
-  article:first-of-type {
-    border-top-left-radius: 0.5rem;
-    border-top-right-radius: 0.5rem;
-  }
-
-  article:last-of-type {
-    border-bottom-left-radius: 0.5rem;
-    border-bottom-right-radius: 0.5rem;
-    border-bottom: 1px solid var(--gray-med);
+  article:hover {
+    box-shadow: 0 0 0 1px var(--blue-light);
   }
 
   .head {
@@ -39,15 +40,10 @@
     flex: 1;
   }
 
-  .title {
-    color: var(--teal);
-  }
-
-  .thumbnail {
-    background-color: var(--blue-med);
-    padding: 0.25rem;
-    width: 2rem;
-    height: 2rem;
+  .info .name p {
+    margin: 0;
+    margin-left: 1rem;
+    padding: 0;
   }
 
   :global(.thumbnail svg) {
@@ -56,8 +52,13 @@
   }
 
   .score {
-    border-radius: 50%;
-    padding: 0.25rem 1rem;
+    align-items: center;
+    border-radius: 1rem;
+    display: flex;
+    justify-content: center;
+    min-width: 3rem;
+    padding: 0.5rem;
+    height: 2rem;
   }
 
   .score.positive {
@@ -68,83 +69,138 @@
     background-color: var(--orange);
   }
 
-  .score h1 {
+  .score p {
     padding: 0;
     margin: 0;
+    font-size: 1.125rem;
+  }
+
+  .content h1 {
+    margin-bottom: 0.5rem;
+  }
+
+  .comment {
+    align-items: center;
+    border-top: 1px solid var(--blue-med);
+    display: flex;
+    margin-bottom: 0.5rem;
+    padding-top: 0.5rem;
+  }
+
+  .comment .content {
+    margin-left: 0.5rem;
+  }
+
+  .comment .name {
+    font-size: 0.875rem;
+    font-weight: 900;
+    margin-top: 0;
+    margin-bottom: 0.125rem;
+    padding: 0;
+  }
+
+  .comment .text {
+    font-size: 1rem;
+    margin: 0;
+    padding: 0;
+  }
+
+  .player-comment {
+    display: flex;
+    flex-direction: row;
+    border-top: 1px solid var(--blue-med);
+    padding-top: 0.5rem;
+  }
+
+  .player-comment .input-container {
+    align-items: center;
+    background-color: var(--blue-med);
+    border-radius: 1rem;
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    margin-left: 0.5rem;
+    padding: 1rem;
+    height: 2rem;
+  }
+
+  .input-container input {
+    font-size: 1.125rem;
+    background: transparent;
+    border: none;
+    color: #e5e5e5;
+    flex: 1;
+    padding: 0;
+    margin: 0;
+    min-width: 0;
+    width: 0;
+  }
+
+  .input-container input:focus {
+    outline: none;
+  }
+
+  .input-container button {
+    background-color: transparent;
+    border: none;
+    color: var(--foreground);
+    font-family: 'Montserrat';
+    font-size: 0.75rem;
+    height: 1.5rem;
+    margin: 0;
+    padding: 0;
+    text-transform: uppercase;
   }
 </style>
 
 <article class="headline">
   <div class="head">
     <div class="info">
-      <div class="thumbnail">
+      <Avatar size="l">
         {@html headline.user.pic}
-      </div>
+      </Avatar>
       <div class="name">
-        <h3 class="title">
-          {headline.user.name.first} {headline.user.name.last}
-        </h3>
+        <p>{headline.user.name.first} {headline.user.name.last}</p>
       </div>
       <div
         class="score"
         class:positive={headline.score >= 0}
         class:negative={headline.score < 0}>
-        <h1>{headline.score}</h1>
+        <p>{headline.score}</p>
       </div>
     </div>
     <div class="content">
       <h1>{headline.headline}</h1>
     </div>
     <div class="buttons">
-      <button
-        class="like"
-        class:liked={headline.playerLiked}
-        v-on:click="likePost(i)">
-        <i class="fa fa-thumbs-up" aria-hidden="true" />
-        Like
-      </button>
-      <button
-        class="dislike"
-        class:disliked={headline.playerDisliked}
-        v-on:click="dislikePost(i)">
-        <i class="fa fa-thumbs-down" aria-hidden="true" />
-        Dislike
-      </button>
+      <InteractionButton type="like" />
+      <InteractionButton type="dislike" />
     </div>
-  </div>
-  <div class="moreComments" v-if="headline.comments.length === 10">
-    <div>{headline.commentsAmt} total comments</div>
   </div>
   <div class="commentSection">
     {#each headline.comments as comment}
-      <div class="comment" v-for="comment in headline.comments">
-        <div class="thumbnail">
-          <img
-            class="portrait"
-            v-bind:src="resolvePic(comment.commentName.pic)"
-            alt="Profile pic" />
-        </div>
+      <div class="comment">
+        <Avatar size="m">
+          {@html comment.user.pic}
+        </Avatar>
         <div class="content">
-          <h4>{comment.user.name.first} {comment.user.name.last}</h4>
-          <h3>{comment.comment}</h3>
+          <p class="name">{comment.user.name.first} {comment.user.name.last}</p>
+          <p class="text">{comment.comment}</p>
         </div>
       </div>
     {/each}
   </div>
-  <div class="userComment">
-    <div class="thumbnail">
-      <img
-        class="portrait"
-        v-bind:src="resolvePic(player.pic)"
-        alt="Profile pic" />
+  <div class="player-comment">
+    <Avatar size="m">
+      {@html player.pic}
+    </Avatar>
+    <div class="input-container">
+      <input
+        type="text"
+        placeholder="Comment..."
+        v-on:click="pause = true"
+        v-model="headline.commentValue" />
+      <button class="post-comment">Comment</button>
     </div>
-    <input
-      type="text"
-      placeholder="Comment..."
-      v-on:click="pause = true"
-      v-model="headline.commentValue" />
-  </div>
-  <div class="submitComment" v-on:click="addComment(i)">
-    <h5>Submit Comment</h5>
   </div>
 </article>
