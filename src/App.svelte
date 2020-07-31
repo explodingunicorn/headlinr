@@ -1,6 +1,6 @@
-<script lang="ts">
-  import Router from 'svelte-spa-router';
-  import { routes } from './utilities/routes';
+<script>
+  import { Router } from '@sveltech/routify';
+  import { routes } from '@sveltech/routify/tmp/routes';
 </script>
 
 <style>
@@ -56,14 +56,4 @@
   href="https://fonts.googleapis.com/css?family=Lato:300,400,700|Montserrat:500,700,800"
   rel="stylesheet" />
 
-<svelte:head>
-  <script
-    type="text/javascript"
-    src="https://cdn.jsdelivr.net/npm/jdenticon@2.2.0">
-
-  </script>
-</svelte:head>
-
-<main id="app">
-  <Router {routes} />
-</main>
+<Router {routes} />

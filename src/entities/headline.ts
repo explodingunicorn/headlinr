@@ -43,7 +43,7 @@ export class Headline {
   constructor(
     headline: string,
     userGroup: UserGroup | null = null,
-    user: User,
+    user: User | null = null,
     trend: string,
     creation: boolean = false
   ) {
