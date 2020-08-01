@@ -1,5 +1,6 @@
 <script>
   import Headlines from '../../containers/Headlines.svelte';
+  import Trends from '../../containers/Trends.svelte';
 </script>
 
 <style>
@@ -16,5 +17,8 @@
   <div>
     <Headlines />
   </div>
-  <div />
+  <div>
+    wtf
+    <Trends />
+  </div>
 </div>

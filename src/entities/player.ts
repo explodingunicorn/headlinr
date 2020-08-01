@@ -97,7 +97,7 @@ export class Player {
       ];
       var feeling = Math.floor(Math.random() * 10);
       var statement = sentenceGenerator.generate(feeling, topic);
-      var newHeadline = new Headline(statement, null, null, topic, true);
+      var newHeadline = new Headline(statement, null, topic, true);
       this.game.pushHeadline(newHeadline, 'all', true);
     } else {
       var userTopic = '';
@@ -111,7 +111,7 @@ export class Player {
         }
       }
       if (key) {
-        var newHeadline = new Headline(headline, null, null, userTopic, true);
+        var newHeadline = new Headline(headline, null, userTopic, true);
         this.game.pushHeadline(headline, 'all', true);
         return true;
       } else {

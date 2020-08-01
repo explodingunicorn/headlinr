@@ -17,6 +17,7 @@ import {
   commentChance,
 } from '../utilities';
 import Game from './game';
+import { TrendTracker } from './trends';
 
 export interface User {
   id: string;
@@ -25,6 +26,7 @@ export interface User {
     last: string;
   };
   pic: string;
+  trendVariation: number;
   playerOpinion: number;
 }
 
@@ -40,20 +42,30 @@ export class UserGroup {
       [user2.id]: user2,
     };
   })();
-  private game: Game;
+  private trendTracker: TrendTracker;
   private group;
   public playerOpinion = rand10() * 5;
   private headlineManager: HeadlineManager;
   private activityLevel = 800 + Math.floor(Math.random() * 300 + 1);
   private scaleReacts = 1;
   private aggression = rand10();
-  private trendFeelings;
+  private trendFeelings: { [key: string]: number } = {};
 
-  constructor(game: Game, group: number, headlineManager: HeadlineManager) {
-    this.game = game;
+  constructor(
+    group: number,
+    headlineManager: HeadlineManager,
+    trendTracker: TrendTracker
+  ) {
+    this.trendTracker = trendTracker;
+    trendTracker
+      .onTrendAdded((trend) => {
+        if (!this.trendFeelings[trend]) this.trendFeelings[trend] = rand10();
+      })
+      .onTrendRemoved((trend) => {
+        delete this.trendFeelings[trend];
+      });
     this.group = group;
     this.headlineManager = headlineManager;
-    this.trendFeelings = this.generateTopicFeelings();
   }
 
   get amountOfUsers() {
@@ -69,6 +81,8 @@ export class UserGroup {
       name: { first: '', last: '' },
       pic: '',
       playerOpinion: 0,
+      // Get a number between -2 and 2
+      trendVariation: (rand10() / 100) * 2 * (rand10() > 5 ? 1 : -1),
     };
     if (this.sex > 4) {
       user.name.first = mFirstNames[randFirstM];
@@ -82,16 +96,12 @@ export class UserGroup {
     return user;
   }
 
-  private generateTopicFeelings() {
-    const trends = {};
-    for (let i = 0; i < this.game.trends.length; i++) {
-      trends[this.game.trends[i]] = rand10();
-    }
-    return trends;
-  }
-
-  public generateNewFeelings() {
-    this.trendFeelings = this.generateTopicFeelings();
+  public initTrendFeelings() {
+    const randTrends = this.trendTracker.getRandomTrends();
+    randTrends.forEach((trend) => {
+      this.trendFeelings[trend] = rand10();
+      this.trendTracker.addTrend(trend);
+    });
   }
 
   public generateMoreNames(num: number) {
@@ -126,7 +136,7 @@ export class UserGroup {
       //Function to read headlines
       this.checkHeadlines(this.headlineManager.getQueue(this.group), user);
       //Function to create a headline
-      this.createHeadline(this.game, user);
+      this.createHeadline(user);
     }
   }
 
@@ -166,7 +176,6 @@ export class UserGroup {
     if (total + this.aggression >= commentChance()) {
       headline.addComment(
         type === 'positive' ? sentence.affirm() : sentence.deny(),
-        this,
         user
       );
     }
@@ -174,18 +183,16 @@ export class UserGroup {
 
   //Function for user to check new posts
   private checkHeadlines(headlines: Headline[], user: User) {
-    var postsToCheck = 0;
-    //Checks the last 10 headlines
-    postsToCheck = headlines.length;
+    var postsToCheck = headlines.length;
 
     for (var i = 0; i < postsToCheck; i++) {
       //Read the headline, and determine the reaction to the headline
       const headline = this.headlineManager.getQueueHeadline(i, this.group);
-      var trend = headline.trend;
-      var userFeeling = this.trendFeelings[trend];
-      var sentiment = headline.sentimentScore;
-      var playerFactor = 0;
-      var repeatFactor = 0;
+      const trend = headline.trend;
+      const userFeeling = this.trendFeelings[trend] + user.trendVariation;
+      const sentiment = headline.sentimentScore;
+      let playerFactor = 0;
+      let repeatFactor = 0;
       const { playerOpinion } = user;
 
       if (headline.playerCreated) {
@@ -246,15 +253,19 @@ export class UserGroup {
   }
 
   //Function for user to push a new headline
-  private createHeadline(game: Game, user: User) {
+  private createHeadline(user: User) {
     if (this.aggression >= headlineChance()) {
-      var trend = game.trends[Math.floor(Math.random() * game.trends.length)];
-      var feeling = this.trendFeelings[trend];
-      var statement = sentence.generate(feeling, trend);
+      const trendFeelingKeys = Object.keys(this.trendFeelings);
+      const trend =
+        trendFeelingKeys[Math.floor(Math.random() * trendFeelingKeys.length)];
+      const feeling = this.trendFeelings[trend] + user.trendVariation;
+      const statement = sentence.generate(feeling, trend);
+      console.log(statement);
 
-      //Creating a new headline
-      const headline = new Headline(statement, this, user, trend);
-      this.headlineManager.addHeadline(headline, this.group);
+      this.headlineManager.addHeadline(
+        { headline: statement, user, trend },
+        this.group
+      );
     }
   }
 }

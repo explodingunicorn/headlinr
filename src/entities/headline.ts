@@ -5,13 +5,11 @@ const sentiment = new Sentiment();
 
 class HeadlineComment {
   public comment;
-  public userGroup: UserGroup;
   public user: User;
   public score = 0;
 
-  constructor(comment: string, userGroup: UserGroup, user: User) {
+  constructor(comment: string, user: User) {
     this.comment = comment;
-    this.userGroup = userGroup;
     this.user = user;
   }
 
@@ -26,7 +24,6 @@ class HeadlineComment {
 
 export class Headline {
   public headline: string;
-  public userGroup: UserGroup | null;
   public user: User;
   public trend: string;
   public playerCreated: boolean;
@@ -42,13 +39,11 @@ export class Headline {
 
   constructor(
     headline: string,
-    userGroup: UserGroup | null = null,
     user: User | null = null,
     trend: string,
     creation: boolean = false
   ) {
     this.headline = headline;
-    this.userGroup = userGroup;
     this.user = user;
     this.trend = trend;
     this.playerCreated = creation;
@@ -56,9 +51,9 @@ export class Headline {
   }
 
   //function to add a user comment
-  public addComment(comment, userGroup: UserGroup, user: User) {
+  public addComment(comment, user: User) {
     //Creates a new comment to push to comments
-    const newComment = new HeadlineComment(comment, userGroup, user);
+    const newComment = new HeadlineComment(comment, user);
     //Pushing the comment to our comments array
     if (this.comments.length < 10) {
       this.comments.push(newComment);
@@ -74,11 +69,11 @@ export class Headline {
     const rating = sentiment(comment).score;
 
     if (rating > 0) {
-      this.userGroup.playerOpinion += 7 + rating;
+      this.user.playerOpinion += 7 + rating;
     } else if (rating < 0) {
-      this.userGroup.playerOpinion -= 7 - rating;
+      this.user.playerOpinion -= 7 - rating;
     } else {
-      this.userGroup.playerOpinion += 5;
+      this.user.playerOpinion += 5;
     }
   }
 
@@ -115,9 +110,13 @@ export type HeadlineInteractEvent = (event?: {
 export class HeadlineManager {
   public headlines: Headline[] = [];
   public playerHeadlines: Headline[] = [];
-  private headlineQueues = new Array(5).fill([] as Headline[]);
+  private headlineQueues: Headline[][] = [];
   private maxQueueLength = 5;
   private runOnInteraction: HeadlineInteractEvent = () => null;
+
+  constructor(queues: number) {
+    this.headlineQueues = new Array(queues).fill([] as Headline[]);
+  }
 
   public getQueue(queue: number) {
     return this.headlineQueues[queue];
@@ -136,25 +135,27 @@ export class HeadlineManager {
   }
 
   public addHeadline(
-    headline: Headline,
+    { headline, user, trend }: Pick<Headline, 'headline' | 'user' | 'trend'>,
     queue: number,
     player: boolean = false
   ) {
+    const newHeadline = new Headline(headline, user, trend);
+    console.log(newHeadline);
     if (player) {
       this.headlineQueues.forEach((q, i) => {
-        this.addHeadlineToQueue(headline, i);
+        this.addHeadlineToQueue(newHeadline, i);
       });
 
-      this.playerHeadlines.unshift(headline);
+      this.playerHeadlines.unshift(newHeadline);
 
       if (this.playerHeadlines.length > 20) {
         this.playerHeadlines.pop();
       }
     } else {
-      this.addHeadlineToQueue(headline, queue);
+      this.addHeadlineToQueue(newHeadline, queue);
     }
 
-    this.headlines.unshift(headline);
+    this.headlines.unshift(newHeadline);
 
     if (this.headlines.length > 30) {
       this.headlines.pop();
@@ -189,6 +190,7 @@ export class HeadlineManager {
         headline.dislike(...args);
         this.runOnInteraction(event);
       },
+      alertUser: headline.alertUser,
     };
   }
 }

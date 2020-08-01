@@ -3,31 +3,23 @@ import { Player } from './player';
 import { DataCollector } from './dataCollector';
 import trends from '../data/trends';
 import { HeadlineManager, HeadlineInteractEvent } from './headline';
+import { TrendTracker } from './trends';
+
+const userGroupStartCount = 10;
 
 export default class Game {
+  private userGroupCount = userGroupStartCount;
   private G = this;
-  private connections = 50;
-  private trendsAmt = 10;
   private paused: boolean = false;
 
   public player: Player = new Player(this);
   public collector = new DataCollector(this);
 
-  public totalConnections = 50;
   public headlines = [];
 
-  private HManager = new HeadlineManager();
+  private HManager = new HeadlineManager(userGroupStartCount);
+  public trendTracker = new TrendTracker();
   public runOnHeadlinesUpdated: HeadlineInteractEvent[] = [];
-
-  public trends = this.generateTrends();
-  public trendsCost = 30000;
-  public visualsUnlocked = {
-    posts: false,
-    likes: false,
-    comments: false,
-    feelings: false,
-    topPosts: false,
-  };
 
   private automation = {
     like: 0,
@@ -38,23 +30,16 @@ export default class Game {
     headlineCount: 0,
   };
 
-  private userGroupQueues = (function () {
-    const arr = [];
-    for (let i = 0; i < 5; i++) {
-      arr[i] = [];
+  private userGroups = (function (game: Game) {
+    const usersArr: UserGroup[] = [];
+    const groupCount = game.userGroupCount;
+    for (let j = 0; j < groupCount; j++) {
+      usersArr.push(new UserGroup(j, game.HManager, game.trendTracker));
     }
-
-    return arr;
-  })();
-
-  private users = (function (game: Game) {
-    const usersArr = [];
-    const groupCount = game.userGroupQueues.length;
-    for (let i = 0; i < game.connections / groupCount; i++) {
-      for (let j = 0; j < groupCount; j++) {
-        usersArr.push(new UserGroup(game, j, game.HManager));
-      }
-    }
+    usersArr.forEach((group) => {
+      group.initTrendFeelings();
+    });
+    console.log(usersArr);
     return usersArr;
   })(this.G);
 
@@ -69,22 +54,6 @@ export default class Game {
     });
   }
 
-  private generateTrends() {
-    const gameTrends = [];
-    trends.sort(function () {
-      return 0.5 - Math.random();
-    });
-    for (let i = 0; i < this.trendsAmt; i++) {
-      gameTrends[i] = trends[i];
-    }
-
-    return gameTrends;
-  }
-
-  public createNewTrends() {
-    this.trends = this.generateTrends();
-  }
-
   public play() {
     this.paused = false;
   }
@@ -94,8 +63,8 @@ export default class Game {
 
   public update(time) {
     if (!this.paused) {
-      for (let i = 0; i < this.users.length; i++) {
-        this.users[i].checkUpdate(time);
+      for (let i = 0; i < this.userGroups.length; i++) {
+        this.userGroups[i].checkUpdate(time);
       }
 
       if (this.automation.headline) {
@@ -124,53 +93,6 @@ export default class Game {
         this.player.comment(0);
         this.automation.commentCount = 0;
       }
-    }
-  }
-
-  private addUsers(scale) {
-    const modeledScale = scale * 100;
-    console.log(modeledScale);
-    if (scale < 10) {
-      this.HManager.increaseQueueLength(1);
-    } else {
-      this.HManager.increaseQueueLength(8);
-    }
-    const amountToAdd = modeledScale / this.users.length;
-    for (let i = 0; i < this.users.length; i++) {
-      this.users[i].generateMoreNames(amountToAdd);
-      this.users[i].generateNewActivityLevel();
-    }
-    this.totalConnections = this.totalConnections + modeledScale;
-  }
-
-  private reduceTrendsCost(scale) {
-    this.trendsCost = this.trendsCost - scale;
-  }
-
-  public addNewTrends(scale, points) {
-    if (scale !== 'purchase') {
-      this.trendsAmt = this.trendsAmt + scale;
-    }
-    this.trends = this.generateTrends();
-    this.collector.clearData();
-
-    for (let i = 0; i < this.users.length; i++) {
-      this.users[i].generateNewFeelings();
-    }
-  }
-
-  public addVisual(type) {
-    this.visualsUnlocked[type] = true;
-  }
-
-  public addAutomation(type, scale) {
-    console.log(type, scale);
-    if (type !== 'headline') {
-      this.automation[type] = scale;
-      this.automation[type + 'Count'] = 0;
-    } else {
-      this.automation[type] = true;
-      this.automation[type + 'Count'] = scale;
     }
   }
 }
