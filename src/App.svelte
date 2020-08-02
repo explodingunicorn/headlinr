@@ -10,6 +10,7 @@
     --purple-light: #c6b3e6;
 
     --blue-extra-dark: #232f43;
+    --blue-dark-transparent: rgba(48, 64, 95, 0.4);
     --blue-dark: #30405f;
     --blue-med: #3e5579;
     --blue-light: #5270a3;

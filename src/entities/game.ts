@@ -1,7 +1,6 @@
 import { UserGroup } from './user';
 import { Player } from './player';
 import { DataCollector } from './dataCollector';
-import trends from '../data/trends';
 import { HeadlineManager, HeadlineInteractEvent } from './headline';
 import { TrendTracker } from './trends';
 
@@ -12,13 +11,14 @@ export default class Game {
   private G = this;
   private paused: boolean = false;
 
-  public player: Player = new Player(this);
   public collector = new DataCollector(this);
 
   public headlines = [];
 
-  private HManager = new HeadlineManager(userGroupStartCount);
+  private headlineManager: HeadlineManager;
   public trendTracker = new TrendTracker();
+  public player: Player;
+
   public runOnHeadlinesUpdated: HeadlineInteractEvent[] = [];
 
   private automation = {
@@ -30,24 +30,32 @@ export default class Game {
     headlineCount: 0,
   };
 
-  private userGroups = (function (game: Game) {
+  private userGroups: UserGroup[];
+
+  private initUserGroups() {
     const usersArr: UserGroup[] = [];
-    const groupCount = game.userGroupCount;
+    const groupCount = this.userGroupCount;
     for (let j = 0; j < groupCount; j++) {
-      usersArr.push(new UserGroup(j, game.HManager, game.trendTracker));
+      usersArr.push(new UserGroup(j, this.headlineManager, this.trendTracker));
     }
     usersArr.forEach((group) => {
       group.initTrendFeelings();
     });
-    console.log(usersArr);
     return usersArr;
-  })(this.G);
+  }
 
-  constructor() {}
+  constructor() {
+    this.headlineManager = new HeadlineManager(
+      this.trendTracker,
+      userGroupStartCount
+    );
+    this.player = new Player(this.headlineManager, this.trendTracker);
+    this.userGroups = this.initUserGroups();
+  }
 
   public onHeadlinesUpdated(event: HeadlineInteractEvent) {
     this.runOnHeadlinesUpdated.push(event);
-    this.HManager.onInteraction((event) => {
+    this.headlineManager.onInteraction((event) => {
       this.runOnHeadlinesUpdated.forEach((func) => {
         func(event);
       });

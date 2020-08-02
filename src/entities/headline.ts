@@ -1,5 +1,6 @@
 import Sentiment from 'sentiment';
 import { User, UserGroup } from './user';
+import { TrendTracker } from './trends';
 
 const sentiment = new Sentiment();
 
@@ -24,8 +25,9 @@ class HeadlineComment {
 
 export class Headline {
   public headline: string;
-  public user: User;
+  public user: User = null;
   public trend: string;
+  private trendTracker: TrendTracker;
   public playerCreated: boolean;
   public sentimentScore: number;
 
@@ -36,29 +38,42 @@ export class Headline {
 
   public playerLiked = false;
   public playerDisliked = false;
+  public playerCommented = false;
 
   constructor(
     headline: string,
     user: User | null = null,
     trend: string,
+    trendTracker: TrendTracker,
     creation: boolean = false
   ) {
     this.headline = headline;
     this.user = user;
     this.trend = trend;
+    this.trendTracker = trendTracker;
     this.playerCreated = creation;
     this.sentimentScore = sentiment.analyze(headline).score;
   }
 
   //function to add a user comment
-  public addComment(comment, user: User) {
+  public addComment(
+    comment,
+    type: 'positive' | 'negative',
+    user: User = null,
+    player: boolean = false
+  ) {
     //Creates a new comment to push to comments
     const newComment = new HeadlineComment(comment, user);
     //Pushing the comment to our comments array
     if (this.comments.length < 10) {
       this.comments.push(newComment);
     }
+    this.trendTracker.newComment(this.trend, type);
     this.commentsAmt++;
+
+    if (player) {
+      this.playerCommented = true;
+    }
 
     // if (this.playerCreated) {
     //   this.userGroup.addComments();
@@ -80,6 +95,7 @@ export class Headline {
   //function to add to the posts score
   public like(scale, player: boolean = false) {
     this.score += scale;
+    this.trendTracker.newReaction(this.trend, scale);
     // if (this.playerCreated) {
     //   this.userGroup.changeScore(scale);
     // }
@@ -92,6 +108,7 @@ export class Headline {
   //function to subtract from the posts score
   public dislike(scale, player: boolean = false) {
     this.score -= scale;
+    this.trendTracker.newReaction(this.trend, scale * -1);
     // if (this.playerCreated) {
     //   this.user.changeScore(-scale);
     // }
@@ -110,11 +127,13 @@ export type HeadlineInteractEvent = (event?: {
 export class HeadlineManager {
   public headlines: Headline[] = [];
   public playerHeadlines: Headline[] = [];
+  private trendTracker: TrendTracker;
   private headlineQueues: Headline[][] = [];
   private maxQueueLength = 5;
   private runOnInteraction: HeadlineInteractEvent = () => null;
 
-  constructor(queues: number) {
+  constructor(trendTracker: TrendTracker, queues: number) {
+    this.trendTracker = trendTracker;
     this.headlineQueues = new Array(queues).fill([] as Headline[]);
   }
 
@@ -139,8 +158,7 @@ export class HeadlineManager {
     queue: number,
     player: boolean = false
   ) {
-    const newHeadline = new Headline(headline, user, trend);
-    console.log(newHeadline);
+    const newHeadline = new Headline(headline, user, trend, this.trendTracker);
     if (player) {
       this.headlineQueues.forEach((q, i) => {
         this.addHeadlineToQueue(newHeadline, i);
@@ -170,7 +188,10 @@ export class HeadlineManager {
     this.runOnInteraction = event;
   }
 
-  public getQueueHeadline(index: number, queue: number): Headline {
+  public getQueueHeadline(
+    index: number,
+    queue: number
+  ): Omit<Headline, 'alertUser' | 'trendTracker'> {
     const headline = this.headlineQueues[queue][index];
     const event = {
       headlines: this.headlines,
@@ -190,7 +211,6 @@ export class HeadlineManager {
         headline.dislike(...args);
         this.runOnInteraction(event);
       },
-      alertUser: headline.alertUser,
     };
   }
 }

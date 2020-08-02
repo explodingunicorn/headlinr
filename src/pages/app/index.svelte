@@ -6,9 +6,19 @@
 <style>
   .game {
     display: grid;
-    grid-template-columns: minmax(0, 10rem) minmax(0, 1fr) minmax(0, 10rem);
-    width: 80%;
+    grid-template-columns: minmax(0, 20rem) minmax(0, 1fr) minmax(0, 20rem);
+    width: 90%;
     margin: 0 auto;
+    column-gap: 1rem;
+  }
+
+  .game > div {
+    margin-top: 3rem;
+  }
+
+  .sidebar {
+    position: sticky;
+    top: 2rem;
   }
 </style>
 
@@ -17,8 +27,7 @@
   <div>
     <Headlines />
   </div>
-  <div>
-    wtf
+  <div class="sidebar">
     <Trends />
   </div>
 </div>

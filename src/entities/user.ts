@@ -7,17 +7,16 @@ import lastNames from '../data/lastnames';
 
 //Other classes needed
 import { Headline, HeadlineManager } from './headline';
-import sentence from './sentenceGenerator';
+import { TrendTracker } from './trends';
 
 //Utilities
+import sentence from './sentenceGenerator';
 import {
   rand10,
   headlineChance,
   interactChance,
   commentChance,
 } from '../utilities';
-import Game from './game';
-import { TrendTracker } from './trends';
 
 export interface User {
   id: string;
@@ -152,7 +151,7 @@ export class UserGroup {
 
   private interactWithHeadline(
     user: User,
-    headline: Headline,
+    headline: Omit<Headline, 'alertUser' | 'trendTracker'>,
     playerFactor: number,
     repeatFactor: number,
     type: 'positive' | 'negative'
@@ -176,6 +175,7 @@ export class UserGroup {
     if (total + this.aggression >= commentChance()) {
       headline.addComment(
         type === 'positive' ? sentence.affirm() : sentence.deny(),
+        type,
         user
       );
     }
@@ -260,7 +260,6 @@ export class UserGroup {
         trendFeelingKeys[Math.floor(Math.random() * trendFeelingKeys.length)];
       const feeling = this.trendFeelings[trend] + user.trendVariation;
       const statement = sentence.generate(feeling, trend);
-      console.log(statement);
 
       this.headlineManager.addHeadline(
         { headline: statement, user, trend },

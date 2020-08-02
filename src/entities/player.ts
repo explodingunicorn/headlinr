@@ -1,7 +1,7 @@
 import * as jdenticon from 'jdenticon';
 import sentenceGenerator from './sentenceGenerator';
-import { Headline } from './headline';
-import Game from './game';
+import { Headline, HeadlineManager } from './headline';
+import { TrendTracker } from './trends';
 
 export class Player {
   public firstName = '';
@@ -11,14 +11,16 @@ export class Player {
   public commentsTotal = 0;
   public connections = 0;
   public points = 9999999999;
-  public game: Game;
+  private headlineManager: HeadlineManager;
+  private trendTracker: TrendTracker;
   public pic = jdenticon.toSvg('blah', 80);
 
   private pastLikes = 0;
   private pastComments = 0;
 
-  constructor(game: Game) {
-    this.game = game;
+  constructor(headlineManager: HeadlineManager, trendTracker: TrendTracker) {
+    this.headlineManager = headlineManager;
+    this.trendTracker = trendTracker;
   }
 
   public changeInfo = function (first: string, last: string, pic: string) {
@@ -39,87 +41,91 @@ export class Player {
   };
 
   public like = function (index) {
-    if (!this.game.headlines[index].playerCreated) {
-      if (this.game.headlines[index].isDisliked) {
-        this.game.headlines[index].isDisliked = false;
-        this.game.headlines[index].isLiked = true;
-        this.game.headlines[index].user.influence(10);
-        this.game.headlines[index].like(1);
-      } else if (this.game.headlines[index].isLiked) {
-        this.game.headlines[index].isLiked = true;
+    if (!this.headlineManager.headlines[index].playerCreated) {
+      if (this.headlineManager.headlines[index].isDisliked) {
+        this.headlineManager.headlines[index].isDisliked = false;
+        this.headlineManager.headlines[index].isLiked = true;
+        this.headlineManager.headlines[index].user.influence(10);
+        this.headlineManager.headlines[index].like(1);
+      } else if (this.headlineManager.headlines[index].isLiked) {
+        this.headlineManager.headlines[index].isLiked = true;
       } else {
-        this.game.headlines[index].isLiked = true;
-        this.game.headlines[index].user.influence(10);
-        this.game.headlines[index].like(1);
+        this.headlineManager.headlines[index].isLiked = true;
+        this.headlineManager.headlines[index].user.influence(10);
+        this.headlineManager.headlines[index].like(1);
       }
     }
   };
 
   public dislike = function (index) {
-    if (this.game.headlines[index].isLiked) {
-      this.game.headlines[index].isLiked = false;
-      this.game.headlines[index].isDisliked = true;
-      this.game.headlines[index].user.influence(-10);
-      this.game.headlines[index].dislike(1);
-    } else if (this.game.headlines[index].isDisliked) {
-      this.game.headlines[index].isDisliked = true;
+    if (this.headlineManager.headlines[index].isLiked) {
+      this.headlineManager.headlines[index].isLiked = false;
+      this.headlineManager.headlines[index].isDisliked = true;
+      this.headlineManager.headlines[index].user.influence(-10);
+      this.headlineManager.headlines[index].dislike(1);
+    } else if (this.headlineManager.headlines[index].isDisliked) {
+      this.headlineManager.headlines[index].isDisliked = true;
     } else {
-      this.game.headlines[index].isDisliked = true;
-      this.game.headlines[index].user.influence(-10);
-      this.game.headlines[index].dislike(1);
+      this.headlineManager.headlines[index].isDisliked = true;
+      this.headlineManager.headlines[index].user.influence(-10);
+      this.headlineManager.headlines[index].dislike(1);
     }
   };
 
-  public comment = function (index) {
-    var headline = this.game.headlines[index];
+  public comment(index) {
+    var headline = this.headlineManager.headlines[index];
 
     if (!headline.playerCreated) {
-      var comment = this.game.headlines[index].commentValue;
+      const commented = this.headlineManager.headlines[index].playerCommented;
 
-      if (!comment) {
-        comment = sentenceGenerator.affirm();
+      if (!commented) {
+        const comment = sentenceGenerator.affirm();
+        this.headlineManager.headlines[index].addComment(
+          comment,
+          'positive',
+          null,
+          true
+        );
+        this.headlineManager.headlines[index].alertUser(comment);
       }
-
-      this.game.headlines[index].addComment(comment, this, {
-        first: this.firstName,
-        last: this.lastName,
-        pic: this.pic,
-      });
-      this.game.headlines[index].alertUser(comment);
-      this.game.headlines[index].commentValue = '';
     }
-  };
+  }
 
-  public headline = function (headline?: string, app?: any) {
+  public headline(headline?: string, app?: any) {
+    const trends = this.trendTracker.getSortedTrends();
     if (!headline) {
-      var topic = this.game.trends[
-        Math.floor(Math.random() * this.game.trends.length)
-      ];
+      const trend = trends[Math.floor(Math.random() * trends.length)];
       var feeling = Math.floor(Math.random() * 10);
-      var statement = sentenceGenerator.generate(feeling, topic);
-      var newHeadline = new Headline(statement, null, topic, true);
-      this.game.pushHeadline(newHeadline, 'all', true);
+      var statement = sentenceGenerator.generate(feeling, trend.name);
+      this.headlineManager.addHeadline(
+        { headline: statement, trend: trend.name, user: null },
+        0,
+        true
+      );
     } else {
-      var userTopic = '';
+      let userTrend = '';
       var key = false;
-      for (var i = 0; i < this.game.trends.length; i++) {
-        var topic = this.game.trends[i];
-        if (headline.includes(topic)) {
+      for (var i = 0; i < trends.length; i++) {
+        const trend = trends[i];
+        if (headline.includes(trend.name)) {
           key = true;
-          userTopic = topic;
+          userTrend = trend.name;
           break;
         }
       }
       if (key) {
-        var newHeadline = new Headline(headline, null, userTopic, true);
-        this.game.pushHeadline(headline, 'all', true);
+        this.headlineManager.addHeadline(
+          { headline, trend: userTrend, user: null },
+          0,
+          true
+        );
         return true;
       } else {
         app.noTrend = true;
         return false;
       }
     }
-  };
+  }
 
   public calculateCurrentPoints = function () {
     if (this.pastLikes !== this.likesTotal && this.likesTotal >= 0) {

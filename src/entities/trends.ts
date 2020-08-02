@@ -18,12 +18,30 @@ export class TrendTracker {
   private trendAddedSubscriptions: TrendAddedOrRemoved[] = [];
   private trendRemovedSubscriptions: TrendAddedOrRemoved[] = [];
   private trendsListChangeSubs: TrendsListChange[] = [];
+  private trendsChangeSubs: TrendsListChange[] = [];
+
+  public getSortedTrends() {
+    return Object.keys(this.trends)
+      .map((key) => {
+        return this.trends[key];
+      })
+      .sort((a, b) => {
+        if (a.totalInteractions > b.totalInteractions) {
+          return -1;
+        }
+        return 1;
+      });
+  }
 
   public getRandomTrends() {
     this.trendPool.sort(function () {
       return 0.5 - Math.random();
     });
     return this.trendPool.slice(0, 5);
+  }
+
+  public getRandomTrend() {
+    return this.trendPool[Math.floor(Math.random() * this.trendPool.length)];
   }
 
   public addTrend(trend: string) {
@@ -71,6 +89,9 @@ export class TrendTracker {
         type === 'positive' ? 'positiveComments' : 'negativeComments'
       ] += 1;
       trendData.totalInteractions += 1;
+      this.trendsChangeSubs.forEach((sub) => {
+        sub(this.trends);
+      });
     }
   }
 
@@ -79,6 +100,9 @@ export class TrendTracker {
     if (trendData) {
       trendData.totalScore += score;
       trendData.totalInteractions += 1;
+      this.trendsChangeSubs.forEach((sub) => {
+        sub(this.trends);
+      });
     }
   }
 
@@ -93,8 +117,13 @@ export class TrendTracker {
   }
 
   public onTrendsListChange(func: TrendsListChange) {
-    console.log('Getting sub for trends list');
     this.trendsListChangeSubs.push(func);
     func(this.trends);
+    return this;
+  }
+
+  public onTrendsChange(func: TrendsListChange) {
+    this.trendsChangeSubs.push(func);
+    return this;
   }
 }
